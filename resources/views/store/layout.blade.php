@@ -6,11 +6,11 @@
     <title>@yield('title', 'Crystal Car Audio | Sound that moves you')</title>
     <meta name="description" content="@yield('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')">
     <link rel="canonical" href="{{ url()->current() }}">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
-    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon/favicon-48x48.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-icon-180x180.png') }}">
+    <link rel="icon" href="{{ \App\Support\MediaUrl::url('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ \App\Support\MediaUrl::url('favicon/favicon-48x48.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ \App\Support\MediaUrl::url('favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ \App\Support\MediaUrl::url('favicon/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ \App\Support\MediaUrl::url('favicon/apple-icon-180x180.png') }}">
     <link rel="manifest" href="{{ asset('favicon/manifest.json') }}">
     <meta name="theme-color" content="#0c6661">
     <meta name="msapplication-config" content="{{ asset('favicon/browserconfig.xml') }}">
