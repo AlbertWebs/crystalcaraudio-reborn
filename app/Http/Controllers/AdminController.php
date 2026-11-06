@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -88,7 +89,17 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $name = Str::uuid().'.'.$file->extension();
-            $file->move(public_path('uploads/product'), $name);
+            if (config('filesystems.disks.s3.bucket')) {
+                $root = trim(config('filesystems.disks.s3.root', ''), '/');
+                Storage::disk('s3')->getClient()->putObject([
+                    'Bucket' => config('filesystems.disks.s3.bucket'),
+                    'Key' => trim($root.'/uploads/product/'.$name, '/'),
+                    'Body' => file_get_contents($file->getRealPath()),
+                    'ContentType' => $file->getMimeType(),
+                ]);
+            } else {
+                $file->move(public_path('uploads/product'), $name);
+            }
             $data['image'] = 'product/'.$name;
         }
         unset($data['slug']);

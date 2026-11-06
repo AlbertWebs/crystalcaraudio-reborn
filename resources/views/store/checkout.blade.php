@@ -55,7 +55,7 @@
         <h2>Your order <span>{{ $cart->sum('quantity') }} {{ $cart->sum('quantity') === 1 ? 'item' : 'items' }}</span></h2>
         <div class="checkout-summary-items">
             @foreach($cart as $item)
-                <div class="checkout-summary-item"><span class="checkout-summary-thumb">@if(!empty($item['image']))<img src="{{ asset('uploads/'.$item['image']) }}" alt="">@else ◉ @endif<b>{{ $item['quantity'] }}</b></span><span class="checkout-summary-name">{{ $item['name'] }}<small>KES {{ number_format($item['price']) }} each</small></span><b class="checkout-summary-price">KES {{ number_format($item['price'] * $item['quantity']) }}</b></div>
+                <div class="checkout-summary-item"><span class="checkout-summary-thumb">@if(!empty($item['image']))<img src="{{ \App\Support\MediaUrl::url('uploads/'.$item['image']) }}" alt="">@else ◉ @endif<b>{{ $item['quantity'] }}</b></span><span class="checkout-summary-name">{{ $item['name'] }}<small>KES {{ number_format($item['price']) }} each</small></span><b class="checkout-summary-price">KES {{ number_format($item['price'] * $item['quantity']) }}</b></div>
             @endforeach
         </div>
         <div class="coupon-box checkout-coupon">

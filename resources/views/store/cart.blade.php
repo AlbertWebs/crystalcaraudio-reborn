@@ -22,7 +22,7 @@
                 @foreach($cart as $id => $item)
                     <article class="cart-row">
                         <div class="cart-thumb">
-                            @if(!empty($item['image']))<img loading="lazy" src="{{ asset('uploads/'.$item['image']) }}" alt="{{ $item['name'] }}">@else <span aria-hidden="true">◉</span> @endif
+                            @if(!empty($item['image']))<img loading="lazy" src="{{ \App\Support\MediaUrl::url('uploads/'.$item['image']) }}" alt="{{ $item['name'] }}">@else <span aria-hidden="true">◉</span> @endif
                         </div>
                         <div class="cart-product-info"><strong>{{ $item['name'] }}</strong><p>KES {{ number_format($item['price']) }} <span>each</span></p><a class="cart-remove-item" href="{{ route('remove.from.cart', $id) }}">Remove</a></div>
                         <label class="cart-quantity" for="quantity-{{ $id }}">Quantity<input id="quantity-{{ $id }}" type="number" min="0" max="10" name="quantity[{{ $id }}]" value="{{ $item['quantity'] }}" aria-label="Quantity for {{ $item['name'] }}"></label>

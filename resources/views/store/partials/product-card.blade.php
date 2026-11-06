@@ -11,7 +11,7 @@
     <div class="product-card-media">
         <a class="product-image" href="{{ $productUrl }}" aria-label="View {{ $product->name }}">
             @if($imagePath)
-                <img loading="lazy" src="{{ str_starts_with($imagePath, 'http') ? $imagePath : asset('uploads/'.$imagePath) }}" alt="{{ $product->name }}">
+                <img loading="lazy" src="{{ str_starts_with($imagePath, 'http') ? $imagePath : \App\Support\MediaUrl::url('uploads/'.$imagePath) }}" alt="{{ $product->name }}">
             @else
                 <span class="product-placeholder">◉</span>
             @endif

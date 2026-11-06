@@ -19,7 +19,7 @@
             @foreach(['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'] as $comboSlug)
                 @if($comboProduct = $comboProducts->get($comboSlug))
                     <a class="combo-product-card" href="{{ route('product-single', $comboProduct->slug) }}">
-                        <span class="combo-product-image"><img src="{{ str_starts_with($comboProduct->image, 'http') ? $comboProduct->image : asset('uploads/'.$comboProduct->image) }}" alt="{{ $comboProduct->name }}"></span>
+                        <span class="combo-product-image"><img src="{{ str_starts_with($comboProduct->image, 'http') ? $comboProduct->image : \App\Support\MediaUrl::url('uploads/'.$comboProduct->image) }}" alt="{{ $comboProduct->name }}"></span>
                         <span class="combo-product-copy"><small>{{ $loop->first ? 'DOOR SPEAKERS' : 'ANDROID + BASS' }}</small><b>{{ $loop->first ? 'Fuller sound' : 'Smarter drives' }}</b></span>
                         <strong>KES {{ number_format($comboProduct->price) }} <span aria-hidden="true">↗</span></strong>
                     </a>
@@ -41,7 +41,7 @@
     <div class="category-grid category-grid-live">
         @foreach($categories as $category)
             <a href="{{ route('product-category', $category->slug) }}" class="category-card category-card-live">
-                @if($category->image)<img loading="lazy" src="{{ str_starts_with($category->image, 'http') ? $category->image : asset('uploads/'.$category->image) }}" alt="">@endif
+                @if($category->image)<img loading="lazy" src="{{ str_starts_with($category->image, 'http') ? $category->image : \App\Support\MediaUrl::url('uploads/'.$category->image) }}" alt="">@endif
                 <span class="cat-num">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                 <span class="category-card-info"><span><h3>{{ $category->name }}</h3><span class="category-product-count">{{ $category->product_count }} products</span></span><span class="category-arrow" aria-hidden="true">↗</span></span>
             </a>

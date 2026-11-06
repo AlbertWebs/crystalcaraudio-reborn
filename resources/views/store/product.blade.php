@@ -13,7 +13,7 @@
         <div class="product-gallery-main">
             @if($discountPercent)<span class="product-badge badge-sale">Save {{ $discountPercent }}%</span>@endif
             @if($gallery->isNotEmpty())
-                <img id="product-gallery-image" src="{{ str_starts_with($gallery->first(), 'http') ? $gallery->first() : asset('uploads/'.$gallery->first()) }}" alt="{{ $product->name }}">
+                <img id="product-gallery-image" src="{{ str_starts_with($gallery->first(), 'http') ? $gallery->first() : \App\Support\MediaUrl::url('uploads/'.$gallery->first()) }}" alt="{{ $product->name }}">
             @else
                 <span class="product-placeholder">◉</span>
             @endif
@@ -21,7 +21,7 @@
         @if($gallery->count() > 1)
             <div class="product-thumbnails" aria-label="Product images">
                 @foreach($gallery as $image)
-                    <button type="button" data-gallery-image="{{ str_starts_with($image, 'http') ? $image : asset('uploads/'.$image) }}" class="{{ $loop->first ? 'is-active' : '' }}" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-label="Show image {{ $loop->iteration }}"><img src="{{ str_starts_with($image, 'http') ? $image : asset('uploads/'.$image) }}" alt=""></button>
+                    <button type="button" data-gallery-image="{{ str_starts_with($image, 'http') ? $image : \App\Support\MediaUrl::url('uploads/'.$image) }}" class="{{ $loop->first ? 'is-active' : '' }}" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-label="Show image {{ $loop->iteration }}"><img src="{{ str_starts_with($image, 'http') ? $image : \App\Support\MediaUrl::url('uploads/'.$image) }}" alt=""></button>
                 @endforeach
             </div>
         @endif

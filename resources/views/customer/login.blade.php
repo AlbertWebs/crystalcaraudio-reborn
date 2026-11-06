@@ -4,7 +4,7 @@
 <main class="register-page">
     <div class="register-card">
         <aside class="register-story">
-            <a class="register-brand" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img src="{{ asset('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio"></a>
+            <a class="register-brand" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img src="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio"></a>
             <span class="register-story-label">YOUR CRYSTAL ACCOUNT</span>
             <h1>Your drive.<br>Your sound.</h1>
             <p>Pick up where you left off and keep your favourite upgrades close.</p>

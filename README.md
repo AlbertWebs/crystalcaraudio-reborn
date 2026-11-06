@@ -16,6 +16,8 @@ php artisan serve
 
 The app uses SQLite by default. For production, set `APP_URL` to the public HTTPS site URL and configure a durable database, session store, backups, mail transport, and HTTPS proxy settings.
 
+Product and category media can use the S3 disk. Set `FILESYSTEM_DISK=s3` and provide `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, and an `AWS_ROOT` prefix. Image links are generated as seven-day signed URLs, so the bucket can keep objects private. Admin product image uploads are written to the configured S3 prefix when a bucket is set.
+
 ## Import the legacy catalogue
 
 The supplied SQL dump and the old website upload directory remain unchanged. The importer maps legacy category IDs, slugs, product fields, stock, prices, brand, descriptions, and media references into the new catalogue. Customer, order, invoice, payment, review, wishlist, coupon, brand, and tag rows are preserved with their original fields in the encrypted `legacy_archive_records` table. Legacy customer accounts are enabled for sign-in using their existing password hashes. Existing URL slugs are retained, including duplicates if they exist in the source data.
