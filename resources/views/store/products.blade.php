@@ -1,6 +1,9 @@
 @extends('store.layout')
 @section('title', $seoTitle ?? $pageTitle.' | Crystal Car Audio')
 @section('meta_description', $seoDescription ?? $pageDescription)
+@section('meta_keywords', $seoKeywords ?? 'car audio Kenya, car radios Nairobi, car speakers, car accessories, Crystal Car Audio')
+@section('meta_og_title', $seoOgTitle ?? ($seoTitle ?? $pageTitle.' | Crystal Car Audio'))
+@section('meta_og_description', $seoOgDescription ?? ($seoDescription ?? $pageDescription))
 @section('content')
 @php
     $breadcrumbCurrent = request()->routeIs('product-category') || filled(request('category'))
@@ -84,4 +87,10 @@
         @endif
     </div>
 </section>
+<script>
+(() => {
+    if (!window.matchMedia('(max-width: 760px)').matches) return;
+    document.querySelectorAll('.collection-price-filter > details[open]').forEach(group => group.removeAttribute('open'));
+})();
+</script>
 @endsection

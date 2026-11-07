@@ -40,7 +40,7 @@
                 @foreach($highlights as $highlight)<li><span>{{ \Illuminate\Support\Str::limit($highlight['title'], 23) }}</span><b title="{{ $highlight['value'] }}">{{ \Illuminate\Support\Str::limit($highlight['value'], 42) }}</b></li>@endforeach
             </ul>
         @endif
-        <div class="product-card-buy-row"><div class="product-price-row"><strong>KES {{ number_format($product->price) }}</strong>@if($discountPercent)<del>KES {{ number_format($product->original_price) }}</del>@endif</div>
+        <div class="product-card-buy-row"><div class="product-price-row"><strong>KES {{ number_format($product->price) }}</strong>@if($discountPercent)<del>KES {{ number_format($product->original_price) }}</del><span class="product-discount-percent">-{{ $discountPercent }}%</span>@endif</div>
         <form class="card-add-form" method="post" action="{{ route('cart.add', $product) }}">
             @csrf
             <input type="hidden" name="quantity" value="1">

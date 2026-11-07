@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CatalogProduct;
 use App\Support\MediaUrl;
+use App\Support\PageSeo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +82,9 @@ class StorefrontController extends Controller
 
     public function products(Request $request, ?string $slug = null, ?string $brand = null)
     {
+        $brand ??= $request->route('brand') ? (string) $request->route('brand') : null;
         $query = CatalogProduct::query();
+        $brandName = $brand ? CatalogProduct::query()->whereNotNull('brand')->where('brand', '!=', '')->distinct()->pluck('brand')->first(fn ($name) => Str::slug($name) === $brand) : null;
         if ($search = trim((string) $request->query('q'))) {
             $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
                 ->orWhere('brand', 'like', "%{$search}%")
@@ -97,7 +100,7 @@ class StorefrontController extends Controller
             $query->where('category', $category);
         }
         if ($brand) {
-            $query->where('brand', 'like', $brand);
+            $query->where('brand', $brandName ?? $brand);
         }
         if ($selectedBrand = trim((string) $request->query('brand'))) {
             $query->where('brand', $selectedBrand);
@@ -131,6 +134,9 @@ class StorefrontController extends Controller
         $pageDescription = 'Thoughtfully selected audio and accessories for the way you drive.';
         $seoTitle = 'Car Audio, Speakers & Accessories in Kenya | Crystal Car Audio';
         $seoDescription = 'Shop car audio, speakers, multimedia and accessories at Crystal Car Audio Kenya. Get expert advice, secure checkout and delivery across Kenya.';
+        $seoKeywords = 'car audio Kenya, car radios Nairobi, car speakers, car accessories, Crystal Car Audio';
+        $seoOgTitle = $seoTitle;
+        $seoOgDescription = $seoDescription;
         $categoryGuide = null;
         if ($category) {
             $categoryRecord ??= DB::table('catalog_categories')->where('name', $category)->first();
@@ -159,12 +165,123 @@ class StorefrontController extends Controller
             $seoDescription = $pageDescription.' Shop selected products with expert advice and delivery across Kenya.';
         }
 
-        return view('store.products', compact('products', 'pageTitle', 'pageDescription', 'categoryGuide', 'seoTitle', 'seoDescription', 'categories', 'brands'));
+        if ($request->route()?->getName() === 'products.brand' && $brand) {
+            $brandName ??= str_replace('-', ' ', $brand);
+            $pageTitle = $brandName;
+            $pageDescription = 'Browse '.$brandName.' products available from Crystal Car Audio in Kenya.';
+            $seo = PageSeo::resolve('brand_detail', [
+                'title' => '{brand} Car Audio & Accessories in Nairobi | Crystal Car Audio',
+                'description' => 'Shop {brand} car audio and vehicle accessories in Nairobi, Kenya. Browse available products and get advice from Crystal Car Audio.',
+                'keywords' => '{brand} car audio, {brand} accessories Nairobi, {brand} Kenya',
+                'og_title' => '', 'og_description' => '',
+            ]);
+            $seoTitle = str_replace('{brand}', $brandName, $seo['title']);
+            $seoDescription = Str::limit(str_replace('{brand}', $brandName, $seo['description']), 160);
+            $seoKeywords = str_replace('{brand}', $brandName, $seo['keywords']);
+            $seoOgTitle = filled($seo['og_title']) ? str_replace('{brand}', $brandName, $seo['og_title']) : $seoTitle;
+            $seoOgDescription = filled($seo['og_description']) ? Str::limit(str_replace('{brand}', $brandName, $seo['og_description']), 160) : $seoDescription;
+        } elseif ($category) {
+            $seo = PageSeo::resolve('category_detail', [
+                'title' => '{category} in Kenya | Crystal Car Audio',
+                'description' => 'Shop {category} at Crystal Car Audio Kenya. Find the right fit for your vehicle with expert advice and delivery across Kenya.',
+                'keywords' => '{category}, car audio Kenya, car accessories Nairobi',
+                'og_title' => '', 'og_description' => '',
+            ]);
+            $seoTitle = str_replace('{category}', $pageTitle, $seo['title']);
+            $seoDescription = Str::limit(str_replace('{category}', $pageTitle, $seo['description']), 160);
+            $seoKeywords = str_replace('{category}', $pageTitle, $seo['keywords']);
+            $seoOgTitle = filled($seo['og_title']) ? str_replace('{category}', $pageTitle, $seo['og_title']) : $seoTitle;
+            $seoOgDescription = filled($seo['og_description']) ? Str::limit(str_replace('{category}', $pageTitle, $seo['og_description']), 160) : $seoDescription;
+        }
+
+        return view('store.products', compact('products', 'pageTitle', 'pageDescription', 'categoryGuide', 'seoTitle', 'seoDescription', 'seoKeywords', 'seoOgTitle', 'seoOgDescription', 'categories', 'brands'));
+    }
+
+    public function categoryDirectory()
+    {
+        $productCounts = DB::table('catalog_products')->select('category', DB::raw('COUNT(*) as product_count'))->groupBy('category');
+        $categories = DB::table('catalog_categories')
+            ->leftJoinSub($productCounts, 'product_counts', 'product_counts.category', '=', 'catalog_categories.name')
+            ->select('catalog_categories.*', DB::raw('COALESCE(product_counts.product_count, 0) as product_count'))
+            ->orderByRaw('CASE WHEN catalog_categories.sort_order = 0 THEN 1 ELSE 0 END')
+            ->orderBy('catalog_categories.sort_order')->orderBy('catalog_categories.name')->get();
+        $seo = PageSeo::resolve('shop_by_category', [
+            'title' => 'Shop Car Audio Categories in Kenya | Crystal Car Audio',
+            'description' => 'Browse car radios, speakers, amplifiers, security systems, accessories and installation services at Crystal Car Audio Kenya. Get expert advice and delivery across Kenya.',
+            'keywords' => 'car audio categories Kenya, car radios, car speakers, car amplifiers, car alarm systems, car audio installation Nairobi',
+            'og_title' => '', 'og_description' => '',
+        ]);
+
+        return view('store.category-directory', compact('categories', 'seo'));
+    }
+
+    public function brandDirectory()
+    {
+        $brands = CatalogProduct::query()->whereNotNull('brand')->where('brand', '!=', '')
+            ->select('brand', DB::raw('COUNT(*) as product_count'))->groupBy('brand')->orderBy('brand')->get();
+        $seo = PageSeo::resolve('shop_by_brand', [
+            'title' => 'Shop Car Audio Brands in Kenya | Crystal Car Audio',
+            'description' => 'Explore JVC, Pioneer, Sony, Kenwood, Boschmann and more car audio brands at Crystal Car Audio in Nairobi, Kenya.',
+            'keywords' => 'car audio brands Kenya, JVC car audio, Pioneer car speakers, Sony car audio, Kenwood car speakers, Boschmann',
+            'og_title' => '', 'og_description' => '',
+        ]);
+
+        return view('store.brand-directory', compact('brands', 'seo'));
+    }
+
+    public function portfolio()
+    {
+        $projects = $this->portfolioRecords();
+        $seo = PageSeo::resolve('portfolio', [
+            'title' => 'Car Audio Installation Portfolio in Nairobi | Crystal Car Audio',
+            'description' => 'Explore Crystal Car Audio installations across Nairobi and Kenya, from Android radio upgrades to complete speaker and subwoofer systems.',
+            'keywords' => 'car audio installation Nairobi, car radio upgrade Kenya, car speaker installation, car subwoofer installation',
+            'og_title' => '', 'og_description' => '',
+        ]);
+
+        return view('store.portfolio', compact('projects', 'seo'));
+    }
+
+    public function portfolioProject(string $id)
+    {
+        $project = $this->portfolioRecords()->first(fn ($record) => (string) ($record['id'] ?? '') === (string) $id);
+        abort_unless($project, 404);
+        $seo = PageSeo::resolve('portfolio', [
+            'title' => 'Car Audio Installation Portfolio in Nairobi | Crystal Car Audio',
+            'description' => 'Explore Crystal Car Audio installations across Nairobi and Kenya, from Android radio upgrades to complete speaker and subwoofer systems.',
+            'keywords' => 'car audio installation Nairobi, car radio upgrade Kenya, car speaker installation, car subwoofer installation',
+            'og_title' => '', 'og_description' => '',
+        ]);
+        $seo['title'] = trim(strip_tags((string) ($project['title'] ?? 'Car Audio Installation'))).' | Crystal Car Audio';
+        $seo['description'] = Str::limit(trim(strip_tags((string) ($project['content'] ?? 'Car audio installation by Crystal Car Audio in Nairobi, Kenya.'))), 160);
+
+        return view('store.portfolio-project', compact('project', 'seo'));
+    }
+
+    private function portfolioRecords()
+    {
+        return DB::table('legacy_archive_records')->where('source_table', 'portfolio')->orderBy('source_id')->get(['source_id', 'payload'])
+            ->map(function ($row) {
+                try {
+                    $record = json_decode(Crypt::decryptString($row->payload), true) ?: [];
+                    $record['id'] ??= $row->source_id;
+                    $record['content'] = preg_replace('/rnrn/i', "\n\n", (string) ($record['content'] ?? ''));
+                    $record['images'] = collect($record)->filter(fn ($value, $key) => preg_match('/^image_/', (string) $key) && filled($value))
+                        ->map(fn ($filename) => MediaUrl::url('uploads/portfolio/'.ltrim((string) $filename, '/')))->values()->all();
+
+                    return $record;
+                } catch (\Throwable) {
+                    return null;
+                }
+            })->filter(fn ($record) => is_array($record) && filled($record['title'] ?? null))->values();
     }
 
     public function product(string $slug)
     {
         $product = CatalogProduct::where('slug', $slug)->firstOrFail();
+        $categoryRecord = $product->category
+            ? DB::table('catalog_categories')->where('name', $product->category)->first(['name', 'slug'])
+            : null;
         $relatedProducts = CatalogProduct::query()->where('category', $product->category)->whereKeyNot($product->id)->latest()->take(4)->get();
         $description = trim((string) $product->description);
         $description = preg_replace('/rnrn/i', "\n", $description);
@@ -202,7 +319,7 @@ class StorefrontController extends Controller
                 'created_at' => $review['created_at'] ?? null,
             ])->filter(fn ($review) => $review['rating'] > 0 && ($review['title'] !== '' || $review['content'] !== ''))->values();
 
-        return view('store.product', compact('product', 'relatedProducts', 'detailParagraphs', 'descriptionPlain', 'shortSpecifications', 'reviews'));
+        return view('store.product', compact('product', 'categoryRecord', 'relatedProducts', 'detailParagraphs', 'descriptionPlain', 'shortSpecifications', 'reviews'));
     }
 
     public function info(string $slug, ?string $id = null)

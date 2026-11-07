@@ -38,7 +38,7 @@
 </section>
 
 <section class="section categories-section">
-    <div class="section-head"><div><p class="eyebrow eyebrow-accent">FIND YOUR FREQUENCY</p><h2>Shop by category</h2><p class="section-subtitle">Start with the upgrade you have in mind.</p></div><a class="text-link" href="{{ route('categories') }}">View all categories ↗</a></div>
+    <div class="section-head"><div><p class="eyebrow eyebrow-accent">FIND YOUR FREQUENCY</p><h2>Shop by category</h2><p class="section-subtitle">Start with the upgrade you have in mind.</p></div><a class="text-link" href="{{ route('shop-by-category') }}">View all categories ↗</a></div>
     <div class="category-grid category-grid-live">
         @foreach($categories as $category)
             <a href="{{ route('product-category', $category->slug) }}" class="category-card category-card-live">

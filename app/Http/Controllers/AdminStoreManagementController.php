@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\CatalogProduct;
 use App\Models\StoreOrder;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminStoreManagementController extends Controller
@@ -21,6 +24,45 @@ class AdminStoreManagementController extends Controller
             ->orderBy('catalog_categories.sort_order')->orderBy('catalog_categories.name')->get();
 
         return view('admin.categories', compact('categories'));
+    }
+
+    public function storeCategory(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:190', Rule::unique('catalog_categories', 'name')],
+            'slug' => ['nullable', 'string', 'max:190', 'alpha_dash', Rule::unique('catalog_categories', 'slug')],
+            'description' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $slug = Str::slug($data['slug'] ?: $data['name']) ?: 'category';
+        $baseSlug = $slug;
+        $suffix = 2;
+        while (DB::table('catalog_categories')->where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$suffix++;
+        }
+
+        DB::transaction(function () use ($data, $slug, $request): void {
+            $categoryId = DB::table('catalog_categories')->insertGetId([
+                'name' => $data['name'],
+                'slug' => $slug,
+                'description' => $data['description'] ?? null,
+                'sort_order' => ((int) DB::table('catalog_categories')->max('sort_order')) + 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::table('admin_activity_logs')->insert([
+                'user_id' => $request->user()->id,
+                'action' => 'category.created',
+                'subject_type' => 'category',
+                'subject_id' => (string) $categoryId,
+                'summary' => 'Added '.$data['name'].' to catalogue categories.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('admin.categories')->with('success', $data['name'].' was added to catalogue categories.');
     }
 
     public function brands(Request $request): View

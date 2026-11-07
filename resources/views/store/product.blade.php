@@ -1,7 +1,33 @@
 @extends('store.layout')
 @section('title', $product->name.' | Crystal Car Audio')
 @section('content')
-<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ route('home') }}">Home</a><span>›</span><a href="{{ route('categories') }}">Shop</a><span>›</span><span>{{ $product->category ?? 'Product' }}</span></nav>
+@php
+    $productBreadcrumbs = [
+        ['name' => 'Home', 'url' => route('home')],
+        ['name' => 'Products', 'url' => route('categories')],
+    ];
+    if (filled($product->category)) {
+        $productBreadcrumbs[] = [
+            'name' => $product->category,
+            'url' => $categoryRecord
+                ? route('product-category', $categoryRecord->slug)
+                : route('categories', ['category' => $product->category]),
+        ];
+    }
+    if (filled($product->brand) && strtolower($product->brand) !== 'others') {
+        $productBreadcrumbs[] = ['name' => $product->brand, 'url' => route('products.brand', $product->brand)];
+    }
+    $productBreadcrumbSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => array_map(fn ($item, $index) => [
+            '@type' => 'ListItem', 'position' => $index + 1, 'name' => $item['name'],
+            'item' => $item['url'] ?? route('product-single', $product->slug),
+        ], [...$productBreadcrumbs, ['name' => $product->name]], array_keys([...$productBreadcrumbs, ['name' => $product->name]])),
+    ];
+@endphp
+<nav class="breadcrumbs product-breadcrumbs" aria-label="Breadcrumb"><ol>@foreach($productBreadcrumbs as $item)<li><a href="{{ $item['url'] }}">{{ $item['name'] }}</a></li>@endforeach<li aria-current="page">{{ $product->name }}</li></ol></nav>
+<script type="application/ld+json">@json($productBreadcrumbSchema)</script>
 <section class="product-detail-page">
     @php
         $gallery = collect($product->gallery ?? [])->filter()->unique()->values();

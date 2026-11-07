@@ -30,6 +30,7 @@
                 <a class="{{ request()->routeIs('admin.categories*') ? 'is-active' : '' }}" href="{{ route('admin.categories') }}"><span class="admin-nav-icon">▦</span>Categories</a>
             @endcan
             @can('manage-store-products')<a class="{{ request()->routeIs('admin.brands*') ? 'is-active' : '' }}" href="{{ route('admin.brands') }}"><span class="admin-nav-icon">◇</span>Brands</a>@endcan
+            @can('manage-store-products')<a class="{{ request()->routeIs('admin.seo*') ? 'is-active' : '' }}" href="{{ route('admin.seo') }}"><span class="admin-nav-icon">⌕</span>SEO management</a>@endcan
             @can('manage-store-inventory')<a class="{{ request()->routeIs('admin.inventory*') ? 'is-active' : '' }}" href="{{ route('admin.inventory') }}"><span class="admin-nav-icon">▤</span>Inventory</a>@endcan
             @can('manage-store-orders')
                 <a class="{{ request()->routeIs('admin.orders*') ? 'is-active' : '' }}" href="{{ route('admin.orders') }}"><span class="admin-nav-icon">▣</span>Orders</a>

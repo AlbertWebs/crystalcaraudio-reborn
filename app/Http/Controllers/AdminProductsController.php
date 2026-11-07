@@ -6,6 +6,7 @@ use App\Models\CatalogProduct;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,10 @@ class AdminProductsController extends Controller
         $stock = $request->string('stock')->toString();
         $priceState = $request->string('price')->toString();
         $sort = $request->string('sort')->toString();
+        $perPage = (int) $request->query('per_page', 20);
+        if (! in_array($perPage, [20, 40, 80], true)) {
+            $perPage = 20;
+        }
 
         $products = CatalogProduct::query()
             ->when($search !== '', fn ($query) => $query->where(function ($query) use ($search): void {
@@ -51,7 +56,7 @@ class AdminProductsController extends Controller
             ->when($sort === 'price_high', fn ($query) => $query->orderByDesc('price')->orderBy('name'))
             ->when($sort === 'stock_low', fn ($query) => $query->orderByRaw('CASE WHEN stock_quantity IS NULL THEN 0 ELSE 1 END')->orderBy('stock_quantity'))
             ->when(! in_array($sort, ['name', 'price_low', 'price_high', 'stock_low'], true), fn ($query) => $query->latest('updated_at'))
-            ->paginate(20)
+            ->paginate($perPage)
             ->withQueryString();
 
         $categories = DB::table('catalog_categories')->orderBy('sort_order')->orderBy('name')->pluck('name')
@@ -63,7 +68,7 @@ class AdminProductsController extends Controller
             'products' => $products,
             'categories' => $categories,
             'brands' => $brands,
-            'filters' => compact('search', 'category', 'brand', 'stock', 'priceState', 'sort'),
+            'filters' => compact('search', 'category', 'brand', 'stock', 'priceState', 'sort', 'perPage'),
             'totalProducts' => CatalogProduct::query()->count(),
             'zeroPriceCount' => CatalogProduct::query()->where('price', 0)->count(),
             'outOfStockCount' => CatalogProduct::query()->where(fn ($query) => $query->where('stock_quantity', 0)->orWhereRaw('LOWER(stock) = ?', ['out of stock']))->count(),
@@ -148,8 +153,12 @@ class AdminProductsController extends Controller
             'stock_quantity' => ['nullable', 'integer', 'min:0', 'max:1000000'],
             'low_stock_threshold' => ['nullable', 'integer', 'min:0', 'max:1000000'],
             'description' => ['nullable', 'string', 'max:20000'],
+            'primary_image' => ['nullable', 'string', 'max:2048', Rule::in(collect($product?->gallery ?? [])->filter()->push($product?->image)->filter()->unique()->values()->all())],
+            'primary_upload_index' => ['nullable', 'integer', 'min:0', 'max:9'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:320'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['image', 'max:5120'],
             'image' => ['nullable', 'image', 'max:5120'],
             'featured' => ['nullable', 'boolean'],
             'is_offer' => ['nullable', 'boolean'],
@@ -182,18 +191,44 @@ class AdminProductsController extends Controller
             $data['stock'] = (int) $data['stock_quantity'] > 0 ? 'In Stock' : 'Out of Stock';
         }
 
+        $selectedPrimary = $data['primary_image'] ?? null;
+        $selectedUploadIndex = isset($data['primary_upload_index']) ? (int) $data['primary_upload_index'] : null;
+        unset($data['primary_image']);
+        unset($data['primary_upload_index']);
+        unset($data['images'], $data['image']);
+
+        $gallery = collect($product?->gallery ?? [])
+            ->filter(fn ($image) => is_string($image) && trim($image) !== '')
+            ->push($product?->image)
+            ->filter(fn ($image) => is_string($image) && trim($image) !== '')
+            ->unique()->values();
+
+        $uploadedImages = [];
+        foreach ($request->file('images', []) as $index => $file) {
+            if ($file instanceof UploadedFile) {
+                $uploadedImages[$index] = $this->storeImage($file);
+            }
+        }
         if ($request->hasFile('image')) {
-            $data['image'] = $this->storeImage($request);
-        } elseif ($product) {
-            unset($data['image']);
+            $uploadedImages[] = $this->storeImage($request->file('image'));
+        }
+        $gallery = $gallery->concat($uploadedImages)->unique()->values();
+
+        if ($gallery->isNotEmpty()) {
+            $uploadedPrimary = $selectedUploadIndex !== null ? ($uploadedImages[$selectedUploadIndex] ?? null) : null;
+            $primaryImage = $uploadedPrimary && $gallery->contains($uploadedPrimary)
+                ? $uploadedPrimary
+                : ($selectedPrimary && $gallery->contains($selectedPrimary) ? $selectedPrimary : $gallery->first());
+
+            $data['image'] = $primaryImage;
+            $data['gallery'] = $gallery->reject(fn ($image) => $image === $primaryImage)->prepend($primaryImage)->values()->all();
         }
 
         return $data;
     }
 
-    private function storeImage(Request $request): string
+    private function storeImage(UploadedFile $file): string
     {
-        $file = $request->file('image');
         $name = Str::uuid().'.'.$file->extension();
         $path = 'product/'.$name;
 
@@ -257,8 +292,29 @@ class AdminProductsController extends Controller
         $brands = CatalogProduct::query()->whereNotNull('brand')->where('brand', '!=', '')->distinct()->orderBy('brand')->pluck('brand');
 
         $descriptionHtml = $this->sanitizeDescription((string) old('description', $editingProduct?->description ?? ''));
+        $productName = trim((string) old('name', $editingProduct?->name ?? ''));
+        $category = trim((string) old('category', $editingProduct?->category ?? ''));
+        $brand = trim((string) old('brand', $editingProduct?->brand ?? ''));
+        $explicitMetaTitle = trim((string) old('meta_title', $editingProduct?->meta_title ?? ''));
+        $explicitMetaDescription = trim((string) old('meta_description', $editingProduct?->meta_description ?? ''));
+        $metaTitleGenerated = $explicitMetaTitle === '' || old('_meta_title_generated') === '1';
+        $metaDescriptionGenerated = $explicitMetaDescription === '' || old('_meta_description_generated') === '1';
+        if ($metaTitleGenerated) {
+            $explicitMetaTitle = '';
+        }
+        if ($metaDescriptionGenerated) {
+            $explicitMetaDescription = '';
+        }
+        $metaTitle = $explicitMetaTitle ?: ($productName !== ''
+            ? Str::limit($productName.($brand !== '' || $category !== '' ? ' | '.trim($brand.' '.$category) : '').' | Crystal Car Audio', 70, '')
+            : '');
+        $productDescription = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) old('description', $editingProduct?->description ?? '')), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        $fallbackDescription = 'Shop '.trim(($brand !== '' ? $brand.' ' : '').$productName.($category !== '' ? ' '.$category : '')).' at Crystal Car Audio Kenya. Get expert advice and delivery across Kenya.';
+        $metaDescription = $explicitMetaDescription ?: ($productDescription !== ''
+            ? Str::limit($productDescription, 155)
+            : ($productName !== '' ? Str::limit($fallbackDescription, 155) : ''));
 
-        return compact('categories', 'brands', 'editingProduct', 'descriptionHtml');
+        return compact('categories', 'brands', 'editingProduct', 'descriptionHtml', 'metaTitle', 'metaDescription', 'metaTitleGenerated', 'metaDescriptionGenerated');
     }
 
     private function sanitizeDescription(string $description): string
