@@ -38,16 +38,50 @@
 </section>
 
 <section class="section categories-section">
-    <div class="section-head"><div><p class="eyebrow eyebrow-accent">FIND YOUR FREQUENCY</p><h2>Shop by category</h2><p class="section-subtitle">Start with the upgrade you have in mind.</p></div><a class="text-link" href="{{ route('shop-by-category') }}">View all categories ↗</a></div>
-    <div class="category-grid category-grid-live">
-        @foreach($categories as $category)
-            <a href="{{ route('product-category', $category->slug) }}" class="category-card category-card-live">
-                @if($category->image)<img loading="lazy" decoding="async" src="{{ str_starts_with($category->image, 'http') ? $category->image : \App\Support\MediaUrl::url('uploads/'.$category->image) }}" alt="">@endif
-                <span class="cat-num">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                <span class="category-card-info"><span><h3>{{ $category->name }}</h3><span class="category-product-count">{{ $category->product_count }} products</span></span><span class="category-arrow" aria-hidden="true">↗</span></span>
+    @php
+        $categoryArtwork = [
+            'car-radio' => ['image' => 'car-radio.webp', 'description' => 'Android & OEM car radios', 'featured' => true],
+            'mid-range-speakers' => ['image' => 'car-speakers.webp', 'description' => 'Coaxial, component & subwoofers', 'featured' => true],
+            'car-amplifiers-booster' => ['image' => 'car-amplifiers.webp', 'description' => 'Power up your sound'],
+            'car-audio-installation' => ['image' => 'car-audio-installation.webp', 'description' => 'Professional & reliable fitment'],
+            'car-security-system' => ['image' => 'car-audio-system.webp', 'description' => 'Complete sound system packages'],
+            'car-accessories' => ['image' => 'car-security.webp', 'description' => 'Vehicle security & tracking'],
+            'conversion-fascia-kits' => ['image' => 'fascia-kits.webp', 'description' => 'Dash kits for a perfect fit'],
+            'equalizers' => ['image' => 'equalizers.webp', 'description' => 'Fine-tune your sound'],
+            'led-lights' => ['image' => 'in-car-accessories.webp', 'description' => 'Enhance comfort, style & convenience'],
+        ];
+        $featuredCategories = $categories->filter(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false));
+        $otherCategories = $categories->reject(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false));
+    @endphp
+    <div class="section-head category-section-head">
+        <div class="category-section-title"><p class="eyebrow eyebrow-accent">FIND YOUR FREQUENCY</p><h2>Shop by <span>Category</span></h2><p class="section-subtitle">Premium car audio, security and in-car upgrades. Choose a category to explore our range.</p></div>
+        <div class="category-trust-row" aria-label="Shopping benefits">
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 15 4l3.2-.1.9 3 2.1 2.4-1.3 3 0 3.2-2.8 1.5-1.7 2.7-3.2-.6-3.1.6-1.7-2.7-2.8-1.5 0-3.2-1.3-3 2.1-2.4.9-3L9 4z"/><path d="m8.7 12.1 2.2 2.2 4.5-4.7"/></svg>Genuine<br>products</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7.5" cy="18" r="1.7"/><circle cx="18" cy="18" r="1.7"/><path d="M15 10v4h6"/></svg>Fast delivery<br>across Kenya</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 20 6v5.6c0 4.5-3.1 7.9-8 9.6-4.9-1.7-8-5.1-8-9.6V6z"/><path d="m8.5 12.2 2.2 2.2 4.8-5"/></svg>Expert<br>installation</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 12H2.8v5H6v-5zM20 12h1.2v5H18v-5zM18 18c-.8 2-2.8 3-5.5 3"/></svg>After-sales<br>support</span>
+        </div>
+    </div>
+    <div class="category-feature-grid">
+        @foreach($featuredCategories as $category)
+            @php($artwork = $categoryArtwork[$category->slug] ?? null)
+            <a href="{{ route('product-category', $category->slug) }}" class="category-feature-card">
+                @if($artwork)<img src="{{ asset('images/categories/'.$artwork['image']) }}" alt="{{ $category->name }}" loading="lazy" decoding="async">@endif
+                <span class="category-feature-copy"><span class="category-feature-kicker">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }} <i>·</i> PREMIUM AUDIO</span><h3>{{ $category->name }}</h3><span class="category-feature-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-feature-cta"><span>{{ $category->product_count }} products</span><b aria-hidden="true">→</b></span></span>
+                <span class="category-feature-arrow" aria-hidden="true">↗</span>
             </a>
         @endforeach
     </div>
+    <div class="category-tile-grid">
+        @foreach($otherCategories as $category)
+            @php($artwork = $categoryArtwork[$category->slug] ?? null)
+            <a href="{{ route('product-category', $category->slug) }}" class="category-tile-card">
+                @if($artwork)<img src="{{ asset('images/categories/'.$artwork['image']) }}" alt="" loading="lazy" decoding="async">@endif
+                <span class="category-tile-copy"><span class="category-tile-kicker">{{ str_pad((string) ($loop->iteration + $featuredCategories->count()), 2, '0', STR_PAD_LEFT) }} <i>·</i> CATEGORY</span><h3>{{ $category->name }}</h3><span class="category-tile-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-tile-cta">{{ $category->product_count }} products <b aria-hidden="true">→</b></span></span>
+            </a>
+        @endforeach
+    </div>
+    <a class="category-all-link" href="{{ route('shop-by-category') }}">View all categories <span aria-hidden="true">→</span></a>
 </section>
 
 @if($deals->isNotEmpty())
