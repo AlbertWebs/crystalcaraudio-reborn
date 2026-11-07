@@ -21,6 +21,9 @@
         @elseif($product->featured || $product->trending)
             <span class="product-badge badge-popular">New Arrival</span>
         @endif
+        @if($discountPercent || $product->is_offer || $product->is_special)
+            <span class="product-badge-mobile" aria-label="{{ $discountPercent ? $discountPercent.' percent off' : 'Special offer' }}">{{ $discountPercent ? $discountPercent.'% OFF' : 'OFFER' }}</span>
+        @endif
         @if($product->rating)
             <span class="product-rating-pill" aria-label="Rated {{ number_format($product->rating, 1) }} out of 5">{{ number_format($product->rating, 1) }} <b>★</b>@if($product->review_count) <small>({{ $product->review_count }})</small>@endif</span>
         @endif
