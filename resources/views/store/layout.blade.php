@@ -174,7 +174,7 @@
 <footer class="footer storefront-footer">
     <div class="footer-background-layer" aria-hidden="true">
         <video class="footer-background-video" autoplay muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture>
-            <source src="{{ \App\Support\MediaUrl::url('videos/footer-motion.mp4') }}" type="video/mp4">
+            <source src="{{ \App\Support\MediaUrl::siteAsset('footer_background_video', 'videos/footer-motion.mp4') }}" type="video/mp4">
         </video>
     </div>
     <div class="footer-social-bar">

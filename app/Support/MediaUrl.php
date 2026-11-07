@@ -3,10 +3,26 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class MediaUrl
 {
+    public static function siteAsset(string $key, string $fallback): string
+    {
+        try {
+            $path = DB::table('site_media_assets')->where('asset_key', $key)->value('path');
+            if (is_string($path) && $path !== '') {
+                return str_starts_with($path, 'images/') ? asset($path) : self::url($path);
+            }
+        } catch (Throwable $exception) {
+            // Keep storefronts rendering during deployment before migrations run.
+            report($exception);
+        }
+
+        return str_starts_with($fallback, 'images/') ? asset($fallback) : self::url($fallback);
+    }
+
     public static function category(?string $path): string
     {
         if (! $path) {

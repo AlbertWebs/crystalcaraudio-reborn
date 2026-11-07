@@ -320,6 +320,25 @@ class AdminProductsController extends Controller
 
     private function sanitizeDescription(string $description): string
     {
+        // Older catalogue imports stored Markdown-style bold labels and literal
+        // "rnrn" paragraph separators. Convert these before sanitizing so they
+        // display as readable, editable rich text in the product editor.
+        if (! preg_match('/<(p|br|strong|b|em|i|ul|ol|li|h2|h3)\b/i', $description)) {
+            $description = trim($description);
+            $description = preg_replace('/(?:\r\n|\r|\n|\brnrn\b)+/i', "\n\n", $description) ?? $description;
+            $paragraphs = preg_split('/\n\s*\n/', $description, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+            $paragraphs = array_map(function (string $paragraph): string {
+                $paragraph = e(trim($paragraph));
+                $paragraph = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $paragraph) ?? $paragraph;
+                $paragraph = nl2br($paragraph, false);
+
+                return '<p>'.$paragraph.'</p>';
+            }, $paragraphs);
+            $description = implode('', $paragraphs);
+        } else {
+            $description = preg_replace('/\brnrn\b/i', '</p><p>', $description) ?? $description;
+        }
+
         $allowedTags = '<p><br><strong><b><em><i><ul><ol><li><h2><h3>';
         $description = strip_tags($description, $allowedTags);
 

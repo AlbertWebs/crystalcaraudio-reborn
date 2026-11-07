@@ -19,11 +19,11 @@
                 <label class="catalogue-field">Brand<select name="brand"><option value="">Select a brand</option>@foreach($brands as $option)<option value="{{ $option }}" @selected(old('brand', $editingProduct->brand ?? '') === $option)>{{ $option }}</option>@endforeach</select><small>Manage brand options from existing catalogue products.</small></label>
                 <div class="catalogue-field catalogue-field-wide"><span>Description</span><div class="product-rich-editor" data-rich-editor>
                     <div class="product-rich-toolbar" role="toolbar" aria-label="Description formatting">
-                        <button type="button" data-editor-command="bold" aria-label="Bold"><strong>B</strong></button><button type="button" data-editor-command="italic" aria-label="Italic"><em>I</em></button><span aria-hidden="true"></span><button type="button" data-editor-command="insertUnorderedList" aria-label="Bulleted list">• List</button><button type="button" data-editor-command="insertOrderedList" aria-label="Numbered list">1. List</button>
+                        <button type="button" data-editor-command="bold" aria-label="Bold"><strong>B</strong></button><button type="button" data-editor-command="italic" aria-label="Italic"><em>I</em></button><button type="button" data-editor-command="formatBlock" data-editor-command-value="h3" aria-label="Section heading">H</button><button type="button" data-editor-command="formatBlock" data-editor-command-value="p" aria-label="Paragraph">¶</button><span aria-hidden="true"></span><button type="button" data-editor-command="insertUnorderedList" aria-label="Bulleted list">• List</button><button type="button" data-editor-command="insertOrderedList" aria-label="Numbered list">1. List</button>
                     </div>
                     <div class="product-rich-content" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Product description" data-editor-content>{!! $descriptionHtml !!}</div>
                     <textarea class="product-rich-value" name="description" data-editor-value hidden>{{ old('description', $editingProduct->description ?? '') }}</textarea>
-                </div><small>Describe fitment, key features, and what is included.</small></div>
+                </div><small>Use section headings and short paragraphs for easier reading. Legacy line markers are converted automatically.</small></div>
             </div>
         </section>
         <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">02</span><div><h2>Price and availability</h2><p>Set the current selling price and the previous price shown for comparison.</p></div></div>
@@ -133,10 +133,11 @@
     categoryInput.addEventListener('change', updateSeoSuggestions);
     const syncDescription = () => { editorValue.value = editor.innerHTML.trim(); updateSeoSuggestions(); };
     editor.addEventListener('input', syncDescription);
+    syncDescription();
     updateSeoSuggestions();
     form.querySelectorAll('[data-editor-command]').forEach(button => {
         button.addEventListener('mousedown', event => event.preventDefault());
-        button.addEventListener('click', () => { editor.focus(); document.execCommand(button.dataset.editorCommand, false); syncDescription(); });
+        button.addEventListener('click', () => { editor.focus(); document.execCommand(button.dataset.editorCommand, false, button.dataset.editorCommandValue || null); syncDescription(); });
     });
     const syncUploadedImages = () => {
         const transfer = new DataTransfer();

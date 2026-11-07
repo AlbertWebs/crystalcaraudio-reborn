@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminActivityController;
 use App\Http\Controllers\AdminBusinessIntelligenceController;
 use App\Http\Controllers\AdminCatalogExportController;
+use App\Http\Controllers\AdminMediaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminInstallationBookingController;
 use App\Http\Controllers\AdminInventoryController;
@@ -120,6 +121,8 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::get('/brands', [AdminStoreManagementController::class, 'brands'])->middleware('can:manage-store-products')->name('brands');
     Route::get('/exports', [AdminCatalogExportController::class, 'index'])->middleware('can:manage-store-products')->name('exports');
     Route::get('/exports/{format}', [AdminCatalogExportController::class, 'download'])->whereIn('format', ['merchant', 'csv', 'excel'])->middleware('can:manage-store-products')->name('exports.download');
+    Route::get('/media', [AdminMediaController::class, 'index'])->middleware('can:manage-store-products')->name('media');
+    Route::put('/media/{assetKey}', [AdminMediaController::class, 'update'])->where('assetKey', '[a-z0-9_]+')->middleware('can:manage-store-products')->name('media.update');
     Route::get('/seo', [AdminSeoController::class, 'edit'])->middleware('can:manage-store-products')->name('seo');
     Route::put('/seo', [AdminSeoController::class, 'update'])->middleware('can:manage-store-products')->name('seo.update');
     Route::get('/orders', [AdminStoreManagementController::class, 'orders'])->middleware('can:manage-store-orders')->name('orders');

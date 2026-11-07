@@ -13,10 +13,10 @@
         </div>
         <div class="hero-proof"><span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1M4 12H2.8v5H6v-5zM20 12h1.2v5H18v-5zM18 18c-.8 2-2.8 3-5.5 3"/></svg></span><span>Matched for a better drive<br><b>Expert advice from Crystal Car Audio</b></span></div>
     </div>
-    <div class="hero-art hero-combo-art" aria-label="Shop combo: car door speakers and Android screen with underseat subwoofer">
+    <div class="hero-art hero-combo-art" style="--combo-background-image: url('{{ \App\Support\MediaUrl::siteAsset('homepage_combo_background', 'images/feature-dashboard-night.webp') }}')" aria-label="Shop combo: car door speakers and Android screen with underseat subwoofer">
         <div class="hero-orbit"></div><div class="sun"></div>
         <span class="hero-art-index">THE SOUND UPGRADE</span>
-        <span class="hero-combo-ribbon"><span aria-hidden="true">♫</span> AUDIO<br>COMBOS</span>
+        <span class="hero-combo-ribbon"><span aria-hidden="true">♫</span><span>CAR AUDIO<br>COMBOS</span></span>
         @if($comboSlides->isNotEmpty())
         <div class="hero-combo-carousel" data-combo-carousel aria-label="Featured audio combos">
             @foreach($comboSlides as $slide)
@@ -108,7 +108,7 @@
 @endif
 
 <section class="feature-banner">
-    <img class="feature-banner-dashboard" src="{{ asset('images/feature-dashboard-night.webp') }}" alt="" loading="lazy" decoding="async" aria-hidden="true">
+    <img class="feature-banner-dashboard" src="{{ \App\Support\MediaUrl::siteAsset('homepage_feature_banner', 'images/feature-dashboard-night.webp') }}" alt="" loading="lazy" decoding="async" aria-hidden="true">
     <div class="feature-banner-copy"><p class="eyebrow eyebrow-accent">BUILT FOR THE MOMENT</p><h2>Feel the music.<br>Keep the road.</h2><p>From head units to powerful bass, find the right pieces for your setup.</p><a href="/products/car-audio" class="button button-light">Build your audio setup <span>↗</span></a></div>
 </section>
 
@@ -126,7 +126,7 @@
     <div class="product-rail" id="new-arrivals">@foreach($newArrivals as $product)@include('store.partials.product-card', ['product' => $product])@endforeach</div>
 </section>
 
-<section class="why-crystal setup-support" aria-labelledby="setup-support-title">
+<section class="why-crystal setup-support" style="--setup-support-background: url('{{ \App\Support\MediaUrl::siteAsset('homepage_setup_background', 'images/whole-setup/speaker-interior.webp') }}')" aria-labelledby="setup-support-title">
     <div class="setup-support-inner">
         <header class="setup-support-heading">
             <p class="eyebrow eyebrow-accent">GOOD SOUND, GREAT SUPPORT</p>
