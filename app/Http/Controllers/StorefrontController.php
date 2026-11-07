@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\CatalogProduct;
+use App\Support\MediaUrl;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class StorefrontController extends Controller
 {
@@ -13,7 +16,9 @@ class StorefrontController extends Controller
         $bestSellers = CatalogProduct::query()
             ->where(fn ($query) => $query->where('featured', true)->orWhere('trending', true))
             ->orderByDesc('featured')->orderByDesc('trending')->latest()->take(8)->get();
-        if ($bestSellers->count() < 4) $bestSellers = CatalogProduct::query()->orderByDesc('featured')->latest()->take(8)->get();
+        if ($bestSellers->count() < 4) {
+            $bestSellers = CatalogProduct::query()->orderByDesc('featured')->latest()->take(8)->get();
+        }
         $deals = CatalogProduct::query()->where(fn ($query) => $query->where('is_offer', true)->orWhere('is_special', true))
             ->orderByDesc('featured')->latest()->take(8)->get();
         $newArrivals = CatalogProduct::query()->latest()->take(8)->get();
@@ -31,6 +36,49 @@ class StorefrontController extends Controller
         return view('store.home', compact('bestSellers', 'deals', 'newArrivals', 'comboProducts', 'categories', 'brands'));
     }
 
+    public function premiumCarAudio()
+    {
+        $sections = collect([
+            [
+                'eyebrow' => '01 / HEAD UNITS',
+                'title' => 'Start with the right car radio',
+                'description' => 'Explore Android screens, Bluetooth head units and vehicle-specific radios. Check each listing for features and fitment details, then ask our team if you need help choosing for your car.',
+                'categories' => ['Car Radio'],
+                'link' => route('product-category', 'car-radio'),
+                'link_label' => 'Browse car radios',
+            ],
+            [
+                'eyebrow' => '02 / SPEAKERS & BASS',
+                'title' => 'Bring more clarity and depth to every drive',
+                'description' => 'Pair quality door speakers with a suitable amplifier or subwoofer for a fuller in-car sound. Browse speaker and audio-system options, and confirm sizes and compatibility before ordering.',
+                'categories' => ['Car Speakers', 'Car Audio System'],
+                'link' => route('product-category', 'mid-range-speakers'),
+                'link_label' => 'Browse car speakers',
+            ],
+            [
+                'eyebrow' => '03 / AMPLIFIERS & EQUALIZERS',
+                'title' => 'Fine-tune the system around your setup',
+                'description' => 'Find amplifiers and equalizers to shape the power and balance of your system. If you are building a complete setup, contact Crystal Car Audio for product and installation guidance.',
+                'categories' => ['Car Booster Amplifiers', 'Equalizers'],
+                'link' => route('product-category', 'car-amplifiers-booster'),
+                'link_label' => 'Browse amplifiers',
+            ],
+        ])->map(function (array $section) {
+            $section['products'] = CatalogProduct::query()
+                ->whereIn('category', $section['categories'])
+                ->whereNotNull('image')->where('image', '!=', '')
+                ->orderByDesc('featured')->orderByDesc('trending')->latest()->take(2)->get();
+
+            return $section;
+        });
+        $heroProduct = $sections->first()['products']->first() ?? null;
+        $heroImageUrl = $heroProduct?->image
+            ? MediaUrl::url('uploads/'.$heroProduct->image)
+            : MediaUrl::url('uploads/logo/Crystal%20Logo-06.png');
+
+        return view('store.premium-car-audio', compact('sections', 'heroProduct', 'heroImageUrl'));
+    }
+
     public function products(Request $request, ?string $slug = null, ?string $brand = null)
     {
         $query = CatalogProduct::query();
@@ -45,18 +93,30 @@ class StorefrontController extends Controller
             $categoryRecord = DB::table('catalog_categories')->where('slug', $slug)->first();
             $category = $categoryRecord->name ?? $category ?? $slug;
         }
-        if ($category) $query->where('category', $category);
-        if ($brand) $query->where('brand', 'like', $brand);
-        if ($selectedBrand = trim((string) $request->query('brand'))) $query->where('brand', $selectedBrand);
+        if ($category) {
+            $query->where('category', $category);
+        }
+        if ($brand) {
+            $query->where('brand', 'like', $brand);
+        }
+        if ($selectedBrand = trim((string) $request->query('brand'))) {
+            $query->where('brand', $selectedBrand);
+        }
         if ($request->route()?->getName() === 'product-tags' && $slug) {
-            $tagId = \Illuminate\Support\Facades\DB::table('catalog_tags')->where('slug', $slug)->value('legacy_id');
+            $tagId = DB::table('catalog_tags')->where('slug', $slug)->value('legacy_id');
             $query->where('legacy_tag_id', $tagId ?? '__missing_tag__');
         }
-        if ($request->route()?->getName() === 'special-offers') $query->where(fn ($q) => $q->where('is_offer', true)->orWhere('is_special', true));
+        if ($request->route()?->getName() === 'special-offers') {
+            $query->where(fn ($q) => $q->where('is_offer', true)->orWhere('is_special', true));
+        }
         $minPrice = $request->query('min_price');
         $maxPrice = $request->query('max_price');
-        if (is_numeric($minPrice)) $query->where('price', '>=', max(0, (float) $minPrice));
-        if (is_numeric($maxPrice)) $query->where('price', '<=', max(0, (float) $maxPrice));
+        if (is_numeric($minPrice)) {
+            $query->where('price', '>=', max(0, (float) $minPrice));
+        }
+        if (is_numeric($maxPrice)) {
+            $query->where('price', '<=', max(0, (float) $maxPrice));
+        }
         $sort = (string) $request->query('sort', 'recommended');
         match ($sort) {
             'newest' => $query->latest(),
@@ -86,18 +146,19 @@ class StorefrontController extends Controller
                 $pageDescription = $categoryDescription ?: 'Shop '.strtolower($pageTitle).' at Crystal Car Audio Kenya. Find the right fit for your vehicle with expert advice and delivery across Kenya.';
             }
             $seoTitle = $pageTitle.' in Kenya | Crystal Car Audio';
-            $seoDescription = \Illuminate\Support\Str::limit($pageDescription, 155);
+            $seoDescription = Str::limit($pageDescription, 155);
         } elseif ($request->route()?->getName() === 'special-offers') {
             $pageTitle = 'Special offers.';
             $pageDescription = 'A little more sound for a little less. Browse current Crystal Car Audio deals.';
             $seoTitle = 'Car Audio Deals & Special Offers in Kenya | Crystal Car Audio';
             $seoDescription = $pageDescription;
         } elseif ($request->route()?->getName() === 'product-tags' && $slug) {
-            $pageTitle = (string) (\Illuminate\Support\Facades\DB::table('catalog_tags')->where('slug', $slug)->value('name') ?? 'Tagged products');
+            $pageTitle = (string) (DB::table('catalog_tags')->where('slug', $slug)->value('name') ?? 'Tagged products');
             $pageDescription = 'Explore the '.$pageTitle.' collection.';
             $seoTitle = $pageTitle.' Products in Kenya | Crystal Car Audio';
             $seoDescription = $pageDescription.' Shop selected products with expert advice and delivery across Kenya.';
         }
+
         return view('store.products', compact('products', 'pageTitle', 'pageDescription', 'categoryGuide', 'seoTitle', 'seoDescription', 'categories', 'brands'));
     }
 
@@ -124,8 +185,11 @@ class StorefrontController extends Controller
 
         $reviews = DB::table('legacy_archive_records')->where('source_table', 'reviews')->get(['payload'])
             ->map(function ($row) {
-                try { return json_decode(\Illuminate\Support\Facades\Crypt::decryptString($row->payload), true) ?: null; }
-                catch (\Throwable) { return null; }
+                try {
+                    return json_decode(Crypt::decryptString($row->payload), true) ?: null;
+                } catch (\Throwable) {
+                    return null;
+                }
             })->filter(function ($review) use ($product) {
                 return is_array($review)
                     && (string) ($review['product_id'] ?? '') === (string) $product->legacy_id
@@ -150,13 +214,19 @@ class StorefrontController extends Controller
         };
         $records = collect();
         if ($source) {
-            $records = \Illuminate\Support\Facades\DB::table('legacy_archive_records')->where('source_table', $source)->orderBy('source_id')->get(['source_id','payload'])
+            $records = DB::table('legacy_archive_records')->where('source_table', $source)->orderBy('source_id')->get(['source_id', 'payload'])
                 ->map(function ($row) {
-                    try { return json_decode(\Illuminate\Support\Facades\Crypt::decryptString($row->payload), true) ?: []; }
-                    catch (\Throwable) { return []; }
+                    try {
+                        return json_decode(Crypt::decryptString($row->payload), true) ?: [];
+                    } catch (\Throwable) {
+                        return [];
+                    }
                 })->filter()->values();
-            if ($id !== null) $records = $records->where('id', $id)->values();
+            if ($id !== null) {
+                $records = $records->where('id', $id)->values();
+            }
         }
+
         return view('store.info', ['slug' => $slug, 'records' => $records]);
     }
 
@@ -176,6 +246,7 @@ class StorefrontController extends Controller
                     ->orderByDesc('featured')->orderByDesc('trending')->latest()->take(4 - $recommendations->count())->get()
             )->unique('id')->take(4)->values();
         }
+
         return view('store.cart', ['cart' => $cart, 'total' => $cart->sum(fn ($item) => $item['price'] * $item['quantity']), 'recommendations' => $recommendations]);
     }
 
@@ -183,10 +254,29 @@ class StorefrontController extends Controller
     {
         $cart = session('cart', []);
         $item = $cart[$product->id] ?? ['name' => $product->name, 'price' => (float) $product->price, 'image' => $product->image, 'quantity' => 0];
+        $item['product_id'] = $product->id;
+        $item['category'] = $product->category;
+        $item['brand'] = $product->brand;
         $item['quantity'] += max(1, min(10, (int) $request->input('quantity', 1)));
         $cart[$product->id] = $item;
         session(['cart' => $cart]);
-        if ($request->boolean('buy_now')) return redirect()->route('checkout');
+        if ($request->boolean('buy_now')) {
+            return redirect()->route('checkout');
+        }
+        if ($request->expectsJson()) {
+            $cartItems = collect($cart);
+            $cartCount = (int) $cartItems->sum('quantity');
+            $cartSubtotal = (float) $cartItems->sum(fn ($cartItem) => (float) ($cartItem['price'] ?? 0) * (int) ($cartItem['quantity'] ?? 0));
+
+            return response()->json([
+                'message' => 'Added to your bag.',
+                'product_name' => $product->name,
+                'product_image' => $product->image ? MediaUrl::url(str_starts_with($product->image, 'http') ? $product->image : 'uploads/'.$product->image) : null,
+                'cart_count' => $cartCount,
+                'mini_cart_html' => view('store.partials.mini-cart-content', compact('cartItems', 'cartCount', 'cartSubtotal'))->render(),
+            ]);
+        }
+
         return redirect()->route('cart')->with('success', 'Added to your cart.');
     }
 
@@ -195,16 +285,24 @@ class StorefrontController extends Controller
         $quantities = $request->validate(['quantity' => ['required', 'array'], 'quantity.*' => ['integer', 'min:0', 'max:10']])['quantity'];
         $cart = session('cart', []);
         foreach ($quantities as $id => $quantity) {
-            if (! isset($cart[$id])) continue;
-            if ((int) $quantity === 0) unset($cart[$id]); else $cart[$id]['quantity'] = (int) $quantity;
+            if (! isset($cart[$id])) {
+                continue;
+            }
+            if ((int) $quantity === 0) {
+                unset($cart[$id]);
+            } else {
+                $cart[$id]['quantity'] = (int) $quantity;
+            }
         }
         session(['cart' => $cart]);
+
         return redirect()->route('cart');
     }
 
     public function legacyAddToCart(Request $request, string $id)
     {
         $product = CatalogProduct::findOrFail($id);
+
         return $this->addToCart($request, $product);
     }
 
@@ -213,6 +311,7 @@ class StorefrontController extends Controller
         $cart = session('cart', []);
         unset($cart[$id]);
         session(['cart' => $cart]);
+
         return redirect()->route('cart');
     }
 }

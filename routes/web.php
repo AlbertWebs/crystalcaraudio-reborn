@@ -1,13 +1,25 @@
 <?php
 
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\StorefrontController;
+use App\Http\Controllers\AdminActivityController;
+use App\Http\Controllers\AdminBusinessIntelligenceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminInstallationBookingController;
+use App\Http\Controllers\AdminInventoryController;
+use App\Http\Controllers\AdminProductsController;
+use App\Http\Controllers\AdminProfileController;
+use App\Http\Controllers\AdminStoreManagementController;
+use App\Http\Controllers\AdminTwoFactorController;
+use App\Http\Controllers\AdminUsersController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\StorefrontController;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
 Route::get('/home', [StorefrontController::class, 'home'])->name('home-page');
+Route::get('/premium-car-audio-systems-nairobi-kenya', [StorefrontController::class, 'premiumCarAudio'])->name('premium-car-audio');
 Route::get('/products', [StorefrontController::class, 'products'])->name('categories');
 Route::get('/products/category', [StorefrontController::class, 'products'])->name('category');
 Route::get('/products/shop-by-category', [StorefrontController::class, 'products'])->name('shop-by-category');
@@ -25,11 +37,12 @@ Route::get('/filters', [StorefrontController::class, 'products'])->name('search-
 Route::get('/product-tags/{slug}', [StorefrontController::class, 'products'])->name('product-tags');
 Route::get('/sitemap', function () {
     $paths = collect();
-    $paths = $paths->merge(\Illuminate\Support\Facades\DB::table('catalog_products')->pluck('slug')->map(fn ($slug) => '/product/'.$slug));
-    $paths = $paths->merge(\Illuminate\Support\Facades\DB::table('catalog_categories')->pluck('slug')->map(fn ($slug) => '/products/'.$slug));
-    $paths = $paths->merge(\Illuminate\Support\Facades\DB::table('catalog_tags')->pluck('slug')->map(fn ($slug) => '/product-tags/'.$slug));
-    $paths = $paths->merge(['/products','/special-offers','/about-us','/find-us','/shipping-policy','/terms-and-conditions','/privacy-policy']);
-    return response()->view('store.sitemap', ['paths' => $paths->unique()->values()])->header('Content-Type','application/xml; charset=UTF-8');
+    $paths = $paths->merge(DB::table('catalog_products')->pluck('slug')->map(fn ($slug) => '/product/'.$slug));
+    $paths = $paths->merge(DB::table('catalog_categories')->pluck('slug')->map(fn ($slug) => '/products/'.$slug));
+    $paths = $paths->merge(DB::table('catalog_tags')->pluck('slug')->map(fn ($slug) => '/product-tags/'.$slug));
+    $paths = $paths->merge(['/products', '/premium-car-audio-systems-nairobi-kenya', '/special-offers', '/about-us', '/find-us', '/shipping-policy', '/terms-and-conditions', '/privacy-policy']);
+
+    return response()->view('store.sitemap', ['paths' => $paths->unique()->values()])->header('Content-Type', 'application/xml; charset=UTF-8');
 })->name('sitemap');
 Route::get('/sitemap.xml', fn () => redirect()->route('sitemap', [], 301));
 
@@ -50,7 +63,7 @@ Route::post('/shopping-cart/checkout/placeOrder', [CheckoutController::class, 'p
 Route::get('/checkout/econfirm/{reference}', [CheckoutController::class, 'pay'])->name('checkout.pay');
 Route::post('/checkout/econfirm/{reference}/reconcile', [CheckoutController::class, 'reconcile'])->middleware('throttle:30,1')->name('checkout.reconcile');
 Route::get('/checkout/complete/{reference}', [CheckoutController::class, 'complete'])->name('checkout.complete');
-Route::post('/api/webhooks/econfirm/checkout', [CheckoutController::class, 'webhook'])->name('webhooks.econfirm')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+Route::post('/api/webhooks/econfirm/checkout', [CheckoutController::class, 'webhook'])->name('webhooks.econfirm')->withoutMiddleware([ValidateCsrfToken::class]);
 
 Route::get('/admin/login', [AdminController::class, 'loginForm'])->name('admin.login');
 Route::get('/login', [CustomerController::class, 'loginForm'])->name('login');
@@ -72,16 +85,40 @@ Route::middleware('auth')->group(function () {
     Route::get('/wishlist/remove-from-wishlist/{id}', [CustomerController::class, 'removeWishlist'])->name('remove.from.wishlist');
 });
 Route::post('/admin/login', [AdminController::class, 'login'])->middleware('throttle:5,1')->name('admin.login.post');
+Route::get('/admin/verify-email-code', [AdminTwoFactorController::class, 'show'])->name('admin.two-factor');
+Route::post('/admin/verify-email-code', [AdminTwoFactorController::class, 'verify'])->middleware('throttle:6,1')->name('admin.two-factor.verify');
+Route::post('/admin/verify-email-code/resend', [AdminTwoFactorController::class, 'resend'])->middleware('throttle:3,1')->name('admin.two-factor.resend');
 Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('home');
-    Route::put('/categories/order', [AdminController::class, 'updateCategoryOrder'])->name('categories.order');
-    Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
-    Route::patch('/orders/{id}', [AdminController::class, 'updateOrder'])->name('orders.update');
+    Route::get('/bi', [AdminBusinessIntelligenceController::class, 'index'])->middleware('can:view-admin-bi')->name('bi');
+    Route::get('/inventory', [AdminInventoryController::class, 'index'])->middleware('can:manage-store-inventory')->name('inventory');
+    Route::patch('/inventory/{product}', [AdminInventoryController::class, 'update'])->middleware('can:manage-store-inventory')->name('inventory.update');
+    Route::get('/categories', [AdminStoreManagementController::class, 'categories'])->middleware('can:manage-store-products')->name('categories');
+    Route::get('/brands', [AdminStoreManagementController::class, 'brands'])->middleware('can:manage-store-products')->name('brands');
+    Route::get('/orders', [AdminStoreManagementController::class, 'orders'])->middleware('can:manage-store-orders')->name('orders');
+    Route::get('/customers', [AdminStoreManagementController::class, 'customers'])->middleware('can:manage-store-orders')->name('customers');
+    Route::get('/installations', [AdminInstallationBookingController::class, 'index'])->middleware('can:manage-installations')->name('installations');
+    Route::post('/installations', [AdminInstallationBookingController::class, 'store'])->middleware('can:manage-installations')->name('installations.store');
+    Route::patch('/installations/{booking}', [AdminInstallationBookingController::class, 'update'])->middleware('can:manage-installations')->name('installations.update');
+    Route::get('/users', [AdminUsersController::class, 'index'])->middleware('can:manage-store-users')->name('users');
+    Route::patch('/users/{user}/role', [AdminUsersController::class, 'updateRole'])->middleware('can:manage-store-users')->name('users.role');
+    Route::get('/activity', [AdminActivityController::class, 'index'])->middleware('can:manage-store-users')->name('activity');
+    Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile');
+    Route::patch('/profile/security', [AdminProfileController::class, 'updateSecurity'])->name('profile.security');
+    Route::put('/categories/order', [AdminController::class, 'updateCategoryOrder'])->middleware('can:manage-store-products')->name('categories.order');
+    Route::get('/products', [AdminProductsController::class, 'index'])->middleware('can:manage-store-products')->name('products');
+    Route::get('/products/create', [AdminProductsController::class, 'create'])->middleware('can:manage-store-products')->name('products.create');
+    Route::get('/products/{product}/edit', [AdminProductsController::class, 'edit'])->middleware('can:manage-store-products')->name('products.edit');
+    Route::post('/products', [AdminProductsController::class, 'store'])->middleware('can:manage-store-products')->name('products.store');
+    Route::patch('/products/zero-price-stock', [AdminController::class, 'bulkUpdateZeroPriceStock'])->middleware('can:manage-store-inventory')->name('products.zero-price-stock');
+    Route::patch('/products/{product}', [AdminProductsController::class, 'update'])->middleware('can:manage-store-products')->name('products.update');
+    Route::delete('/products/{product}', [AdminProductsController::class, 'destroy'])->middleware('can:manage-store-products')->name('products.destroy');
+    Route::patch('/orders/{id}', [AdminController::class, 'updateOrder'])->middleware('can:manage-store-orders')->name('orders.update');
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 });
 
 // Keep legacy informational and campaign paths resolvable while the CMS content is migrated.
-foreach (['find-us','about-us','terms-and-conditions','privacy-policy','shipping-policy','delivery','copyright','our-portfolio'] as $slug) {
+foreach (['find-us', 'about-us', 'terms-and-conditions', 'privacy-policy', 'shipping-policy', 'delivery', 'copyright', 'our-portfolio'] as $slug) {
     Route::get('/'.$slug, [StorefrontController::class, 'info'])->defaults('slug', $slug)->name('page.'.$slug);
 }
 Route::get('/our-portfolio/{id}', [StorefrontController::class, 'info'])->defaults('slug', 'our-portfolio')->name('folio');

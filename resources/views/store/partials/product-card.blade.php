@@ -11,7 +11,7 @@
     <div class="product-card-media">
         <a class="product-image" href="{{ $productUrl }}" aria-label="View {{ $product->name }}">
             @if($imagePath)
-                <img loading="lazy" src="{{ str_starts_with($imagePath, 'http') ? $imagePath : \App\Support\MediaUrl::url('uploads/'.$imagePath) }}" alt="{{ $product->name }}">
+                <img loading="lazy" decoding="async" src="{{ str_starts_with($imagePath, 'http') ? $imagePath : \App\Support\MediaUrl::url('uploads/'.$imagePath) }}" alt="{{ $product->name }}">
             @else
                 <span class="product-placeholder">◉</span>
             @endif
@@ -34,6 +34,7 @@
     <div class="product-card-body">
         <div class="product-card-kicker"><span>{{ $brandLabel }}</span></div>
         <h3><a href="{{ $productUrl }}">{{ $product->name }}</a></h3>
+        @if($product->category)<p class="product-card-category">{{ $product->category }}</p>@endif
         @if($highlights->isNotEmpty())
             <ul class="product-highlights">
                 @foreach($highlights as $highlight)<li><span>{{ \Illuminate\Support\Str::limit($highlight['title'], 23) }}</span><b title="{{ $highlight['value'] }}">{{ \Illuminate\Support\Str::limit($highlight['value'], 42) }}</b></li>@endforeach

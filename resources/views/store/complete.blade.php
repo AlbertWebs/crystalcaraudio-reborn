@@ -42,7 +42,7 @@
         <div class="complete-item-list">
             @foreach($order->items ?? [] as $item)
                 <div class="complete-order-item">
-                    <span class="complete-item-image">@if(!empty($item['image']))<img src="{{ \App\Support\MediaUrl::url('uploads/'.$item['image']) }}" alt="">@else<span aria-hidden="true">◉</span>@endif</span>
+                    <span class="complete-item-image">@if(!empty($item['image']))<img loading="lazy" decoding="async" src="{{ \App\Support\MediaUrl::url('uploads/'.$item['image']) }}" alt="">@else<span aria-hidden="true">◉</span>@endif</span>
                     <span class="complete-item-name">{{ $item['name'] ?? 'Product' }}<small>Qty {{ $item['quantity'] ?? 1 }}</small></span>
                     <strong>KES {{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1)) }}</strong>
                 </div>

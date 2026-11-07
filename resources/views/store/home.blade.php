@@ -1,10 +1,11 @@
 @extends('store.layout')
-@section('title', 'Crystal Car Audio | Sound that moves you')
+@section('title', 'Car Audio Dealer in Kenya | Crystal Car Audio')
+@section('meta_description', 'Car radios, speakers and amplifiers from Crystal Car Audio in Nairobi, Kenya. Ask about fitment, installation and delivery across Kenya.')
 @section('content')
 <section class="hero hero-storefront">
     <div class="hero-copy">
         <p class="eyebrow eyebrow-accent">SHOP COMBO</p>
-        <h1>Build a sound<br>that moves you.</h1>
+        <h1>Build a <span class="hero-sound-underline">sound</span><br>that moves you.</h1>
         <p class="hero-lead">Pair a powerful Android screen with rich door speakers for a more complete drive.</p>
         <div class="hero-actions">
             <a class="button button-dark" href="{{ route('categories') }}">Explore the combo <span>↗</span></a>
@@ -19,7 +20,7 @@
             @foreach(['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'] as $comboSlug)
                 @if($comboProduct = $comboProducts->get($comboSlug))
                     <a class="combo-product-card" href="{{ route('product-single', $comboProduct->slug) }}">
-                        <span class="combo-product-image"><img src="{{ str_starts_with($comboProduct->image, 'http') ? $comboProduct->image : \App\Support\MediaUrl::url('uploads/'.$comboProduct->image) }}" alt="{{ $comboProduct->name }}"></span>
+                        <span class="combo-product-image"><img src="{{ str_starts_with($comboProduct->image, 'http') ? $comboProduct->image : \App\Support\MediaUrl::url('uploads/'.$comboProduct->image) }}" alt="{{ $comboProduct->name }}" loading="eager" fetchpriority="high" decoding="async"></span>
                         <span class="combo-product-copy"><small>{{ $loop->first ? 'DOOR SPEAKERS' : 'ANDROID + BASS' }}</small><b>{{ $loop->first ? 'Fuller sound' : 'Smarter drives' }}</b></span>
                         <strong>KES {{ number_format($comboProduct->price) }} <span aria-hidden="true">↗</span></strong>
                     </a>
@@ -41,7 +42,7 @@
     <div class="category-grid category-grid-live">
         @foreach($categories as $category)
             <a href="{{ route('product-category', $category->slug) }}" class="category-card category-card-live">
-                @if($category->image)<img loading="lazy" src="{{ str_starts_with($category->image, 'http') ? $category->image : \App\Support\MediaUrl::url('uploads/'.$category->image) }}" alt="">@endif
+                @if($category->image)<img loading="lazy" decoding="async" src="{{ str_starts_with($category->image, 'http') ? $category->image : \App\Support\MediaUrl::url('uploads/'.$category->image) }}" alt="">@endif
                 <span class="cat-num">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                 <span class="category-card-info"><span><h3>{{ $category->name }}</h3><span class="category-product-count">{{ $category->product_count }} products</span></span><span class="category-arrow" aria-hidden="true">↗</span></span>
             </a>
@@ -57,8 +58,8 @@
 @endif
 
 <section class="feature-banner">
-    <div><p class="eyebrow eyebrow-accent">BUILT FOR THE MOMENT</p><h2>Feel the music.<br>Keep the road.</h2><p>From head units to powerful bass, find the right pieces for your setup.</p><a href="/products/car-audio" class="button button-light">Build your audio setup <span>↗</span></a></div>
-    <div class="feature-banner-art"><span class="feature-ring ring-one"></span><span class="feature-ring ring-two"></span><span class="feature-ring ring-three"></span><b>PURE<br>SOUND</b><small>CRYSTAL CAR AUDIO</small></div>
+    <img class="feature-banner-dashboard" src="{{ asset('images/feature-dashboard-night.webp') }}" alt="" loading="lazy" decoding="async" aria-hidden="true">
+    <div class="feature-banner-copy"><p class="eyebrow eyebrow-accent">BUILT FOR THE MOMENT</p><h2>Feel the music.<br>Keep the road.</h2><p>From head units to powerful bass, find the right pieces for your setup.</p><a href="/products/car-audio" class="button button-light">Build your audio setup <span>↗</span></a></div>
 </section>
 
 <section class="product-collection">
@@ -77,5 +78,5 @@
 
 <section class="why-crystal"><div class="why-heading"><p class="eyebrow eyebrow-accent">GOOD SOUND, GOOD SUPPORT</p><h2>We’re here for the whole setup.</h2><p>Pick the right gear, get it installed, and enjoy the drive.</p></div><div class="why-grid"><article><span>01</span><b>Advice that fits your car</b><p>Tell us your make and model and we’ll help you choose compatible equipment.</p><a href="/find-us">Ask our team ↗</a></article><article><span>02</span><b>Installation from people who know audio</b><p>Get support for installation and setup from the Crystal Car Audio team.</p><a href="/find-us">Plan an installation ↗</a></article><article><span>03</span><b>Checkout made clear</b><p>Choose Cash on Delivery or pay through eConfirm escrow at checkout.</p><a href="{{ route('categories') }}">Start shopping ↗</a></article></div></section>
 
-<section class="expert-cta expert-cta-store"><div><p class="eyebrow eyebrow-accent">MADE TO FIT YOUR DRIVE</p><h2>Need a hand<br>choosing?</h2><p>Tell us about your car and we’ll help you find the right fit.</p><a class="button button-dark" href="/find-us">Talk to our team <span>↗</span></a></div><div class="expert-visual"><div class="expert-circle">CCA<span>EXPERT<br>ADVICE</span></div><span class="expert-stamp">KENYA<br>✦<br>EST. 2007</span></div></section>
+<section class="expert-cta expert-cta-store"><div><p class="eyebrow eyebrow-accent">MADE TO FIT YOUR DRIVE</p><h2>Need a hand<br>choosing?</h2><p>Tell us about your car and we’ll help you find the right fit.</p><a class="button button-dark" href="/find-us">Talk to our team <span>↗</span></a></div><div class="expert-visual"><img loading="lazy" decoding="async" src="{{ asset('images/expert-car-audio-visual.webp') }}" alt="Premium car speaker and touchscreen audio system"></div></section>
 @endsection

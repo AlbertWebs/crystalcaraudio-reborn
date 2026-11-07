@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-KE">
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Crystal Car Audio | Sound that moves you')</title>
     <meta name="description" content="@yield('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')">
     <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="geo.region" content="KE-30">
+    <meta name="geo.placename" content="Nairobi">
     <link rel="icon" href="{{ \App\Support\MediaUrl::url('favicon.ico') }}" sizes="any">
     <link rel="icon" type="image/png" sizes="48x48" href="{{ \App\Support\MediaUrl::url('favicon/favicon-48x48.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ \App\Support\MediaUrl::url('favicon/favicon-32x32.png') }}">
@@ -13,26 +15,105 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ \App\Support\MediaUrl::url('favicon/apple-icon-180x180.png') }}">
     <link rel="manifest" href="{{ asset('favicon/manifest.json') }}">
     <meta name="theme-color" content="#0c6661">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Crystal Car Audio">
+    <meta name="application-name" content="Crystal Car Audio">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="format-detection" content="telephone=yes">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="msapplication-config" content="{{ asset('favicon/browserconfig.xml') }}">
     <meta property="og:site_name" content="Crystal Car Audio">
     <meta property="og:type" content="website">
     <meta property="og:title" content="@yield('title', 'Crystal Car Audio | Sound that moves you')">
     <meta property="og:description" content="@yield('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="@yield('meta_image', \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'))">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="@yield('meta_image', \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'))">
     <meta name="twitter:title" content="@yield('title', 'Crystal Car Audio | Sound that moves you')">
     <meta name="twitter:description" content="@yield('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')">
     @php
+        $siteUrl = rtrim(url('/'), '/');
+        $logoUrl = \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png');
         $organizationSchema = [
             '@context' => 'https://schema.org',
-            '@type' => 'Organization',
-            'name' => 'Crystal Car Audio',
-            'url' => url('/'),
-            'logo' => \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'),
+            '@graph' => [
+                [
+                    '@type' => 'Organization',
+                    '@id' => $siteUrl.'/#organization',
+                    'name' => 'Crystal Car Audio',
+                    'url' => $siteUrl.'/',
+                    'logo' => $logoUrl,
+                    'sameAs' => ['https://ke.linkedin.com/company/crystal-car-audio'],
+                    'telephone' => '+254790721397',
+                    'email' => 'info@crystalcaraudio.com',
+                    'contactPoint' => [
+                        '@type' => 'ContactPoint',
+                        'telephone' => '+254790721397',
+                        'email' => 'info@crystalcaraudio.com',
+                        'contactType' => 'customer service',
+                        'areaServed' => 'KE',
+                        'availableLanguage' => ['English', 'Swahili'],
+                    ],
+                ],
+                [
+                    '@type' => 'AutoPartsStore',
+                    '@id' => $siteUrl.'/#localbusiness',
+                    'name' => 'Crystal Car Audio',
+                    'url' => $siteUrl.'/',
+                    'image' => $logoUrl,
+                    'telephone' => '+254790721397',
+                    'email' => 'info@crystalcaraudio.com',
+                    'parentOrganization' => ['@id' => $siteUrl.'/#organization'],
+                    'address' => [
+                        '@type' => 'PostalAddress',
+                        'streetAddress' => 'Roasters, Garden Estate Road, opposite MCK Ruaraka Church, next to Big Fish',
+                        'addressLocality' => 'Nairobi',
+                        'addressRegion' => 'Nairobi County',
+                        'addressCountry' => 'KE',
+                    ],
+                    'hasMap' => 'https://www.google.com/maps/place/Crystal+Car+Audio/data=!4m2!3m1!1s0x0:0x69ba04f279949126',
+                    'areaServed' => ['Nairobi', 'Kenya'],
+                    'openingHoursSpecification' => [
+                        [
+                            '@type' => 'OpeningHoursSpecification',
+                            'dayOfWeek' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                            'opens' => '08:00',
+                            'closes' => '18:00',
+                        ],
+                        [
+                            '@type' => 'OpeningHoursSpecification',
+                            'dayOfWeek' => 'Sunday',
+                            'opens' => '09:00',
+                            'closes' => '13:00',
+                        ],
+                    ],
+                    'currenciesAccepted' => 'KES',
+                ],
+                [
+                    '@type' => 'WebSite',
+                    '@id' => $siteUrl.'/#website',
+                    'url' => $siteUrl.'/',
+                    'name' => 'Crystal Car Audio',
+                    'description' => 'Car audio systems, car radios, speakers and professional installation in Nairobi, Kenya.',
+                    'inLanguage' => 'en-KE',
+                    'publisher' => ['@id' => $siteUrl.'/#organization'],
+                    'potentialAction' => [
+                        '@type' => 'SearchAction',
+                        'target' => [
+                            '@type' => 'EntryPoint',
+                            'urlTemplate' => url('/products').'?q={search_term_string}',
+                        ],
+                        'query-input' => 'required name=search_term_string',
+                    ],
+                ],
+            ],
         ];
     @endphp
     <script type="application/ld+json">@json($organizationSchema)</script>
+    @stack('structured-data')
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
@@ -54,18 +135,18 @@
     $headerCartSubtotal = $headerCartItems->sum(fn ($item) => (float) ($item['price'] ?? 0) * (int) ($item['quantity'] ?? 0));
 @endphp
 <header class="site-header">
-    <div class="header-topline"><a href="{{ route('home') }}">Crystal Car Audio <span>|</span> Nairobi</a><p>A better drive starts with better sound <i>·</i> Expert advice and installation across Kenya</p><a class="topline-contact" href="tel:+254790721397">Call +254 790 721 397</a></div>
+    <div class="header-topline"><a href="{{ route('home') }}">Crystal Car Audio <span>|</span> Nairobi</a><h1>Kenya's Trusted Car Audio Dealer for Premium Sound Systems &amp; Accessories</h1><a class="topline-contact" href="tel:+254790721397">Call +254 790 721 397</a></div>
     <div class="header-main">
-        <a class="brand" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img class="brand-logo" src="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio"></a>
+        <a class="brand" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img class="brand-logo" src="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio" fetchpriority="high" decoding="async"></a>
         <button class="menu-toggle" aria-label="Open navigation" data-menu-toggle aria-expanded="false">☰</button>
         <nav class="main-nav" data-main-nav aria-label="Main navigation">
             <a href="{{ route('categories') }}">Shop all</a>
             <details class="nav-category">
-                <summary>{{ $headerAudioCategories->first()->name ?? 'Car audio' }} <span>⌄</span></summary>
+                <summary data-mobile-category-url="{{ $headerAudioCategories->first() ? route('product-category', $headerAudioCategories->first()->slug) : route('categories') }}">{{ $headerAudioCategories->first()->name ?? 'Car audio' }} <span>⌄</span></summary>
                 <div class="category-mega">
                     <div class="mega-category-list"><p class="mega-heading">SHOP BY CATEGORY</p>@foreach($headerAudioCategories as $category)<a href="{{ route('product-category', $category->slug) }}" @if($loop->first) class="is-active" @endif><i aria-hidden="true">{{ str_contains(strtolower($category->name), 'speaker') ? '◖' : (str_contains(strtolower($category->name), 'radio') ? '▤' : (str_contains(strtolower($category->name), 'amplifier') ? '◈' : '♫')) }}</i><span class="mega-category-name">{{ $category->name }}</span><b aria-hidden="true">›</b></a>@endforeach<a class="mega-all" href="{{ route('categories') }}"><i aria-hidden="true">↗</i><span class="mega-category-name">View all categories</span></a></div>
-                    @if($featuredMenuProduct)<a class="mega-feature-product" href="{{ route('product-single', $featuredMenuProduct->slug) }}"><span class="mega-feature-image"><img src="{{ str_starts_with($featuredMenuProduct->image, 'http') ? $featuredMenuProduct->image : \App\Support\MediaUrl::url('uploads/'.$featuredMenuProduct->image) }}" alt=""></span><small>FEATURED PICK</small><strong>{{ \Illuminate\Support\Str::limit($featuredMenuProduct->name, 38) }}</strong><b>KES {{ number_format($featuredMenuProduct->price) }}</b></a>@endif
-                    <div class="mega-product-area"><div class="mega-product-heading"><div><p class="eyebrow">CRYSTAL PICKS</p><h3>Popular upgrades</h3></div><div class="mega-heading-actions"><a href="{{ route('categories') }}">Shop all <span>↗</span></a><button class="mega-menu-close" type="button" data-menu-close aria-label="Close category menu">×</button></div></div><div class="mega-product-grid">@foreach($menuProducts->reject(fn($item) => $featuredMenuProduct && $item->slug === $featuredMenuProduct->slug) as $menuProduct)<a class="mega-product" href="{{ route('product-single', $menuProduct->slug) }}">@if($menuProduct->featured || $menuProduct->trending)<small class="mega-product-badge">New Arrival</small>@endif<span class="mega-product-image"><img src="{{ str_starts_with($menuProduct->image, 'http') ? $menuProduct->image : \App\Support\MediaUrl::url('uploads/'.$menuProduct->image) }}" alt=""></span><span class="mega-product-name">{{ \Illuminate\Support\Str::limit($menuProduct->name, 42) }}</span><strong>KES {{ number_format($menuProduct->price) }}</strong></a>@endforeach</div></div>
+                    @if($featuredMenuProduct)<a class="mega-feature-product" href="{{ route('product-single', $featuredMenuProduct->slug) }}"><span class="mega-feature-image"><img loading="lazy" decoding="async" src="{{ str_starts_with($featuredMenuProduct->image, 'http') ? $featuredMenuProduct->image : \App\Support\MediaUrl::url('uploads/'.$featuredMenuProduct->image) }}" alt=""></span><small>FEATURED PICK</small><strong>{{ \Illuminate\Support\Str::limit($featuredMenuProduct->name, 38) }}</strong><b>KES {{ number_format($featuredMenuProduct->price) }}</b></a>@endif
+                    <div class="mega-product-area"><div class="mega-product-heading"><div><p class="eyebrow">CRYSTAL PICKS</p><h3>Popular upgrades</h3></div><div class="mega-heading-actions"><a href="{{ route('categories') }}">Shop all <span>↗</span></a><button class="mega-menu-close" type="button" data-menu-close aria-label="Close category menu">×</button></div></div><div class="mega-product-grid">@foreach($menuProducts->reject(fn($item) => $featuredMenuProduct && $item->slug === $featuredMenuProduct->slug) as $menuProduct)<a class="mega-product" href="{{ route('product-single', $menuProduct->slug) }}">@if($menuProduct->featured || $menuProduct->trending)<small class="mega-product-badge">New Arrival</small>@endif<span class="mega-product-image"><img loading="lazy" decoding="async" src="{{ str_starts_with($menuProduct->image, 'http') ? $menuProduct->image : \App\Support\MediaUrl::url('uploads/'.$menuProduct->image) }}" alt=""></span><span class="mega-product-name">{{ \Illuminate\Support\Str::limit($menuProduct->name, 42) }}</span><strong>KES {{ number_format($menuProduct->price) }}</strong></a>@endforeach</div></div>
                     <aside class="mega-service-panel"><p class="eyebrow">CRYSTAL CAR AUDIO</p><h3>Expert help for your next upgrade</h3><div class="mega-service-perks"><span><i>◉</i> Product advice</span><span><i>⌁</i> Fitment support</span><span><i>↗</i> Kenya wide delivery</span><span><i>▣</i> Secure checkout</span></div><div class="mega-service-actions"><a href="https://wa.me/254790721397">WhatsApp our team <span>↗</span></a><a href="tel:+254790721397">Call Crystal <span>↗</span></a></div></aside>
                 </div>
             </details>
@@ -77,24 +158,9 @@
         <div class="header-actions">
             <form class="search" action="{{ route('search-results') }}" role="search" data-header-search aria-expanded="false"><label class="sr-only" for="header-search-input">Search Crystal Car Audio products</label><input id="header-search-input" name="q" value="{{ request('q') }}" placeholder="Search car radios, speakers and more" autocomplete="off" data-header-search-input><button class="header-search-submit" type="submit" aria-label="Open search" data-header-search-submit><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 5 5"/></svg></button><button class="header-search-close" type="button" aria-label="Close search" data-header-search-close>×</button></form>
             <div class="header-cart">
-                <button class="header-icon-link header-cart-toggle" type="button" data-cart-toggle aria-expanded="false" aria-controls="header-cart-dropdown" aria-label="Open shopping bag, {{ $headerCartCount }} items"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1.3 12H5.3L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="header-count">{{ $headerCartCount }}</span></button>
+                <button class="header-icon-link header-cart-toggle" type="button" data-cart-toggle aria-expanded="false" aria-controls="header-cart-dropdown" aria-label="Open shopping bag, {{ $headerCartCount }} items"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1.3 12H5.3L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="header-count" data-header-cart-count>{{ $headerCartCount }}</span></button>
                 <div class="header-cart-dropdown" id="header-cart-dropdown" data-cart-dropdown hidden>
-                    <div class="mini-cart-heading"><div><span class="eyebrow">YOUR SELECTION</span><h2>Your bag</h2></div><span class="mini-cart-count">{{ $headerCartCount }} {{ \Illuminate\Support\Str::plural('item', $headerCartCount) }}</span></div>
-                    @if($headerCartItems->isNotEmpty())
-                        <div class="mini-cart-items">
-                            @foreach($headerCartItems as $item)
-                                <article class="mini-cart-item">
-                                    <div class="mini-cart-thumb">@if(!empty($item['image']))<img src="{{ str_starts_with($item['image'], 'http') ? $item['image'] : \App\Support\MediaUrl::url('uploads/'.$item['image']) }}" alt="">@else<span aria-hidden="true">◉</span>@endif</div>
-                                    <div class="mini-cart-item-copy"><strong>{{ $item['name'] ?? 'Product' }}</strong><span>Qty {{ (int) ($item['quantity'] ?? 0) }}</span></div>
-                                    <b>KES {{ number_format((float) ($item['price'] ?? 0) * (int) ($item['quantity'] ?? 0)) }}</b>
-                                </article>
-                            @endforeach
-                        </div>
-                        <div class="mini-cart-subtotal"><span>Subtotal</span><strong>KES {{ number_format($headerCartSubtotal) }}</strong></div>
-                        <div class="mini-cart-actions"><a href="{{ route('cart') }}">View bag</a><a href="{{ route('checkout') }}">Checkout <span aria-hidden="true">↗</span></a></div>
-                    @else
-                        <div class="mini-cart-empty"><span aria-hidden="true">▢</span><p>Your bag is empty.</p><a href="{{ route('categories') }}">Explore products <span aria-hidden="true">↗</span></a></div>
-                    @endif
+                    <div data-mini-cart-content>@include('store.partials.mini-cart-content', ['cartItems' => $headerCartItems, 'cartCount' => $headerCartCount, 'cartSubtotal' => $headerCartSubtotal])</div>
                 </div>
             </div>
             <a class="header-icon-link account-link" href="{{ auth()->check() ? route('dashboard.home') : route('login') }}" aria-label="{{ auth()->check() ? 'Account' : 'Sign in' }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></a>
@@ -103,7 +169,13 @@
     </div>
 </header>
 <main>@if(session('success'))<div class="notice">{{ session('success') }}</div>@endif @yield('content')</main>
+<div class="cart-toast-region" data-cart-toast-region aria-live="polite" aria-atomic="false"></div>
 <footer class="footer storefront-footer">
+    <div class="footer-background-layer" aria-hidden="true">
+        <video class="footer-background-video" autoplay muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture>
+            <source src="{{ \App\Support\MediaUrl::url('videos/footer-motion.mp4') }}" type="video/mp4">
+        </video>
+    </div>
     <div class="footer-social-bar">
         <strong>FOLLOW US</strong>
         <div class="footer-social-links">
@@ -133,11 +205,11 @@
     </div>
     <div class="footer-columns">
         <div class="footer-column"><strong>Customer service</strong><span>Need help finding the right fit?</span><a href="tel:+254790721397">Call +254 790 721 397</a><a href="mailto:info@crystalcaraudio.com">info@crystalcaraudio.com</a><a href="https://wa.me/254790721397">WhatsApp our team</a></div>
-        <div class="footer-column"><strong>Explore Crystal</strong><a href="{{ route('categories') }}">Shop all products</a><a href="{{ route('special-offers') }}">Special offers</a><a href="/find-us">About and find us</a><a href="/our-portfolio">Installation portfolio</a></div>
+        <div class="footer-column"><strong>Explore Crystal</strong><a href="{{ route('categories') }}">Shop all products</a><a href="{{ route('premium-car-audio') }}">Premium car audio in Nairobi</a><a href="{{ route('special-offers') }}">Special offers</a><a href="/find-us">About and find us</a><a href="/our-portfolio">Installation portfolio</a></div>
         <div class="footer-column"><strong>Shop by category</strong><a href="/products/car-radio">Car radios</a><a href="/products/mid-range-speakers">Car speakers</a><a href="/products/car-amplifiers-booster">Amplifiers</a><a href="/products/conversion-fascia-kits">Fascia kits</a></div>
         <div class="footer-column"><strong>Help & information</strong><a href="/shipping-policy">Delivery information</a><a href="/terms-and-conditions">Terms and conditions</a><a href="/privacy-policy">Privacy policy</a><a href="{{ route('login') }}">Orders and account</a></div>
     </div>
-    <div class="footer-bottom"><a class="footer-bottom-logo" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img src="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio"></a><small class="footer-meta"><span>© {{ date('Y') }} Crystal Car Audio. Nairobi, Kenya.</span><span class="footer-meta-divider" aria-hidden="true">|</span><span>Powered By <a href="https://designekta.com/" target="_blank" rel="noopener noreferrer">Designekta Studios</a></span></small></div>
+    <div class="footer-bottom"><div class="footer-bottom-inner"><small class="footer-meta"><span>© {{ date('Y') }} Crystal Car Audio. Nairobi, Kenya.</span><span class="footer-meta-divider" aria-hidden="true">|</span><span>Powered by <a href="https://designekta.com/" target="_blank" rel="noopener noreferrer">Designekta Studios</a></span></small></div></div>
 </footer>
 <nav class="mobile-bar" aria-label="Quick navigation">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home','home-page') ? 'is-active' : '' }}" @if(request()->routeIs('home','home-page')) aria-current="page" @endif aria-label="Home">

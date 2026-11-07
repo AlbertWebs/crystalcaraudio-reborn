@@ -61,6 +61,11 @@ document.querySelectorAll('[data-header-search]').forEach(form => {
 document.querySelectorAll('.nav-category').forEach(category => {
     const summary = category.querySelector('summary');
     const closeButton = category.querySelector('[data-menu-close]');
+    summary?.addEventListener('click', event => {
+        if (!window.matchMedia('(max-width: 760px)').matches || !summary.dataset.mobileCategoryUrl) return;
+        event.preventDefault();
+        window.location.assign(summary.dataset.mobileCategoryUrl);
+    });
     closeButton?.addEventListener('click', event => {
         event.preventDefault();
         event.stopPropagation();
@@ -103,6 +108,118 @@ document.querySelectorAll('[data-cart-toggle]').forEach(toggle => {
     });
 });
 
+const cartToastRegion = document.querySelector('[data-cart-toast-region]');
+let cartToastTimer;
+const showCartToast = ({ success, productName = '', productImage = '', message = '' }) => {
+    if (!cartToastRegion) return;
+    window.clearTimeout(cartToastTimer);
+    const toast = document.createElement('section');
+    toast.className = `cart-toast${success ? ' is-success' : ' is-error'}`;
+    toast.setAttribute('role', 'status');
+
+    const icon = document.createElement('span');
+    icon.className = 'cart-toast-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.innerHTML = success
+        ? '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M12 8v5m0 3h.01M12 3 2.8 20h18.4L12 3Z"/></svg>';
+    toast.append(icon);
+
+    if (success && productImage) {
+        toast.classList.add('has-product-image');
+        const image = document.createElement('img');
+        image.className = 'cart-toast-product-image';
+        image.src = productImage;
+        image.alt = '';
+        toast.append(image);
+    }
+
+    const copy = document.createElement('div');
+    copy.className = 'cart-toast-copy';
+    const heading = document.createElement('strong');
+    heading.textContent = success ? 'Added to your bag' : 'Could not add this item';
+    const detail = document.createElement('span');
+    detail.textContent = success ? productName : (message || 'Please try again in a moment.');
+    copy.append(heading, detail);
+    if (success) {
+        const viewBag = document.createElement('a');
+        viewBag.href = '/shopping-cart';
+        viewBag.textContent = 'View your bag';
+        copy.append(viewBag);
+    }
+    toast.append(copy);
+
+    const dismiss = document.createElement('button');
+    dismiss.className = 'cart-toast-dismiss';
+    dismiss.type = 'button';
+    dismiss.setAttribute('aria-label', 'Dismiss message');
+    dismiss.textContent = '×';
+    dismiss.addEventListener('click', () => toast.remove());
+    toast.append(dismiss);
+
+    cartToastRegion.replaceChildren(toast);
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+    cartToastTimer = window.setTimeout(() => {
+        toast.classList.remove('is-visible');
+        window.setTimeout(() => toast.remove(), 240);
+    }, 5200);
+};
+
+document.querySelectorAll('.card-add-form, #detail-purchase-form').forEach(form => {
+    form.addEventListener('submit', async event => {
+        const submitter = event.submitter;
+        if (submitter?.name === 'buy_now' && submitter.value === '1') return;
+        event.preventDefault();
+
+        const button = submitter || form.querySelector('button[type="submit"]') || document.querySelector('[form="detail-purchase-form"][name="buy_now"][value="0"]');
+        if (button?.disabled) return;
+        const originalContent = button?.innerHTML;
+        const wasDisabled = button?.disabled ?? false;
+        if (button) {
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+            button.classList.add('is-adding-to-bag');
+        }
+
+        try {
+            const formData = new FormData(form);
+            if (submitter?.name) formData.set(submitter.name, submitter.value);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData,
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(result.message || 'Please try again in a moment.');
+
+            const count = document.querySelector('[data-header-cart-count]');
+            const cartToggle = document.querySelector('[data-cart-toggle]');
+            const miniCart = document.querySelector('[data-mini-cart-content]');
+            if (count) count.textContent = result.cart_count;
+            if (cartToggle) {
+                const state = cartToggle.getAttribute('aria-expanded') === 'true' ? 'Close' : 'Open';
+                cartToggle.setAttribute('aria-label', `${state} shopping bag, ${result.cart_count} items`);
+                cartToggle.classList.remove('is-bumped');
+                void cartToggle.offsetWidth;
+                cartToggle.classList.add('is-bumped');
+                window.setTimeout(() => cartToggle.classList.remove('is-bumped'), 650);
+            }
+            if (miniCart && result.mini_cart_html) miniCart.innerHTML = result.mini_cart_html;
+            showCartToast({ success: true, productName: result.product_name, productImage: result.product_image });
+        } catch (error) {
+            showCartToast({ success: false, message: error.message });
+        } finally {
+            if (button) {
+                button.innerHTML = originalContent;
+                button.disabled = wasDisabled;
+                button.removeAttribute('aria-busy');
+                button.classList.remove('is-adding-to-bag');
+            }
+        }
+    });
+});
+
 document.querySelectorAll('[data-scroll-rail]').forEach(button => {
     button.addEventListener('click', () => {
         const rail = document.getElementById(button.dataset.scrollRail);
@@ -141,8 +258,58 @@ document.querySelector('#footer-whatsapp-updates')?.addEventListener('submit', e
     window.location.href = `https://wa.me/254790721397?text=${encodeURIComponent(message)}`;
 });
 
-if ('IntersectionObserver' in window) {
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollProgress = document.createElement('div');
+scrollProgress.className = 'scroll-progress';
+scrollProgress.setAttribute('aria-hidden', 'true');
+document.body.prepend(scrollProgress);
+
+const parallaxTargets = reduceMotion ? [] : [...document.querySelectorAll([
+    '.hero-combo-art .hero-orbit',
+    '.hero-combo-art .sun',
+    '.hero-combo-art .hero-art-index',
+    '.feature-banner-art .feature-ring',
+    '.expert-visual',
+    '.premium-audio-art-orbit',
+].join(', '))];
+parallaxTargets.forEach(element => element.classList.add('scroll-parallax'));
+
+let scrollFramePending = false;
+const updateScrollEffects = () => {
+    const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollableHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollableHeight)) : 0;
+    scrollProgress.style.transform = `scaleX(${progress})`;
+
+    if (!reduceMotion && window.innerWidth > 760) {
+        parallaxTargets.forEach(element => {
+            const rect = element.getBoundingClientRect();
+            if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+            const center = rect.top + rect.height / 2;
+            const offset = Math.max(-18, Math.min(18, (0.5 - center / window.innerHeight) * 28));
+            element.style.setProperty('--scroll-shift', `${offset.toFixed(1)}px`);
+        });
+    }
+    scrollFramePending = false;
+};
+const requestScrollUpdate = () => {
+    if (scrollFramePending) return;
+    scrollFramePending = true;
+    window.requestAnimationFrame(updateScrollEffects);
+};
+window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+window.addEventListener('resize', requestScrollUpdate, { passive: true });
+window.addEventListener('pageshow', requestScrollUpdate);
+requestScrollUpdate();
+
+if (!reduceMotion && 'IntersectionObserver' in window) {
     const revealTargets = document.querySelectorAll([
+        'main > .hero',
+        'main > .page-hero',
+        'main > .premium-audio-hero',
+        'main > .premium-audio-intro',
+        'main > .premium-audio-sections > .premium-audio-section',
+        'main > .premium-audio-guide',
+        'main > .premium-audio-local',
         'main .section:not(.checkout-layout):not(.cart-layout)',
         'main > .service-strip',
         'main > .feature-banner',
@@ -155,15 +322,25 @@ if ('IntersectionObserver' in window) {
         'main > .product-information',
         'main > .product-reviews',
         'main > .customer-dashboard',
+        'main > .cart-recommendations',
     ].join(', '));
-    revealTargets.forEach(element => element.classList.add('scroll-in'));
+    const staggerSelector = '.product-card, .category-card, .why-grid article, .service-cards article, .brand-pills > a, .premium-audio-guide-grid article';
+    revealTargets.forEach((element, index) => {
+        element.classList.add('scroll-in');
+        if (index % 3 === 1) element.classList.add('scroll-in-from-left');
+        if (index % 3 === 2) element.classList.add('scroll-in-from-right');
+        element.querySelectorAll(staggerSelector).forEach((child, childIndex) => {
+            child.classList.add('scroll-reveal-child');
+            child.style.setProperty('--reveal-delay', `${Math.min(childIndex * 70, 350)}ms`);
+        });
+    });
     const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
             entry.target.classList.add('is-visible');
             revealObserver.unobserve(entry.target);
         });
-    }, { threshold: 0.04, rootMargin: '0px 0px -36px 0px' });
+    }, { threshold: 0.025, rootMargin: '0px 0px -42px 0px' });
     revealTargets.forEach(element => revealObserver.observe(element));
 }
 
