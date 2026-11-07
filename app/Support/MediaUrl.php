@@ -7,6 +7,25 @@ use Throwable;
 
 class MediaUrl
 {
+    public static function category(?string $path): string
+    {
+        if (! $path) {
+            return '';
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        $normalizedPath = ltrim($path, '/');
+
+        if (str_starts_with($normalizedPath, 'images/')) {
+            return asset($normalizedPath);
+        }
+
+        return self::url('uploads/'.$normalizedPath);
+    }
+
     public static function url(?string $path): string
     {
         if (! $path) {

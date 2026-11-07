@@ -400,3 +400,64 @@ if (completePage?.dataset.reconcileUrl) {
     };
     void verify();
 }
+
+/* Homepage combo slide controls */
+document.querySelectorAll('[data-combo-carousel]').forEach(carousel => {
+    const slides = [...carousel.querySelectorAll('[data-combo-slide]')];
+    const dots = [...(carousel.parentElement?.querySelectorAll('[data-combo-dot]') ?? [])];
+    const counter = carousel.parentElement?.querySelector('[data-combo-count]');
+    if (slides.length < 2 || dots.length !== slides.length) return;
+
+    let activeIndex = 0;
+    let rotationTimer;
+    let touchStartX = null;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const setSlide = index => {
+        activeIndex = (index + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+            slide.hidden = slideIndex !== activeIndex;
+            slide.setAttribute('aria-hidden', String(slideIndex !== activeIndex));
+        });
+        dots.forEach((dot, dotIndex) => {
+            const active = dotIndex === activeIndex;
+            dot.setAttribute('aria-selected', String(active));
+            if (active) dot.setAttribute('aria-current', 'true');
+            else dot.removeAttribute('aria-current');
+        });
+        if (counter) counter.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    };
+    const stopRotation = () => window.clearInterval(rotationTimer);
+    const startRotation = () => {
+        stopRotation();
+        if (reducedMotion || document.hidden) return;
+        rotationTimer = window.setInterval(() => setSlide(activeIndex + 1), 6000);
+    };
+
+    dots.forEach((dot, index) => dot.addEventListener('click', () => {
+        setSlide(index);
+        startRotation();
+    }));
+    carousel.addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+        event.preventDefault();
+        setSlide(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+        startRotation();
+    });
+    carousel.addEventListener('mouseenter', stopRotation);
+    carousel.addEventListener('mouseleave', startRotation);
+    carousel.addEventListener('focusin', stopRotation);
+    carousel.addEventListener('focusout', event => {
+        if (!carousel.contains(event.relatedTarget)) startRotation();
+    });
+    carousel.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0]?.clientX ?? null; }, { passive: true });
+    carousel.addEventListener('touchend', event => {
+        const endX = event.changedTouches[0]?.clientX;
+        if (touchStartX === null || endX === undefined || Math.abs(endX - touchStartX) < 45) return;
+        setSlide(activeIndex + (endX < touchStartX ? 1 : -1));
+        touchStartX = null;
+        startRotation();
+    }, { passive: true });
+    document.addEventListener('visibilitychange', startRotation);
+    setSlide(0);
+    startRotation();
+});

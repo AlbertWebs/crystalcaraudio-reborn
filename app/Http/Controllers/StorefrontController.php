@@ -24,8 +24,14 @@ class StorefrontController extends Controller
             ->orderByDesc('featured')->latest()->take(8)->get();
         $newArrivals = CatalogProduct::query()->latest()->take(8)->get();
         $comboProducts = CatalogProduct::query()
-            ->whereIn('slug', ['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'])
-            ->get()->keyBy('slug');
+            ->where('is_combo', true)
+            ->orderByDesc('featured')->orderByDesc('updated_at')->take(6)->get();
+        if ($comboProducts->isEmpty()) {
+            $comboProducts = CatalogProduct::query()
+                ->whereIn('slug', ['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'])
+                ->get();
+        }
+        $comboSlides = $comboProducts->chunk(2)->take(3)->values();
         $categories = DB::table('catalog_categories')
             ->leftJoin('catalog_products', 'catalog_products.category', '=', 'catalog_categories.name')
             ->select('catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.image', 'catalog_categories.sort_order', DB::raw('COUNT(catalog_products.id) as product_count'))
@@ -34,7 +40,7 @@ class StorefrontController extends Controller
             ->orderBy('catalog_categories.sort_order')->orderBy('catalog_categories.name')->get();
         $brands = CatalogProduct::query()->whereNotNull('brand')->where('brand', '!=', '')->distinct()->orderBy('brand')->limit(12)->pluck('brand');
 
-        return view('store.home', compact('bestSellers', 'deals', 'newArrivals', 'comboProducts', 'categories', 'brands'));
+        return view('store.home', compact('bestSellers', 'deals', 'newArrivals', 'comboSlides', 'categories', 'brands'));
     }
 
     public function premiumCarAudio()

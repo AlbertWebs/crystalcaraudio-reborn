@@ -8,27 +8,38 @@
         <h1>Build a <span class="hero-sound-underline">sound</span><br>that moves you.</h1>
         <p class="hero-lead">Car radios, speakers, amplifiers and complete audio systems — expertly matched and professionally installed for a richer, more immersive drive.</p>
         <div class="hero-actions">
-            <a class="button button-dark" href="{{ route('categories') }}"><svg class="hero-cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 1.9-1.5L20 8H6"/><circle cx="10" cy="19" r="1"/><circle cx="18" cy="19" r="1"/></svg> Build your sound system <span>→</span></a>
-            <a class="text-link" href="{{ route('special-offers') }}">Shop current offers</a>
+            <a class="button button-dark" href="{{ route('categories') }}"><svg class="hero-cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 1.9-1.5L20 8H6"/><circle cx="10" cy="19" r="1"/><circle cx="18" cy="19" r="1"/></svg> Build Your Sound System <span>→</span></a>
+            <a class="text-link" href="{{ route('special-offers') }}">Shop Current Offers</a>
         </div>
         <div class="hero-proof"><span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1M4 12H2.8v5H6v-5zM20 12h1.2v5H18v-5zM18 18c-.8 2-2.8 3-5.5 3"/></svg></span><span>Matched for a better drive<br><b>Expert advice from Crystal Car Audio</b></span></div>
     </div>
     <div class="hero-art hero-combo-art" aria-label="Shop combo: car door speakers and Android screen with underseat subwoofer">
         <div class="hero-orbit"></div><div class="sun"></div>
-        <span class="hero-art-index">THE SOUND UPGRADE · 01</span>
+        <span class="hero-art-index">THE SOUND UPGRADE</span>
         <span class="hero-combo-ribbon"><span aria-hidden="true">♫</span> AUDIO<br>COMBOS</span>
-        <div class="combo-product-pair">
-            @foreach(['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'] as $comboSlug)
-                @if($comboProduct = $comboProducts->get($comboSlug))
+        @if($comboSlides->isNotEmpty())
+        <div class="hero-combo-carousel" data-combo-carousel aria-label="Featured audio combos">
+            @foreach($comboSlides as $slide)
+            <div class="combo-carousel-slide" data-combo-slide @if(!$loop->first) hidden @endif>
+                <div class="combo-product-pair {{ $slide->count() === 1 ? 'is-single' : '' }}">
+                    @foreach($slide as $comboProduct)
                     <a class="combo-product-card" href="{{ route('product-single', $comboProduct->slug) }}">
                         <span class="combo-product-image"><img src="{{ str_starts_with($comboProduct->image, 'http') ? $comboProduct->image : \App\Support\MediaUrl::url('uploads/'.$comboProduct->image) }}" alt="{{ $comboProduct->name }}" loading="eager" fetchpriority="high" decoding="async"></span>
-                        <span class="combo-product-copy"><small>{{ $loop->first ? 'DOOR SPEAKERS COMBO' : 'ANDROID RADIO + BASS' }}</small><b>{{ $loop->first ? 'Fuller, clearer sound' : 'Smarter entertainment, deeper bass' }}</b></span>
+                        <span class="combo-product-copy"><small>{{ $comboProduct->category ?: 'AUDIO COMBO' }}</small><b>{{ $comboProduct->name }}</b></span>
                         <strong>KES {{ number_format($comboProduct->price) }} <span aria-hidden="true">↗</span></strong>
                     </a>
-                @endif
+                    @endforeach
+                </div>
+            </div>
             @endforeach
         </div>
-        <div class="combo-art-note"><span>01 / 03</span><i></i> Premium combos for a better drive.</div>
+        <div class="combo-art-note">
+            <div class="combo-carousel-dots" role="tablist" aria-label="Choose a combo slide">
+                @foreach($comboSlides as $slide)<button type="button" data-combo-dot="{{ $loop->index }}" role="tab" aria-label="Show combo slide {{ $loop->iteration }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" @if($loop->first) aria-current="true" @endif></button>@endforeach
+            </div>
+            <span data-combo-count>01 / {{ str_pad((string) $comboSlides->count(), 2, '0', STR_PAD_LEFT) }}</span><i></i><span>Premium combos for a better drive.</span>
+        </div>
+        @endif
     </div>
 </section>
 
@@ -67,9 +78,10 @@
     </div>
     <div class="category-feature-grid">
         @foreach($featuredCategories as $category)
-            @php($artwork = $categoryArtwork[$category->slug] ?? null)
+              @php($artwork = $categoryArtwork[$category->slug] ?? null)
+              @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
             <a href="{{ route('product-category', $category->slug) }}" class="category-feature-card">
-                @if($artwork)<img src="{{ asset('images/categories/'.$artwork['image']) }}" alt="{{ $category->name }}" loading="lazy" decoding="async">@endif
+                  @if($categoryImage)<img src="{{ $categoryImage }}" alt="{{ $category->name }}" loading="lazy" decoding="async">@endif
                 <span class="category-feature-copy"><span class="category-feature-kicker">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }} <i>·</i> PREMIUM AUDIO</span><h3>{{ $category->name }}</h3><span class="category-feature-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-feature-cta"><span>{{ $category->product_count }} products</span><b aria-hidden="true">→</b></span></span>
                 <span class="category-feature-arrow" aria-hidden="true">↗</span>
             </a>
@@ -77,9 +89,10 @@
     </div>
     <div class="category-tile-grid">
         @foreach($otherCategories as $category)
-            @php($artwork = $categoryArtwork[$category->slug] ?? null)
+              @php($artwork = $categoryArtwork[$category->slug] ?? null)
+              @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
             <a href="{{ route('product-category', $category->slug) }}" class="category-tile-card">
-                @if($artwork)<img src="{{ asset('images/categories/'.$artwork['image']) }}" alt="" loading="lazy" decoding="async">@endif
+                  @if($categoryImage)<img src="{{ $categoryImage }}" alt="" loading="lazy" decoding="async">@endif
                 <span class="category-tile-copy"><span class="category-tile-kicker">{{ str_pad((string) ($loop->iteration + $featuredCategories->count()), 2, '0', STR_PAD_LEFT) }} <i>·</i> CATEGORY</span><h3>{{ $category->name }}</h3><span class="category-tile-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-tile-cta">{{ $category->product_count }} products <b aria-hidden="true">→</b></span></span>
             </a>
         @endforeach

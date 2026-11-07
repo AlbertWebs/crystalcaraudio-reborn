@@ -25,7 +25,7 @@
         @foreach($categories as $index => $category)
             <a class="category-directory-card" href="{{ route('product-category', $category->slug) }}">
                 <div class="category-directory-art">
-                    @if($category->image)<img src="{{ \App\Support\MediaUrl::url(str_starts_with($category->image, 'http') ? $category->image : 'uploads/'.$category->image) }}" alt="{{ $category->name }}" loading="lazy">@else<span aria-hidden="true">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>@endif
+                    @if($category->image)<img src="{{ \App\Support\MediaUrl::category($category->image) }}" alt="{{ $category->name }}" loading="lazy">@else<span aria-hidden="true">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>@endif
                     <span class="category-directory-number">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
                 </div>
                 <div class="category-directory-copy"><div><h3>{{ $category->name }}</h3><p>{{ number_format((int) $category->product_count) }} {{ \Illuminate\Support\Str::plural('product', (int) $category->product_count) }}</p></div><span class="category-directory-arrow" aria-hidden="true">↗</span></div>

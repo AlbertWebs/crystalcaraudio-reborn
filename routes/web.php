@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminActivityController;
 use App\Http\Controllers\AdminBusinessIntelligenceController;
+use App\Http\Controllers\AdminCatalogExportController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminInstallationBookingController;
 use App\Http\Controllers\AdminInventoryController;
@@ -114,7 +115,10 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::patch('/inventory/{product}', [AdminInventoryController::class, 'update'])->middleware('can:manage-store-inventory')->name('inventory.update');
     Route::get('/categories', [AdminStoreManagementController::class, 'categories'])->middleware('can:manage-store-products')->name('categories');
     Route::post('/categories', [AdminStoreManagementController::class, 'storeCategory'])->middleware('can:manage-store-products')->name('categories.store');
+    Route::patch('/categories/{category}/image', [AdminStoreManagementController::class, 'updateCategoryImage'])->middleware('can:manage-store-products')->name('categories.image');
     Route::get('/brands', [AdminStoreManagementController::class, 'brands'])->middleware('can:manage-store-products')->name('brands');
+    Route::get('/exports', [AdminCatalogExportController::class, 'index'])->middleware('can:manage-store-products')->name('exports');
+    Route::get('/exports/{format}', [AdminCatalogExportController::class, 'download'])->whereIn('format', ['merchant', 'csv', 'excel'])->middleware('can:manage-store-products')->name('exports.download');
     Route::get('/seo', [AdminSeoController::class, 'edit'])->middleware('can:manage-store-products')->name('seo');
     Route::put('/seo', [AdminSeoController::class, 'update'])->middleware('can:manage-store-products')->name('seo.update');
     Route::get('/orders', [AdminStoreManagementController::class, 'orders'])->middleware('can:manage-store-orders')->name('orders');

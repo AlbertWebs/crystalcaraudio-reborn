@@ -7,7 +7,9 @@ use App\Models\StoreOrder;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -63,6 +65,59 @@ class AdminStoreManagementController extends Controller
         });
 
         return redirect()->route('admin.categories')->with('success', $data['name'].' was added to catalogue categories.');
+    }
+
+    public function updateCategoryImage(Request $request, int $category): RedirectResponse
+    {
+        $data = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:5120'],
+        ]);
+        $record = DB::table('catalog_categories')->where('id', $category)->firstOrFail();
+        $imagePath = $this->storeCategoryImage($data['image']);
+
+        DB::transaction(function () use ($request, $record, $imagePath): void {
+            DB::table('catalog_categories')->where('id', $record->id)->update([
+                'image' => $imagePath,
+                'updated_at' => now(),
+            ]);
+
+            DB::table('admin_activity_logs')->insert([
+                'user_id' => $request->user()->id,
+                'action' => 'category.image_updated',
+                'subject_type' => 'category',
+                'subject_id' => (string) $record->id,
+                'summary' => 'Updated the image for '.$record->name.'.',
+                'ip_address' => $request->ip(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('admin.categories')->with('success', $record->name.' category image updated.');
+    }
+
+    private function storeCategoryImage(UploadedFile $file): string
+    {
+        $name = Str::uuid().'.'.$file->extension();
+        $path = 'category/'.$name;
+
+        if (config('filesystems.disks.s3.bucket')) {
+            $root = trim((string) config('filesystems.disks.s3.root', ''), '/');
+            Storage::disk('s3')->getClient()->putObject([
+                'Bucket' => config('filesystems.disks.s3.bucket'),
+                'Key' => trim($root.'/uploads/'.$path, '/'),
+                'Body' => file_get_contents($file->getRealPath()),
+                'ContentType' => $file->getMimeType(),
+            ]);
+        } else {
+            $directory = public_path('uploads/category');
+            if (! is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            $file->move($directory, $name);
+        }
+
+        return $path;
     }
 
     public function brands(Request $request): View

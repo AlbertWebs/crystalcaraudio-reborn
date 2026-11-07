@@ -28,6 +28,7 @@
             @can('manage-store-products')
                 <a class="{{ request()->routeIs('admin.products*') ? 'is-active' : '' }}" href="{{ route('admin.products') }}"><span class="admin-nav-icon">▧</span>Products</a>
                 <a class="{{ request()->routeIs('admin.categories*') ? 'is-active' : '' }}" href="{{ route('admin.categories') }}"><span class="admin-nav-icon">▦</span>Categories</a>
+                <a class="{{ request()->routeIs('admin.exports*') ? 'is-active' : '' }}" href="{{ route('admin.exports') }}"><span class="admin-nav-icon">⇩</span>Product exports</a>
             @endcan
             @can('manage-store-products')<a class="{{ request()->routeIs('admin.brands*') ? 'is-active' : '' }}" href="{{ route('admin.brands') }}"><span class="admin-nav-icon">◇</span>Brands</a>@endcan
             @can('manage-store-products')<a class="{{ request()->routeIs('admin.seo*') ? 'is-active' : '' }}" href="{{ route('admin.seo') }}"><span class="admin-nav-icon">⌕</span>SEO management</a>@endcan

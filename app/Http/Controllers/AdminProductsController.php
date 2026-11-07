@@ -164,6 +164,7 @@ class AdminProductsController extends Controller
             'is_offer' => ['nullable', 'boolean'],
             'is_special' => ['nullable', 'boolean'],
             'trending' => ['nullable', 'boolean'],
+            'is_combo' => ['nullable', 'boolean'],
         ]);
     }
 
@@ -180,7 +181,7 @@ class AdminProductsController extends Controller
         }
         $data['slug'] = $slug;
         $data['low_stock_threshold'] = (int) ($data['low_stock_threshold'] ?? 5);
-        foreach (['featured', 'is_offer', 'is_special', 'trending'] as $flag) {
+        foreach (['featured', 'is_offer', 'is_special', 'trending', 'is_combo'] as $flag) {
             $data[$flag] = $request->boolean($flag);
         }
         if (array_key_exists('description', $data)) {
