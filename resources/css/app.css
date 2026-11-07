@@ -1408,6 +1408,16 @@ html,body{overflow-x:clip}
 @media(max-width:1050px) and (min-width:761px){.category-section-head{align-items:flex-start;flex-direction:column;gap:19px}.category-trust-row{width:100%;max-width:680px}.category-feature-card{height:245px}.category-feature-copy{left:22px;width:55%}.category-tile-grid{grid-template-columns:repeat(12,minmax(0,1fr))}.category-tile-card{grid-column:span 4}.category-tile-card:nth-child(n+4){grid-column:span 3}}
 @media(max-width:760px){.categories-section{padding:46px 18px 54px}.category-section-head{gap:17px;margin-bottom:19px}.category-section-title{min-width:0}.category-section-title h2{font-size:29px}.category-section-title .section-subtitle{margin-top:8px;font-size:14px;line-height:21px}.category-trust-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 0}.category-trust-row>span{padding:0 8px;border:0;font-size:12px}.category-trust-row>span:nth-child(odd){padding-left:0}.category-trust-row svg{width:25px;height:25px;flex-basis:25px}.category-feature-grid{grid-template-columns:1fr;gap:11px}.category-feature-card{height:225px;border-radius:13px}.category-feature-copy{inset:17px auto 17px 18px;width:min(62%,270px)}.category-feature-copy h3{margin-top:9px;font-size:25px}.category-feature-cta{margin-top:13px;padding:7px 11px}.category-feature-arrow{opacity:1;transform:none}.category-tile-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:11px}.category-tile-card,.category-tile-card:nth-child(n+4),.category-tile-card:nth-child(n+5){grid-column:auto;height:178px;border-radius:12px}.category-tile-card>img{width:76%}.category-tile-card:before{background:linear-gradient(90deg,#fff 0%,#fff 24%,rgba(255,255,255,.94) 43%,rgba(255,255,255,.16) 100%)}.category-tile-copy{inset:13px auto 12px 12px;width:67%}.category-tile-copy h3{margin:8px 0 4px;font-size:15px;line-height:18px}.category-tile-description{font-size:12px;line-height:16px}.category-tile-cta{gap:5px;padding:5px 7px;font-size:12px}}
 @media(max-width:380px){.category-trust-row>span{gap:6px;padding-inline:5px}.category-feature-card{height:210px}.category-feature-copy{width:67%}.category-tile-card{height:168px}.category-tile-copy{left:9px;width:69%}.category-tile-copy h3{font-size:14px}}
+@media(max-width:760px){
+    .category-section-head{align-items:stretch!important;flex-direction:column!important;width:100%}
+    .category-section-title{width:100%}
+    .category-trust-row{width:100%;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 8px}
+    .category-trust-row>span{display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;min-width:0;gap:7px;padding:0!important}
+    .category-trust-row>span>span{display:block;min-width:0;overflow-wrap:normal;word-break:normal;white-space:normal}
+    .category-tile-grid .category-tile-card:last-child{grid-column:1/-1}
+    .category-tile-grid .category-tile-card:last-child>img{width:62%}
+    .category-tile-grid .category-tile-card:last-child .category-tile-copy{width:52%}
+}
 
 /* Use compact offer indicators on phones and reserve a fixed lane for the cart action. */
 .product-badge-mobile{display:none}

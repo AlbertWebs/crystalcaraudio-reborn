@@ -58,10 +58,10 @@
     <div class="section-head category-section-head">
         <div class="category-section-title"><p class="eyebrow eyebrow-accent">FIND YOUR FREQUENCY</p><h2>Shop by <span>Category</span></h2><p class="section-subtitle">Premium car audio, security and in-car upgrades. Choose a category to explore our range.</p></div>
         <div class="category-trust-row" aria-label="Shopping benefits">
-            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 15 4l3.2-.1.9 3 2.1 2.4-1.3 3 0 3.2-2.8 1.5-1.7 2.7-3.2-.6-3.1.6-1.7-2.7-2.8-1.5 0-3.2-1.3-3 2.1-2.4.9-3L9 4z"/><path d="m8.7 12.1 2.2 2.2 4.5-4.7"/></svg>Genuine<br>products</span>
-            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7.5" cy="18" r="1.7"/><circle cx="18" cy="18" r="1.7"/><path d="M15 10v4h6"/></svg>Fast delivery<br>across Kenya</span>
-            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 20 6v5.6c0 4.5-3.1 7.9-8 9.6-4.9-1.7-8-5.1-8-9.6V6z"/><path d="m8.5 12.2 2.2 2.2 4.8-5"/></svg>Expert<br>installation</span>
-            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 12H2.8v5H6v-5zM20 12h1.2v5H18v-5zM18 18c-.8 2-2.8 3-5.5 3"/></svg>After-sales<br>support</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 15 4l3.2-.1.9 3 2.1 2.4-1.3 3 0 3.2-2.8 1.5-1.7 2.7-3.2-.6-3.1.6-1.7-2.7-2.8-1.5 0-3.2-1.3-3 2.1-2.4.9-3L9 4z"/><path d="m8.7 12.1 2.2 2.2 4.5-4.7"/></svg><span>Genuine<br>products</span></span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7.5" cy="18" r="1.7"/><circle cx="18" cy="18" r="1.7"/><path d="M15 10v4h6"/></svg><span>Fast delivery<br>across Kenya</span></span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 20 6v5.6c0 4.5-3.1 7.9-8 9.6-4.9-1.7-8-5.1-8-9.6V6z"/><path d="m8.5 12.2 2.2 2.2 4.8-5"/></svg><span>Expert<br>installation</span></span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 12H2.8v5H6v-5zM20 12h1.2v5H18v-5zM18 18c-.8 2-2.8 3-5.5 3"/></svg><span>After-sales<br>support</span></span>
         </div>
     </div>
     <div class="category-feature-grid">
