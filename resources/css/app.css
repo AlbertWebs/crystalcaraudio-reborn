@@ -1413,14 +1413,20 @@ html,body{overflow-x:clip}
 /* Use compact offer indicators on phones and reserve a fixed lane for the cart action. */
 .product-badge-mobile{display:none}
 @media(max-width:760px){
-    .product-card .product-badge{display:none}
-    .product-card .product-badge-mobile{position:absolute;z-index:3;top:9px;left:9px;display:inline-flex;align-items:center;min-height:23px;padding:3px 8px;border:1px solid rgba(255,255,255,.92);border-radius:15px;background:#ed001b;color:#fff;box-shadow:0 2px 7px rgba(24,30,27,.16);font:500 12px/16px 'Outfit Medium','Cairo Medium','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.015em;white-space:nowrap}
-    .product-card .product-card-buy-row{display:grid;grid-template-columns:minmax(0,1fr) 32px;align-items:center;gap:6px}
+    .product-card-media>.product-badge{display:none!important}
+    .product-card-media>.product-badge-mobile{position:absolute;z-index:4;top:8px;left:8px;display:inline-flex!important;align-items:center;min-height:21px;padding:2px 7px;border:1px solid rgba(255,255,255,.92);border-radius:14px;background:#ed001b;color:#fff;box-shadow:0 2px 6px rgba(24,30,27,.14);font:500 12px/16px 'Outfit Medium','Cairo Medium','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.015em;white-space:nowrap}
+    .product-grid-storefront .product-card h3,.product-card h3{min-height:16px;margin:2px 0 5px;font-size:12px!important;line-height:16px!important}
+    .product-card-category{margin-bottom:6px;padding:1px 7px;font-size:12px;line-height:16px}
+    .product-card .product-card-buy-row{display:grid;grid-template-columns:minmax(0,1fr) 28px;align-items:center;gap:5px}
     .product-card .product-price-row{min-width:0;overflow:hidden}
     .product-card .product-price-row strong,.product-card .product-price-row del{min-width:0;overflow:hidden;text-overflow:ellipsis}
+    .product-card .product-price-row strong{font-size:12px;line-height:16px}
     .product-card .product-price-row del{font-size:12px;line-height:16px}
     .product-card .product-price-row .product-discount-percent{display:none}
-    .product-card .card-add-form .button{width:32px;height:32px}
+    .product-card .card-add-form .button{width:28px;height:28px}
+    .product-card .card-add-form .button .card-cart-icon{width:16px;height:16px;flex-basis:16px}
+    .back-to-top{right:13px;bottom:calc(86px + env(safe-area-inset-bottom));width:36px;height:36px}
+    .back-to-top svg{width:17px;height:17px}
 }
 .product-breadcrumbs{display:block;width:100%;max-width:none;margin:0;padding:0;border-bottom:1px solid #e4e6e5;background:#fff;color:#101214;line-height:normal}.product-breadcrumbs ol{width:100%;max-width:1370px;display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:0 auto;padding:21px 35px;list-style:none}.product-breadcrumbs li{display:flex;align-items:center;min-width:0;color:#101214;font:600 16px/24px 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif}.product-breadcrumbs li+li{margin-left:15px}.product-breadcrumbs li+li::before{content:'»';margin-right:15px;color:#555b58;font:500 18px/24px 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif}.product-breadcrumbs a{color:#111;text-decoration:none;font:600 16px/24px 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif}.product-breadcrumbs a:hover{color:#0c6661;text-decoration:underline;text-underline-offset:3px}.product-breadcrumbs [aria-current=page]{overflow-wrap:anywhere;color:#171a18}
 @media(max-width:760px){.product-breadcrumbs ol{gap:4px 0;padding:14px 18px}.product-breadcrumbs li,.product-breadcrumbs a{font-size:14px;line-height:22px}.product-breadcrumbs li+li{margin-left:8px}.product-breadcrumbs li+li::before{margin-right:8px;font-size:16px;line-height:22px}}
