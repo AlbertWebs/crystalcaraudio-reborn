@@ -1603,3 +1603,47 @@ html,body{overflow-x:clip}
     .product-collection .product-rail>.product-card:last-child:nth-child(odd) .product-card h3{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:0}
     .product-collection .product-rail>.product-card:last-child:nth-child(odd) .product-card-buy-row{gap:8px}
 }
+
+/* Audio combo hero, based on the supplied storefront concept. */
+.hero-storefront{max-width:1600px;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:38px;min-height:560px;padding:50px clamp(24px,5vw,82px) 42px;overflow:visible}
+.hero-storefront .hero-copy{padding-top:4px}
+.hero-storefront .hero-copy>.eyebrow{font-weight:700;letter-spacing:.12em}
+.hero-storefront h1{max-width:650px;font-size:clamp(58px,6.2vw,88px);line-height:.99;letter-spacing:-.065em}
+.hero-storefront .hero-lead{max-width:520px;margin:24px 0 27px;font-size:17px;line-height:1.62;color:#6c737a}
+.hero-storefront .hero-actions{gap:18px}
+.hero-storefront .hero-actions .button{min-height:58px;padding-inline:22px;border-radius:12px;background:linear-gradient(110deg,#087c72,#045c56);font-size:15px;font-weight:600;box-shadow:0 10px 22px rgba(5,105,96,.16)}
+.hero-storefront .hero-actions .button>span:last-child{font-size:20px}
+.hero-cart-icon{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.hero-storefront .hero-actions .text-link{padding:14px 17px;border:1px solid #8bbab4;border-radius:12px;color:#075f59;font-size:15px;font-weight:600}
+.hero-storefront .hero-proof{margin-top:31px;font-size:14px;line-height:1.55}
+.hero-storefront .hero-proof b{color:#343a40;font-size:15px}
+.hero-storefront .proof-icon{width:54px;height:54px;background:#e0f3f0}
+.hero-storefront .proof-icon svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hero-combo-art{position:relative;isolation:isolate;min-height:510px;overflow:hidden;border-radius:28px 26px 32px 28px;background:linear-gradient(120deg,rgba(3,97,91,.82),rgba(0,48,67,.78)),url('/images/feature-dashboard-night.webp') center/cover no-repeat;box-shadow:0 22px 48px rgba(0,62,59,.14)}
+.hero-combo-art::before{position:absolute;z-index:-1;inset:auto auto -16% -8%;width:62%;height:49%;content:"";border-radius:50%;background:#14c6ad;filter:blur(38px);opacity:.52}
+.hero-combo-art .sun,.hero-combo-art .hero-orbit{display:none}
+.hero-combo-art .hero-art-index{top:24px;left:27px;color:#d9f5ef;font-size:12px;font-weight:700;letter-spacing:.14em}
+.hero-combo-ribbon{position:absolute;z-index:4;top:0;right:29px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:104px;padding:7px 8px 15px;clip-path:polygon(0 0,100% 0,100% 84%,50% 100%,0 84%);background:linear-gradient(145deg,#ffe780,#ffbd20);color:#15222a;text-align:center;font-size:15px;font-weight:800;line-height:1.08;box-shadow:0 8px 19px #061f3040}
+.hero-combo-ribbon>span{margin-bottom:5px;font-size:25px;line-height:1}
+.combo-product-pair{inset:66px 25px 57px;gap:17px;align-items:stretch}
+.combo-product-card,.combo-product-card:first-child,.combo-product-card:last-child{display:flex;flex-direction:column;align-self:stretch;transform:none;border:1px solid rgba(255,255,255,.7);border-radius:23px;background:#fff;box-shadow:0 18px 36px rgba(0,28,33,.24)}
+.combo-product-card:hover{transform:translateY(-4px);box-shadow:0 22px 42px rgba(0,28,33,.3)}
+.combo-product-image{height:clamp(190px,19vw,270px);flex:none;padding:12px;background:#f7f8f8}
+.combo-product-copy{gap:4px;padding:10px 14px 2px}
+.combo-product-copy small{font-size:11px;line-height:16px;letter-spacing:.08em}
+.combo-product-copy b{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:40px;font-size:15px;line-height:20px}
+.combo-product-card>strong{margin-top:auto;padding:7px 14px 13px;font-size:15px}
+.combo-product-card>strong span{width:29px;height:29px;display:grid;place-items:center;border-radius:50%;background:#e2f4f0;color:#08746e}
+.combo-art-note{right:22px;bottom:15px;color:#e5f4f1;font-size:13px}
+.combo-art-note span{width:auto;height:auto;border:0;border-radius:0;color:#fff;font-size:13px;white-space:nowrap}
+.combo-art-note i{width:29px;height:1px;background:#91d9d1}
+.hero-benefit-cards{max-width:1600px;margin:0 auto 38px;padding:0 clamp(24px,5vw,82px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;border:0;border-radius:0;background:transparent}
+.hero-benefit-cards article,.hero-benefit-cards article:last-child{min-width:0;min-height:128px;gap:18px;padding:18px 22px;border:1px solid #e6eeeb;border-radius:23px;background:linear-gradient(145deg,#fff,#f7fbfa);box-shadow:0 10px 24px rgba(27,61,55,.09)}
+.hero-benefit-cards .service-icon{width:66px;height:66px;flex-basis:66px;border-radius:18px;background:#e2f4f0}
+.hero-benefit-cards .service-icon svg{width:34px;height:34px;stroke-width:1.8}
+.hero-benefit-cards .service-copy small{margin:0 0 3px;font-size:13px;line-height:18px}
+.hero-benefit-cards .service-copy b{font-size:19px;line-height:1.25}
+.hero-benefit-cards .service-copy p{margin:4px 0 0;font-size:15px;line-height:1.4}
+@media(max-width:1050px) and (min-width:761px){.hero-storefront{gap:24px;padding-inline:30px}.hero-storefront h1{font-size:clamp(54px,6vw,68px)}.hero-combo-art{min-height:460px}.combo-product-pair{inset-inline:18px;gap:11px}.combo-product-image{height:205px}.combo-product-copy{padding-inline:11px}.combo-product-card>strong{padding-inline:11px;font-size:13px}.hero-benefit-cards{padding-inline:30px;gap:12px}.hero-benefit-cards article{padding:16px}.hero-benefit-cards .service-icon{width:54px;height:54px;flex-basis:54px}.hero-benefit-cards .service-copy b{font-size:16px}}
+@media(max-width:760px){.hero-storefront{grid-template-columns:minmax(0,1fr);gap:22px;padding:34px 18px 24px}.hero-storefront .hero-copy{padding-top:0}.hero-storefront h1{max-width:560px;font-size:clamp(43px,12vw,59px);line-height:1.02}.hero-storefront .hero-lead{max-width:540px;margin:15px 0 18px;font-size:15px;line-height:1.5}.hero-storefront .hero-actions{gap:9px}.hero-storefront .hero-actions .button{min-height:49px;gap:10px;padding:10px 13px;font-size:13px}.hero-storefront .hero-actions .text-link{padding:11px 10px;font-size:13px}.hero-storefront .hero-proof{margin-top:17px;font-size:12px;line-height:1.45}.hero-storefront .hero-proof b{font-size:13px}.hero-storefront .proof-icon{width:42px;height:42px}.hero-storefront .proof-icon svg{width:24px;height:24px}.hero-combo-art{min-height:390px;border-radius:20px}.hero-combo-art .hero-art-index{top:15px;left:16px;font-size:10px}.hero-combo-ribbon{right:16px;width:63px;height:76px;padding-bottom:11px;font-size:11px}.hero-combo-ribbon>span{font-size:18px}.combo-product-pair{inset:48px 12px 47px;gap:9px}.combo-product-card,.combo-product-card:first-child,.combo-product-card:last-child{border-radius:15px}.combo-product-image{height:clamp(136px,42vw,185px);padding:7px}.combo-product-copy{padding:8px 8px 1px}.combo-product-copy small{font-size:10px;line-height:14px}.combo-product-copy b{min-height:34px;font-size:12px;line-height:16px}.combo-product-card>strong{padding:5px 8px 9px;font-size:12px}.combo-product-card>strong span{width:24px;height:24px}.combo-art-note{right:11px;bottom:10px;gap:6px;font-size:11px}.combo-art-note span{font-size:11px}.hero-benefit-cards{grid-template-columns:1fr;margin:0 14px 27px;padding:8px 0 16px;gap:9px}.hero-benefit-cards article,.hero-benefit-cards article:last-child{min-height:85px;gap:13px;padding:13px 15px;border:1px solid #e6eeeb;border-radius:16px}.hero-benefit-cards .service-icon{width:48px;height:48px;flex-basis:48px;border-radius:14px}.hero-benefit-cards .service-icon svg{width:27px;height:27px}.hero-benefit-cards .service-copy small{font-size:11px;line-height:15px}.hero-benefit-cards .service-copy b{font-size:15px;line-height:20px}.hero-benefit-cards .service-copy p{font-size:13px;line-height:18px}}
+@media(max-width:380px){.hero-storefront{padding-inline:14px}.hero-storefront h1{font-size:43px}.hero-combo-art{min-height:340px}.combo-product-pair{inset:46px 9px 42px;gap:7px}.combo-product-image{height:clamp(125px,41vw,156px);padding:5px}.combo-product-copy{padding-inline:6px}.combo-product-copy small{font-size:9px}.combo-product-copy b{font-size:11px;line-height:15px}.combo-product-card>strong{padding-inline:6px;font-size:11px}.combo-art-note{right:8px;font-size:10px}}

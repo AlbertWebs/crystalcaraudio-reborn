@@ -4,37 +4,38 @@
 @section('content')
 <section class="hero hero-storefront">
     <div class="hero-copy">
-        <p class="eyebrow eyebrow-accent">SHOP COMBO</p>
+        <p class="eyebrow eyebrow-accent">SHOP AUDIO COMBOS</p>
         <h1>Build a <span class="hero-sound-underline">sound</span><br>that moves you.</h1>
-        <p class="hero-lead">Pair a powerful Android screen with rich door speakers for a more complete drive.</p>
+        <p class="hero-lead">Car radios, speakers, amplifiers and complete audio systems — expertly matched and professionally installed for a richer, more immersive drive.</p>
         <div class="hero-actions">
-            <a class="button button-dark" href="{{ route('categories') }}">Explore the combo <span>↗</span></a>
-            <a class="text-link" href="{{ route('special-offers') }}">See current offers</a>
+            <a class="button button-dark" href="{{ route('categories') }}"><svg class="hero-cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 1.9-1.5L20 8H6"/><circle cx="10" cy="19" r="1"/><circle cx="18" cy="19" r="1"/></svg> Build your sound system <span>→</span></a>
+            <a class="text-link" href="{{ route('special-offers') }}">Shop current offers</a>
         </div>
-        <div class="hero-proof"><span class="proof-icon">✦</span><span>Matched for a better drive<br><b>Expert advice from Crystal Car Audio</b></span></div>
+        <div class="hero-proof"><span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1M4 12H2.8v5H6v-5zM20 12h1.2v5H18v-5zM18 18c-.8 2-2.8 3-5.5 3"/></svg></span><span>Matched for a better drive<br><b>Expert advice from Crystal Car Audio</b></span></div>
     </div>
     <div class="hero-art hero-combo-art" aria-label="Shop combo: car door speakers and Android screen with underseat subwoofer">
         <div class="hero-orbit"></div><div class="sun"></div>
         <span class="hero-art-index">THE SOUND UPGRADE · 01</span>
+        <span class="hero-combo-ribbon"><span aria-hidden="true">♫</span> AUDIO<br>COMBOS</span>
         <div class="combo-product-pair">
             @foreach(['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'] as $comboSlug)
                 @if($comboProduct = $comboProducts->get($comboSlug))
                     <a class="combo-product-card" href="{{ route('product-single', $comboProduct->slug) }}">
                         <span class="combo-product-image"><img src="{{ str_starts_with($comboProduct->image, 'http') ? $comboProduct->image : \App\Support\MediaUrl::url('uploads/'.$comboProduct->image) }}" alt="{{ $comboProduct->name }}" loading="eager" fetchpriority="high" decoding="async"></span>
-                        <span class="combo-product-copy"><small>{{ $loop->first ? 'DOOR SPEAKERS' : 'ANDROID + BASS' }}</small><b>{{ $loop->first ? 'Fuller sound' : 'Smarter drives' }}</b></span>
+                        <span class="combo-product-copy"><small>{{ $loop->first ? 'DOOR SPEAKERS COMBO' : 'ANDROID RADIO + BASS' }}</small><b>{{ $loop->first ? 'Fuller, clearer sound' : 'Smarter entertainment, deeper bass' }}</b></span>
                         <strong>KES {{ number_format($comboProduct->price) }} <span aria-hidden="true">↗</span></strong>
                     </a>
                 @endif
             @endforeach
         </div>
-        <div class="combo-art-note"><span>01</span> Two upgrades. One better drive.</div>
+        <div class="combo-art-note"><span>01 / 03</span><i></i> Premium combos for a better drive.</div>
     </div>
 </section>
 
-<section class="service-strip service-cards" aria-label="Shopping benefits">
+<section class="service-strip service-cards hero-benefit-cards" aria-label="Shopping benefits">
     <article><span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6.5h11v11H3zM14 10h4.2l2.8 3v4.5h-7z"/><circle cx="7.5" cy="18" r="1.8"/><circle cx="18" cy="18" r="1.8"/><path d="M16 10v3h5"/></svg></span><div class="service-copy"><small>DELIVERY SUPPORT</small><b>Delivery across Kenya</b><p>We’ll help arrange delivery for your order.</p></div></article>
     <article><span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M7 15h4"/><circle cx="17" cy="14" r="1.5"/></svg></span><div class="service-copy"><small>FLEXIBLE PAYMENT</small><b>Cash on Delivery</b><p>Pay when your order arrives.</p></div></article>
-    <article><span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m14.5 6.2 3.3-3.3a5 5 0 0 1-6.6 6.6l-7.7 7.7a2.1 2.1 0 0 0 3 3l7.7-7.7a5 5 0 0 1 6.6-6.6l-3.3 3.3z"/></svg></span><div class="service-copy"><small>EXPERT HELP</small><b>Fitment &amp; installation</b><p>Get advice on fitment and setting up your gear.</p></div></article>
+    <article><span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m14.5 6.2 3.3-3.3a5 5 0 0 1-6.6 6.6l-7.7 7.7a2.1 2.1 0 0 0 3 3l7.7-7.7a5 5 0 0 1 6.6-6.6l-3.3 3.3z"/></svg></span><div class="service-copy"><small>EXPERT HELP</small><b>Fitment &amp; Installation</b><p>Get professional installation and setup for the best sound.</p></div></article>
 </section>
 
 <section class="section categories-section">
