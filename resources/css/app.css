@@ -1594,3 +1594,12 @@ html,body{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){.setup-support-card,.setup-support-card-content a span{transition:none}}
 
 @media(max-width:760px){.category-trust-row{display:none!important}}
+
+/* Use the full remaining mobile row for an odd final product card. */
+@media(max-width:760px){
+    .product-collection .product-rail>.product-card:last-child:nth-child(odd){grid-column:1/-1;display:grid;grid-template-columns:minmax(112px,34%) minmax(0,1fr);align-items:stretch;min-height:140px}
+    .product-collection .product-rail>.product-card:last-child:nth-child(odd) .product-card-media{height:auto;min-width:0;aspect-ratio:1/1;align-self:center}
+    .product-collection .product-rail>.product-card:last-child:nth-child(odd) .product-card-body{min-width:0;align-self:center;padding:12px}
+    .product-collection .product-rail>.product-card:last-child:nth-child(odd) .product-card h3{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:0}
+    .product-collection .product-rail>.product-card:last-child:nth-child(odd) .product-card-buy-row{gap:8px}
+}
