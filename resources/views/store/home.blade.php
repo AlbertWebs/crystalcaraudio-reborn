@@ -51,7 +51,9 @@
             'led-lights' => ['image' => 'in-car-accessories.webp', 'description' => 'Enhance comfort, style & convenience'],
         ];
         $featuredCategories = $categories->filter(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false));
-        $otherCategories = $categories->reject(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false));
+        $categoryDisplayOrder = ['car-amplifiers-booster' => 1, 'car-audio-installation' => 2, 'car-security-system' => 3, 'car-accessories' => 4, 'conversion-fascia-kits' => 5, 'equalizers' => 6, 'led-lights' => 7];
+        $otherCategories = $categories->reject(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false))
+            ->sortBy(fn ($category) => $categoryDisplayOrder[$category->slug] ?? 99)->values();
     @endphp
     <div class="section-head category-section-head">
         <div class="category-section-title"><p class="eyebrow eyebrow-accent">FIND YOUR FREQUENCY</p><h2>Shop by <span>Category</span></h2><p class="section-subtitle">Premium car audio, security and in-car upgrades. Choose a category to explore our range.</p></div>
@@ -81,7 +83,6 @@
             </a>
         @endforeach
     </div>
-    <a class="category-all-link" href="{{ route('shop-by-category') }}">View all categories <span aria-hidden="true">→</span></a>
 </section>
 
 @if($deals->isNotEmpty())
