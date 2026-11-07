@@ -111,7 +111,34 @@
     <div class="product-rail" id="new-arrivals">@foreach($newArrivals as $product)@include('store.partials.product-card', ['product' => $product])@endforeach</div>
 </section>
 
-<section class="why-crystal"><div class="why-heading"><p class="eyebrow eyebrow-accent">GOOD SOUND, GOOD SUPPORT</p><h2>We’re here for the whole setup.</h2><p>Pick the right gear, get it installed, and enjoy the drive.</p></div><div class="why-grid"><article><span>01</span><b>Advice that fits your car</b><p>Tell us your make and model and we’ll help you choose compatible equipment.</p><a href="/find-us">Ask our team ↗</a></article><article><span>02</span><b>Installation from people who know audio</b><p>Get support for installation and setup from the Crystal Car Audio team.</p><a href="/find-us">Plan an installation ↗</a></article><article><span>03</span><b>Checkout made clear</b><p>Choose Cash on Delivery or pay through eConfirm escrow at checkout.</p><a href="{{ route('categories') }}">Start shopping ↗</a></article></div></section>
+<section class="why-crystal setup-support" aria-labelledby="setup-support-title">
+    <div class="setup-support-inner">
+        <header class="setup-support-heading">
+            <p class="eyebrow eyebrow-accent">GOOD SOUND, GREAT SUPPORT</p>
+            <h2 id="setup-support-title">We’re here for the <span>whole setup.</span></h2>
+            <p>From choosing the right gear to professional installation, we support you at every step for a better, more enjoyable drive.</p>
+        </header>
+        <div class="setup-support-cards">
+            <article class="setup-support-card">
+                <div class="setup-support-cover"><img src="{{ asset('images/whole-setup/advice.webp') }}" alt="Car audio screen and speaker setup" loading="lazy" decoding="async"><span>01</span></div>
+                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ asset('images/whole-setup/advice-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Expert Advice for Your Car</h3><p>Tell us your make and model and we’ll help you choose compatible audio equipment.</p><a href="/find-us">Ask our team <span aria-hidden="true">→</span></a></div></div>
+            </article>
+            <article class="setup-support-card">
+                <div class="setup-support-cover"><img src="{{ asset('images/whole-setup/installation.webp') }}" alt="Technician installing a touchscreen car stereo" loading="lazy" decoding="async"><span>02</span></div>
+                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ asset('images/whole-setup/installation-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Professional Installation</h3><p>Get expert installation and setup from the Crystal Car Audio team.</p><a href="/find-us">Plan an installation <span aria-hidden="true">→</span></a></div></div>
+            </article>
+            <article class="setup-support-card">
+                <div class="setup-support-cover"><img src="{{ asset('images/whole-setup/checkout.webp') }}" alt="Secure online checkout for car audio products" loading="lazy" decoding="async"><span>03</span></div>
+                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ asset('images/whole-setup/checkout-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Simple &amp; Secure Checkout</h3><p>Choose Cash on Delivery or pay through eConfirm escrow at checkout.</p><a href="{{ route('categories') }}">Start shopping <span aria-hidden="true">→</span></a></div></div>
+            </article>
+        </div>
+        <div class="setup-support-benefits" aria-label="Crystal Car Audio service benefits">
+            <div><span class="setup-benefit-icon"><img src="{{ asset('images/whole-setup/delivery-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Fast Delivery</strong><span>Across Kenya</span></p></div>
+            <div><span class="setup-benefit-icon"><img src="{{ asset('images/whole-setup/genuine-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Genuine Products</strong><span>From trusted brands</span></p></div>
+            <div><span class="setup-benefit-icon"><img src="{{ asset('images/whole-setup/fitment-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Professional Fitment</strong><span>By experienced technicians</span></p></div>
+        </div>
+    </div>
+</section>
 
 <section class="expert-cta expert-cta-store"><div><p class="eyebrow eyebrow-accent">MADE TO FIT YOUR DRIVE</p><h2>Need a hand<br>choosing?</h2><p>Tell us about your car and we’ll help you find the right fit.</p><a class="button button-dark" href="/find-us">Talk to our team <span>↗</span></a></div><div class="expert-visual"><img loading="lazy" decoding="async" src="{{ asset('images/expert-car-audio-visual.webp') }}" alt="Premium car speaker and touchscreen audio system"></div></section>
 @endsection

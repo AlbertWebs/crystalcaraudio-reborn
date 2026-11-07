@@ -1554,3 +1554,41 @@ html,body{overflow-x:clip}
     .collection-listing .collection-price-filter>.collection-filter-group:last-of-type{grid-column:auto}
     .collection-listing .listing-toolbar{margin-top:0}
 }
+
+/* Whole setup support section */
+.setup-support{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(110deg,#f8faf9 0%,#f3f7f5 58%,#edf7f4 100%);padding:76px max(calc((100vw - 1320px)/2),5vw) 58px}
+.setup-support::before{position:absolute;z-index:-1;content:"";inset:0 0 0 auto;width:min(57%,900px);background:url('/images/whole-setup/speaker-interior.webp') center right/cover no-repeat;opacity:.17;mix-blend-mode:multiply;mask-image:linear-gradient(90deg,transparent 0%,#000 48%);pointer-events:none}
+.setup-support-inner{width:100%;max-width:1440px;margin:0 auto}
+.setup-support-heading{max-width:860px;margin:0 0 32px}
+.setup-support-heading .eyebrow{margin:0 0 12px}
+.setup-support-heading h2{max-width:900px;margin:0;color:#202328;font-size:clamp(34px,4vw,54px);line-height:1.06;letter-spacing:-.055em}
+.setup-support-heading h2 span{position:relative;white-space:nowrap}
+.setup-support-heading h2 span::after{position:absolute;content:"";height:7px;left:0;right:0;bottom:-3px;border-radius:100%;background:var(--brand-accent);transform:rotate(-1.5deg);opacity:.82}
+.setup-support-heading>p:last-child{max-width:650px;margin:17px 0 0;color:#626d70;font-size:16px;line-height:1.6}
+.setup-support-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.setup-support-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #e1e9e6;border-radius:20px;box-shadow:0 12px 32px rgba(18,55,52,.07);transition:transform .25s ease,box-shadow .25s ease}
+.setup-support-card:hover{transform:translateY(-4px);box-shadow:0 18px 42px rgba(18,55,52,.12)}
+.setup-support-cover{position:relative;height:clamp(165px,16vw,224px);overflow:hidden;background:#e9f2ef}
+.setup-support-cover::after{position:absolute;inset:auto 0 0;height:25px;content:"";background:linear-gradient(180deg,transparent,rgba(0,89,83,.22));pointer-events:none}
+.setup-support-cover img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.setup-support-cover>span{position:absolute;z-index:1;top:0;left:0;display:grid;place-items:center;width:82px;height:54px;padding-right:10px;padding-bottom:5px;border-radius:0 0 32px 0;background:linear-gradient(135deg,#087f78,#0da59a);color:#fff;font-size:23px;font-weight:700;letter-spacing:.02em}
+.setup-support-card-content{display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;align-items:start;padding:23px 23px 25px}
+.setup-support-icon,.setup-benefit-icon{display:grid;place-items:center;flex:none;background:#e5f5f2;border-radius:17px}
+.setup-support-icon{width:64px;height:64px}
+.setup-support-icon img{width:46px;height:46px;object-fit:contain}
+.setup-support-card-content h3{margin:2px 0 6px;color:#202328;font-size:21px;line-height:1.2;letter-spacing:-.035em}
+.setup-support-card-content p{min-height:49px;margin:0 0 10px;color:#697478;font-size:15px;line-height:1.5}
+.setup-support-card-content a{display:inline-flex;align-items:center;gap:13px;color:#08746e;font-size:16px;font-weight:600;text-decoration:none}
+.setup-support-card-content a span{font-size:22px;line-height:1;transition:transform .2s ease}
+.setup-support-card-content a:hover span{transform:translateX(4px)}
+.setup-support-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:32px 10px 0}
+.setup-support-benefits>div{display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 22px}
+.setup-support-benefits>div+div{border-left:1px solid #cfddda}
+.setup-benefit-icon{width:66px;height:66px;border-radius:19px}
+.setup-benefit-icon img{width:46px;height:46px;object-fit:contain}
+.setup-support-benefits p{display:flex;flex-direction:column;gap:3px;margin:0}
+.setup-support-benefits strong{color:#202328;font-size:18px;line-height:1.2}
+.setup-support-benefits p>span{color:#687377;font-size:15px;line-height:1.35}
+@media(max-width:900px){.setup-support{padding-inline:28px}.setup-support-cards{gap:13px}.setup-support-card-content{grid-template-columns:52px minmax(0,1fr);gap:12px;padding:18px}.setup-support-icon{width:52px;height:52px;border-radius:14px}.setup-support-icon img{width:38px;height:38px}.setup-support-card-content h3{font-size:18px}.setup-support-card-content p{font-size:14px}.setup-support-benefits>div{gap:12px;padding-inline:10px}.setup-benefit-icon{width:54px;height:54px}.setup-benefit-icon img{width:38px;height:38px}.setup-support-benefits strong{font-size:16px}.setup-support-benefits p>span{font-size:13px}}
+@media(max-width:760px){.setup-support{padding:48px 17px 38px}.setup-support::before{width:100%;height:350px;inset:0 0 auto;background-position:center right;opacity:.11;mask-image:linear-gradient(90deg,transparent,#000 78%)}.setup-support-heading{margin-bottom:22px}.setup-support-heading .eyebrow{font-size:12px;letter-spacing:.14em}.setup-support-heading h2{font-size:clamp(29px,8vw,39px);line-height:1.09}.setup-support-heading>p:last-child{margin-top:12px;font-size:15px;line-height:1.5}.setup-support-heading h2 span::after{height:5px}.setup-support-cards{grid-template-columns:1fr;gap:13px}.setup-support-card{border-radius:16px}.setup-support-cover{height:clamp(150px,47vw,210px)}.setup-support-cover>span{width:65px;height:45px;font-size:19px}.setup-support-card-content{grid-template-columns:50px minmax(0,1fr);gap:13px;padding:16px}.setup-support-icon{width:50px;height:50px}.setup-support-icon img{width:37px;height:37px}.setup-support-card-content h3{font-size:18px}.setup-support-card-content p{min-height:0;margin-bottom:9px;font-size:14px;line-height:1.45}.setup-support-card-content a{font-size:14px}.setup-support-benefits{grid-template-columns:1fr;gap:0;margin:20px 0 0;padding:7px 14px;background:rgba(255,255,255,.8);border:1px solid #dfeae7;border-radius:16px}.setup-support-benefits>div{justify-content:flex-start;gap:13px;padding:12px 2px}.setup-support-benefits>div+div{border-left:0;border-top:1px solid #e1eae7}.setup-benefit-icon{width:44px;height:44px;border-radius:13px}.setup-benefit-icon img{width:32px;height:32px}.setup-support-benefits strong{font-size:15px}.setup-support-benefits p>span{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.setup-support-card,.setup-support-card-content a span{transition:none}}
