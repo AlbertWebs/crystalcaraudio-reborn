@@ -16,7 +16,7 @@
     <div class="hero-art hero-combo-art" style="--combo-background-image: url('{{ \App\Support\MediaUrl::siteAsset('homepage_combo_background', 'images/feature-dashboard-night.webp') }}')" aria-label="Shop combo: car door speakers and Android screen with underseat subwoofer">
         <div class="hero-orbit"></div><div class="sun"></div>
         <span class="hero-art-index">THE SOUND UPGRADE</span>
-        <span class="hero-combo-ribbon"><span aria-hidden="true">♫</span><span>CAR AUDIO<br>COMBOS</span></span>
+        <span class="hero-combo-ribbon"><span aria-hidden="true">♫</span><span>CAR AUDIO<br>COMBO</span></span>
         @if($comboSlides->isNotEmpty())
         <div class="hero-combo-carousel" data-combo-carousel aria-label="Featured audio combos">
             @foreach($comboSlides as $slide)

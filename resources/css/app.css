@@ -1623,8 +1623,8 @@ html,body{overflow-x:clip}
 .hero-combo-art::before{position:absolute;z-index:-1;inset:auto auto -16% -8%;width:62%;height:49%;content:"";border-radius:50%;background:#14c6ad;filter:blur(38px);opacity:.52}
 .hero-combo-art .sun,.hero-combo-art .hero-orbit{display:none}
 .hero-combo-art .hero-art-index{top:24px;left:27px;color:#d9f5ef;font-size:12px;font-weight:700;letter-spacing:.14em}
-.hero-combo-ribbon{position:absolute;z-index:4;top:0;right:29px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:104px;padding:7px 8px 15px;clip-path:polygon(0 0,100% 0,100% 84%,50% 100%,0 84%);background:linear-gradient(145deg,#ffe780,#ffbd20);color:#15222a;text-align:center;font-size:15px;font-weight:800;line-height:1.08;box-shadow:0 8px 19px #061f3040}
-.hero-combo-ribbon>span{margin-bottom:5px;font-size:25px;line-height:1}
+.hero-combo-ribbon{position:absolute;z-index:4;top:0;right:29px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:104px;padding:7px 8px 15px;clip-path:polygon(0 0,100% 0,100% 84%,50% 100%,0 84%);background:linear-gradient(145deg,#ffe780,#ffbd20);color:#15222a;text-align:center;font-size:9px;font-weight:800;line-height:1.08;box-shadow:0 8px 19px #061f3040}
+.hero-combo-ribbon>span{margin-bottom:5px;font-size:16px;line-height:1}
 .combo-product-pair{inset:66px 25px 57px;gap:17px;align-items:stretch}
 .combo-product-card,.combo-product-card:first-child,.combo-product-card:last-child{display:flex;flex-direction:column;align-self:stretch;transform:none;border:1px solid rgba(255,255,255,.7);border-radius:23px;background:#fff;box-shadow:0 18px 36px rgba(0,28,33,.24)}
 .combo-product-card:hover{transform:translateY(-4px);box-shadow:0 22px 42px rgba(0,28,33,.3)}
@@ -1656,7 +1656,7 @@ html,body{overflow-x:clip}
 .hero-combo-art::after{position:absolute;z-index:0;content:"";left:-7%;right:-4%;bottom:-20%;height:36%;border:1px solid rgba(91,239,217,.5);border-radius:50% 50% 0 0;background:linear-gradient(105deg,rgba(18,194,168,.82),rgba(0,117,111,.08) 72%);transform:rotate(-4deg);pointer-events:none}
 .hero-combo-art .hero-art-index{position:absolute;z-index:1}
 .combo-product-pair{z-index:2;inset:72px 30px 62px;gap:clamp(14px,1.4vw,24px)}
-.combo-product-image{height:clamp(190px,17vw,245px);background:#f8f9f8}
+.combo-product-image{height:clamp(220px,19vw,270px);background:#f8f9f8}
 .combo-product-card>strong{font-size:16px}
 @media(min-width:761px){.combo-product-card>strong{min-height:46px;box-sizing:border-box;flex:0 0 auto}}
 .hero-benefit-cards{max-width:1720px}
