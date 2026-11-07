@@ -20,8 +20,8 @@ class AdminStoreManagementController extends Controller
     {
         $categories = DB::table('catalog_categories')
             ->leftJoin('catalog_products', 'catalog_products.category', '=', 'catalog_categories.name')
-            ->select('catalog_categories.id', 'catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.image', 'catalog_categories.sort_order', DB::raw('COUNT(catalog_products.id) as product_count'))
-            ->groupBy('catalog_categories.id', 'catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.image', 'catalog_categories.sort_order')
+            ->select('catalog_categories.id', 'catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.description', 'catalog_categories.image', 'catalog_categories.sort_order', DB::raw('COUNT(catalog_products.id) as product_count'))
+            ->groupBy('catalog_categories.id', 'catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.description', 'catalog_categories.image', 'catalog_categories.sort_order')
             ->orderByRaw('CASE WHEN catalog_categories.sort_order = 0 THEN 1 ELSE 0 END')
             ->orderBy('catalog_categories.sort_order')->orderBy('catalog_categories.name')->get();
 
@@ -34,6 +34,7 @@ class AdminStoreManagementController extends Controller
             'name' => ['required', 'string', 'max:190', Rule::unique('catalog_categories', 'name')],
             'slug' => ['nullable', 'string', 'max:190', 'alpha_dash', Rule::unique('catalog_categories', 'slug')],
             'description' => ['nullable', 'string', 'max:2000'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:5120'],
         ]);
 
         $slug = Str::slug($data['slug'] ?: $data['name']) ?: 'category';
@@ -43,11 +44,14 @@ class AdminStoreManagementController extends Controller
             $slug = $baseSlug.'-'.$suffix++;
         }
 
-        DB::transaction(function () use ($data, $slug, $request): void {
+        $imagePath = isset($data['image']) ? $this->storeCategoryImage($data['image']) : null;
+
+        DB::transaction(function () use ($data, $slug, $imagePath, $request): void {
             $categoryId = DB::table('catalog_categories')->insertGetId([
                 'name' => $data['name'],
                 'slug' => $slug,
                 'description' => $data['description'] ?? null,
+                'image' => $imagePath,
                 'sort_order' => ((int) DB::table('catalog_categories')->max('sort_order')) + 1,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -65,6 +69,49 @@ class AdminStoreManagementController extends Controller
         });
 
         return redirect()->route('admin.categories')->with('success', $data['name'].' was added to catalogue categories.');
+    }
+
+    public function updateCategory(Request $request, int $category): RedirectResponse
+    {
+        $record = DB::table('catalog_categories')->where('id', $category)->firstOrFail();
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:190', Rule::unique('catalog_categories', 'name')->ignore($category)],
+            'slug' => ['required', 'string', 'max:190', 'alpha_dash', Rule::unique('catalog_categories', 'slug')->ignore($category)],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:5120'],
+        ]);
+
+        $imagePath = isset($data['image']) ? $this->storeCategoryImage($data['image']) : $record->image;
+
+        DB::transaction(function () use ($data, $imagePath, $record, $request): void {
+            DB::table('catalog_categories')->where('id', $record->id)->update([
+                'name' => $data['name'],
+                'slug' => $data['slug'],
+                'description' => $data['description'] ?? null,
+                'image' => $imagePath,
+                'updated_at' => now(),
+            ]);
+
+            if ($record->name !== $data['name']) {
+                DB::table('catalog_products')->where('category', $record->name)->update([
+                    'category' => $data['name'],
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('admin_activity_logs')->insert([
+                'user_id' => $request->user()->id,
+                'action' => 'category.updated',
+                'subject_type' => 'category',
+                'subject_id' => (string) $record->id,
+                'summary' => 'Updated '.$data['name'].' category details.',
+                'ip_address' => $request->ip(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('admin.categories')->with('success', $data['name'].' category details updated.');
     }
 
     public function updateCategoryImage(Request $request, int $category): RedirectResponse

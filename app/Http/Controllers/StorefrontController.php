@@ -150,6 +150,7 @@ class StorefrontController extends Controller
             $categoryDescription = filled($categoryRecord->description ?? null)
                 ? trim(preg_replace('/\\s+/', ' ', html_entity_decode(strip_tags((string) $categoryRecord->description), ENT_QUOTES | ENT_HTML5, 'UTF-8')))
                 : '';
+            $categoryDescription = preg_replace('/\\s*—\\s*/u', ', ', $categoryDescription);
             $categoryDescription = preg_replace('/(?<=[.!?])(?=[A-Z])/u', ' ', $categoryDescription);
             if (mb_strlen($categoryDescription) > 260) {
                 $categoryGuide = $categoryDescription;
@@ -271,7 +272,7 @@ class StorefrontController extends Controller
                 try {
                     $record = json_decode(Crypt::decryptString($row->payload), true) ?: [];
                     $record['id'] ??= $row->source_id;
-                    $record['content'] = preg_replace('/rnrn/i', "\n\n", (string) ($record['content'] ?? ''));
+                    $record['content'] = preg_replace('/\\s*—\\s*/u', ', ', preg_replace('/rnrn/i', "\n\n", (string) ($record['content'] ?? '')));
                     $record['images'] = collect($record)->filter(fn ($value, $key) => preg_match('/^image_/', (string) $key) && filled($value))
                         ->map(fn ($filename) => MediaUrl::url('uploads/portfolio/'.ltrim((string) $filename, '/')))->values()->all();
 
@@ -291,6 +292,7 @@ class StorefrontController extends Controller
         $relatedProducts = CatalogProduct::query()->where('category', $product->category)->whereKeyNot($product->id)->latest()->take(4)->get();
         $description = trim((string) $product->description);
         $description = preg_replace('/rnrn/i', "\n", $description);
+        $description = preg_replace('/\\s*—\\s*/u', ', ', $description);
         $descriptionPlain = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $descriptionPlain = trim(preg_replace('/\s+/', ' ', $descriptionPlain));
         $description = preg_replace('/<(br|\/p|\/div|\/li|\/h[1-6])\b[^>]*>/i', "\n", $description);
@@ -319,7 +321,7 @@ class StorefrontController extends Controller
                     && in_array(strtolower((string) ($review['status'] ?? '')), ['1', 'approved', 'active'], true);
             })->map(fn ($review) => [
                 'title' => trim(strip_tags((string) ($review['title'] ?? ''))),
-                'content' => trim(strip_tags((string) ($review['content'] ?? $review['review'] ?? ''))),
+                'content' => trim(preg_replace('/\\s*—\\s*/u', ', ', strip_tags((string) ($review['content'] ?? $review['review'] ?? '')))),
                 'name' => trim(strip_tags((string) ($review['name'] ?? 'Crystal customer'))),
                 'rating' => min(5, max(0, (float) ($review['rating'] ?? 0) / 20)),
                 'created_at' => $review['created_at'] ?? null,

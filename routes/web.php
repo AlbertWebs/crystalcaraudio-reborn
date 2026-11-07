@@ -115,6 +115,7 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::patch('/inventory/{product}', [AdminInventoryController::class, 'update'])->middleware('can:manage-store-inventory')->name('inventory.update');
     Route::get('/categories', [AdminStoreManagementController::class, 'categories'])->middleware('can:manage-store-products')->name('categories');
     Route::post('/categories', [AdminStoreManagementController::class, 'storeCategory'])->middleware('can:manage-store-products')->name('categories.store');
+    Route::patch('/categories/{category}', [AdminStoreManagementController::class, 'updateCategory'])->middleware('can:manage-store-products')->name('categories.update');
     Route::patch('/categories/{category}/image', [AdminStoreManagementController::class, 'updateCategoryImage'])->middleware('can:manage-store-products')->name('categories.image');
     Route::get('/brands', [AdminStoreManagementController::class, 'brands'])->middleware('can:manage-store-products')->name('brands');
     Route::get('/exports', [AdminCatalogExportController::class, 'index'])->middleware('can:manage-store-products')->name('exports');

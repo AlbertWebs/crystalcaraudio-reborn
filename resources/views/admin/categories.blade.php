@@ -8,11 +8,12 @@
     <div x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }" @toggle-category-form.window="open = !open">
         <section class="admin-panel admin-category-create" x-show="open" x-transition x-cloak>
             <div class="admin-panel-head"><div><p class="eyebrow">NEW CATALOGUE CATEGORY</p><h2>Add a category</h2></div><button type="button" class="admin-category-form-close" @click="open = false" aria-label="Close category form">×</button></div>
-            <form method="post" action="{{ route('admin.categories.store') }}" class="admin-category-create-form">
+            <form method="post" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data" class="admin-category-create-form">
                 @csrf
                 <label><span>Category name</span><input name="name" value="{{ old('name') }}" placeholder="e.g. Car Security Systems" required maxlength="190">@error('name')<small class="admin-field-error">{{ $message }}</small>@enderror</label>
                 <label><span>URL slug <small>Optional</small></span><input name="slug" value="{{ old('slug') }}" placeholder="car-security-systems" maxlength="190">@error('slug')<small class="admin-field-error">{{ $message }}</small>@enderror</label>
                 <label class="admin-category-description"><span>Description <small>Optional</small></span><textarea name="description" rows="3" maxlength="2000" placeholder="A short description to help customers browse this category.">{{ old('description') }}</textarea>@error('description')<small class="admin-field-error">{{ $message }}</small>@enderror</label>
+                <label class="admin-category-upload-field"><span>Category image <small>Optional</small></span><span class="admin-category-upload-control"><input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/avif" aria-label="Choose category image" @change="$event.target.closest('label').querySelector('[data-file-name]').textContent = $event.target.files[0]?.name || 'Choose an image'"><small data-file-name>Choose an image</small></span><small class="admin-category-image-guidance">Recommended: 1600 × 1000 px landscape (8:5), JPG, PNG, WebP or AVIF. Maximum 5 MB.</small>@error('image')<small class="admin-field-error">{{ $message }}</small>@enderror</label>
                 <div class="admin-category-create-actions"><button type="button" class="admin-secondary-action" @click="open = false">Cancel</button><button type="submit" class="admin-primary-action">Save category <span aria-hidden="true">→</span></button></div>
             </form>
         </section>
@@ -24,7 +25,8 @@
             <form id="category-order-form" method="post" action="{{ route('admin.categories.order') }}">@csrf @method('PUT')</form>
             <div class="admin-category-list">
                 @foreach($categories as $category)
-                    <div class="admin-category-row admin-category-image-row">
+                    @php($editingThisCategory = (string) old('category_id') === (string) $category->id)
+                    <div class="admin-category-row admin-category-image-row" x-data="{ editOpen: @js($errors->any() && $editingThisCategory), selectedImage: '' }">
                         <label class="admin-category-position" for="category-order-{{ $category->id }}"><small>ORDER</small><input form="category-order-form" id="category-order-{{ $category->id }}" type="number" name="categories[{{ $category->id }}][position]" min="1" max="{{ $categories->count() }}" step="1" value="{{ old('categories.'.$category->id.'.position', $category->sort_order ?: $loop->iteration) }}" required></label>
                         <input form="category-order-form" type="hidden" name="categories[{{ $category->id }}][id]" value="{{ $category->id }}">
                         <form method="post" action="{{ route('admin.categories.image', $category->id) }}" enctype="multipart/form-data" class="admin-category-image-form" x-data="{ selectedName: '' }">@csrf @method('PATCH')
@@ -36,7 +38,36 @@
                             @error('image')<small class="admin-field-error">{{ $message }}</small>@enderror
                         </form>
                         <span class="admin-category-name"><strong>{{ $category->name }}</strong><small>{{ number_format($category->product_count) }} products · /products/{{ $category->slug }}</small></span>
-                        <a href="{{ route('product-category', $category->slug) }}" target="_blank" rel="noopener">Preview ↗</a>
+                        <div class="admin-category-row-actions"><button type="button" class="admin-category-edit-button" @click="editOpen = true">Edit details</button><a href="{{ route('product-category', $category->slug) }}" target="_blank" rel="noopener">Preview ↗</a></div>
+                        <div class="admin-category-edit-backdrop" x-show="editOpen" x-transition.opacity @click.self="editOpen = false" @keydown.escape.window="editOpen = false" x-cloak>
+                            <section class="admin-category-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="category-edit-title-{{ $category->id }}" @click.stop>
+                                <div class="admin-panel-head"><div><p class="eyebrow">CATEGORY DETAILS</p><h2 id="category-edit-title-{{ $category->id }}">Edit {{ $category->name }}</h2></div><button type="button" class="admin-category-form-close" @click="editOpen = false" aria-label="Close edit category form">×</button></div>
+                                <form method="post" action="{{ route('admin.categories.update', $category->id) }}" enctype="multipart/form-data" class="admin-category-create-form">
+                                    @csrf @method('PATCH')<input type="hidden" name="category_id" value="{{ $category->id }}">
+                                    <label><span>Category name</span><input name="name" value="{{ $editingThisCategory ? old('name', $category->name) : $category->name }}" required maxlength="190">
+                                        @if($editingThisCategory)
+                                            @error('name')<small class="admin-field-error">{{ $message }}</small>@enderror
+                                        @endif
+                                    </label>
+                                    <label><span>URL slug</span><input name="slug" value="{{ $editingThisCategory ? old('slug', $category->slug) : $category->slug }}" required maxlength="190" pattern="[A-Za-z0-9_-]+">
+                                        @if($editingThisCategory)
+                                            @error('slug')<small class="admin-field-error">{{ $message }}</small>@enderror
+                                        @endif
+                                    </label>
+                                    <label class="admin-category-description"><span>Description <small>Optional</small></span><textarea name="description" rows="3" maxlength="2000" placeholder="A short description to help customers browse this category.">{{ $editingThisCategory ? old('description', $category->description) : $category->description }}</textarea>
+                                        @if($editingThisCategory)
+                                            @error('description')<small class="admin-field-error">{{ $message }}</small>@enderror
+                                        @endif
+                                    </label>
+                                    <label class="admin-category-upload-field"><span>Replace category image <small>Optional</small></span><span class="admin-category-upload-control"><input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/avif" @change="selectedImage = $event.target.files[0]?.name || ''"><small x-text="selectedImage || 'Keep current image or choose a new one'"></small></span><small class="admin-category-image-guidance">Recommended: 1600 × 1000 px landscape (8:5), maximum 5 MB.</small>
+                                        @if($editingThisCategory)
+                                            @error('image')<small class="admin-field-error">{{ $message }}</small>@enderror
+                                        @endif
+                                    </label>
+                                    <div class="admin-category-create-actions"><button type="button" class="admin-secondary-action" @click="editOpen = false">Cancel</button><button type="submit" class="admin-primary-action">Save changes <span aria-hidden="true">→</span></button></div>
+                                </form>
+                            </section>
+                        </div>
                     </div>
                 @endforeach
             </div>

@@ -6,7 +6,7 @@
     <div class="hero-copy">
         <p class="eyebrow eyebrow-accent">SHOP AUDIO COMBOS</p>
         <h1>Build a <span class="hero-sound-underline">sound</span><br>that moves you.</h1>
-        <p class="hero-lead">Car radios, speakers, amplifiers and complete audio systems — expertly matched and professionally installed for a richer, more immersive drive.</p>
+        <p class="hero-lead">Car radios, speakers, amplifiers and complete audio systems, expertly matched and professionally installed for a richer, more immersive drive.</p>
         <div class="hero-actions">
             <a class="button button-dark" href="{{ route('categories') }}"><svg class="hero-cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 1.9-1.5L20 8H6"/><circle cx="10" cy="19" r="1"/><circle cx="18" cy="19" r="1"/></svg> Build Your Sound System <span>→</span></a>
             <a class="text-link" href="{{ route('special-offers') }}">Shop Current Offers</a>
@@ -89,11 +89,12 @@
     </div>
     <div class="category-tile-grid">
         @foreach($otherCategories as $category)
+              @php($categoryNumber = $loop->iteration + $featuredCategories->count())
               @php($artwork = $categoryArtwork[$category->slug] ?? null)
               @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
-            <a href="{{ route('product-category', $category->slug) }}" class="category-tile-card">
+            <a href="{{ route('product-category', $category->slug) }}" class="category-tile-card{{ $categoryNumber >= 3 && $categoryNumber <= 8 ? ' category-tile-card-mobile-editorial' : '' }}">
                   @if($categoryImage)<img src="{{ $categoryImage }}" alt="" loading="lazy" decoding="async">@endif
-                <span class="category-tile-copy"><span class="category-tile-kicker">{{ str_pad((string) ($loop->iteration + $featuredCategories->count()), 2, '0', STR_PAD_LEFT) }} <i>·</i> CATEGORY</span><h3>{{ $category->name }}</h3><span class="category-tile-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-tile-cta">{{ $category->product_count }} products <b aria-hidden="true">→</b></span></span>
+                <span class="category-tile-copy"><span class="category-tile-kicker">{{ str_pad((string) $categoryNumber, 2, '0', STR_PAD_LEFT) }} <i>·</i> CATEGORY</span><h3>{{ $category->name }}</h3><span class="category-tile-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-tile-cta">{{ $category->product_count }} products <b aria-hidden="true">→</b></span></span>
             </a>
         @endforeach
     </div>

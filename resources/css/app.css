@@ -1414,9 +1414,9 @@ html,body{overflow-x:clip}
     .category-trust-row{width:100%;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 8px}
     .category-trust-row>span{display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;min-width:0;gap:7px;padding:0!important}
     .category-trust-row>span>span{display:block;min-width:0;overflow-wrap:normal;word-break:normal;white-space:normal}
-    .category-tile-grid .category-tile-card:last-child{grid-column:1/-1}
-    .category-tile-grid .category-tile-card:last-child>img{width:62%}
-    .category-tile-grid .category-tile-card:last-child .category-tile-copy{width:52%}
+    .category-tile-grid .category-tile-card:last-child:not(.category-tile-card-mobile-editorial){grid-column:1/-1}
+    .category-tile-grid .category-tile-card:last-child:not(.category-tile-card-mobile-editorial)>img{width:62%}
+    .category-tile-grid .category-tile-card:last-child:not(.category-tile-card-mobile-editorial) .category-tile-copy{width:52%}
 }
 
 /* Use compact offer indicators on phones and reserve a fixed lane for the cart action. */
@@ -1685,15 +1685,15 @@ html,body{overflow-x:clip}
 @media(max-width:680px){.admin-export-page .admin-page-heading{align-items:flex-start;flex-direction:column}.admin-export-stats{grid-template-columns:1fr;gap:9px}.admin-export-stats article{min-height:70px}.admin-export-grid{grid-template-columns:1fr}.admin-export-card-featured{grid-column:auto}.admin-export-card{padding:18px}.admin-export-card-top{margin-bottom:15px}}
 
 @media(max-width:760px){
-    .category-tile-grid .category-tile-card:nth-child(-n+6){display:flex;grid-column:auto;height:auto;min-height:260px;aspect-ratio:.69;flex-direction:column;border:1px solid #d8e8e3;border-radius:16px;background:#fff;box-shadow:0 8px 20px rgba(15,56,48,.08)}
-    .category-tile-grid .category-tile-card:nth-child(-n+6)>img{position:relative;inset:auto;z-index:0;width:100%;height:54%;flex:0 0 54%;object-fit:cover;object-position:center;background:#f4f6f5}
-    .category-tile-grid .category-tile-card:nth-child(-n+6):before{display:none}
-    .category-tile-grid .category-tile-card:nth-child(-n+6) .category-tile-copy{position:relative;inset:auto;width:100%;min-height:0;flex:1;display:flex;align-items:flex-start;padding:11px 11px 12px;background:#fff}
-    .category-tile-grid .category-tile-card:nth-child(-n+6) .category-tile-kicker{font-size:11px;line-height:16px;letter-spacing:.08em}
-    .category-tile-grid .category-tile-card:nth-child(-n+6) .category-tile-copy h3{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:34px;margin:6px 0 3px;font-size:15px;line-height:17px}
-    .category-tile-grid .category-tile-card:nth-child(-n+6) .category-tile-description{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:30px;font-size:12px;line-height:15px}
-    .category-tile-grid .category-tile-card:nth-child(-n+6) .category-tile-cta{gap:0;margin-top:auto;padding:5px 9px;border-color:#b9ddd4;background:#f5fbf9;font-size:12px;line-height:17px}
-    .category-tile-grid .category-tile-card:nth-child(-n+6) .category-tile-cta b{width:25px;height:25px;display:grid;place-items:center;margin-left:7px;border-radius:50%;background:#0c716b;color:#fff;font-size:17px;line-height:1}
+    .category-tile-grid .category-tile-card-mobile-editorial{display:flex;grid-column:auto;height:auto;min-height:260px;aspect-ratio:.69;flex-direction:column;border:1px solid #d8e8e3;border-radius:16px;background:#fff;box-shadow:0 8px 20px rgba(15,56,48,.08)}
+    .category-tile-grid .category-tile-card-mobile-editorial>img{position:relative;inset:auto;z-index:0;width:100%;height:54%;flex:0 0 54%;object-fit:cover;object-position:center;background:#f4f6f5}
+    .category-tile-grid .category-tile-card-mobile-editorial:before{display:none}
+    .category-tile-grid .category-tile-card-mobile-editorial .category-tile-copy{position:relative;inset:auto;width:100%;min-height:0;flex:1;display:flex;align-items:flex-start;padding:11px 11px 12px;background:#fff}
+    .category-tile-grid .category-tile-card-mobile-editorial .category-tile-kicker{font-size:12px;line-height:16px;letter-spacing:.08em}
+    .category-tile-grid .category-tile-card-mobile-editorial .category-tile-copy h3{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:34px;margin:6px 0 3px;font-size:15px;line-height:17px}
+    .category-tile-grid .category-tile-card-mobile-editorial .category-tile-description{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:30px;font-size:12px;line-height:15px}
+    .category-tile-grid .category-tile-card-mobile-editorial .category-tile-cta{gap:0;margin-top:auto;padding:5px 9px;border-color:#b9ddd4;background:#f5fbf9;font-size:12px;line-height:17px}
+    .category-tile-grid .category-tile-card-mobile-editorial .category-tile-cta b{width:25px;height:25px;display:grid;place-items:center;margin-left:7px;border-radius:50%;background:#0c716b;color:#fff;font-size:17px;line-height:1}
 }
 
 .admin-seo-page{width:100%;max-width:none}
@@ -1767,5 +1767,20 @@ html,body{overflow-x:clip}
 /* Keep the dashboard photo visible behind the carousel cards. */
 .hero-combo-art{background-color:#063b3b;background-image:linear-gradient(120deg,rgba(3,73,70,.42),rgba(0,35,48,.56)),url('/images/feature-dashboard-night.webp');background-position:center center;background-size:cover}
 .admin-directory-page .admin-category-image-guidance{flex:0 0 100%;color:#778780;font:400 12px/17px 'Outfit',sans-serif}
+.admin-directory-page .admin-category-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;white-space:nowrap}
+.admin-directory-page .admin-category-row-actions>a{color:#0c6661;font:500 12px/18px 'Outfit',sans-serif;text-decoration:none}
+.admin-directory-page .admin-category-edit-button{min-height:32px;padding:0 11px;border:1px solid #d7e5df;border-radius:7px;background:#fff;color:#315b51;font:500 12px/17px 'Outfit',sans-serif;cursor:pointer}
+.admin-directory-page .admin-category-edit-button:hover{border-color:#7db9aa;background:#f5fbf8}
+.admin-directory-page .admin-category-upload-field{grid-column:1/-1}
+.admin-directory-page .admin-category-upload-control{position:relative;display:flex;align-items:center;min-height:42px;padding:0 12px;border:1px dashed #a9c8bc;border-radius:7px;background:#f7fbf9;color:#47645a;cursor:pointer}
+.admin-directory-page .admin-category-upload-control input[type=file]{position:absolute;inset:0;width:100%;height:100%;padding:0;opacity:0;cursor:pointer}
+.admin-directory-page .admin-category-upload-control small{overflow:hidden;color:#61766d;font:400 12px/18px 'Outfit',sans-serif;text-overflow:ellipsis;white-space:nowrap}
+.admin-directory-page .admin-category-edit-backdrop{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px;background:rgba(12,25,23,.58);backdrop-filter:blur(4px)}
+.admin-directory-page .admin-category-edit-dialog{width:min(100%,680px);max-height:min(90dvh,760px);overflow:auto;padding:22px;border:1px solid #e4ece7;border-radius:14px;background:#fff;box-shadow:0 24px 80px rgba(0,0,0,.22)}
+.admin-directory-page .admin-category-edit-dialog .admin-panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.admin-directory-page .admin-category-edit-dialog .admin-panel-head h2{margin:0;color:#25332d;font:600 19px/26px 'Outfit',sans-serif}
+.admin-directory-page .admin-category-edit-dialog .eyebrow{margin:0 0 4px;color:#087c76;font:600 12px/18px 'Outfit',sans-serif;letter-spacing:.1em}
+.admin-directory-page .admin-category-edit-dialog .admin-category-upload-field{grid-column:1/-1}
+@media(max-width:760px){.admin-directory-page .admin-category-row-actions{grid-column:2;grid-row:3;justify-content:flex-start;margin-top:2px}.admin-directory-page .admin-category-row-actions>a{margin:0}.admin-directory-page .admin-category-edit-dialog{padding:17px}.admin-directory-page .admin-category-edit-dialog .admin-category-create-form{grid-template-columns:1fr}.admin-directory-page .admin-category-edit-dialog .admin-category-description,.admin-directory-page .admin-category-edit-dialog .admin-category-upload-field,.admin-directory-page .admin-category-edit-dialog .admin-category-create-actions{grid-column:auto}}
 .product-form-section-heading p strong{color:#0b716b;font-weight:600}
 .product-image-placeholder small{max-width:520px}
