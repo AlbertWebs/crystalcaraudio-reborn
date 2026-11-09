@@ -1338,6 +1338,7 @@ html,body{overflow-x:clip}
 @media(max-width:520px){.product-primary-image-choices{padding:11px}.product-primary-image-grid{grid-template-columns:1fr 1fr;gap:7px}.product-primary-image-choice{grid-template-columns:48px minmax(0,1fr) 19px;gap:7px;padding:7px}.product-primary-image-preview{width:48px;height:48px}}
 .product-upload-choice-wrap{position:relative;min-width:0}.product-upload-choice-wrap .product-primary-image-choice{height:100%;padding-right:34px}.product-upload-remove{position:absolute;top:5px;right:5px;width:25px;height:25px;display:grid;place-items:center;border:1px solid #e4ebe7;border-radius:50%;background:#fff;color:#68776e;font:400 17px/1 'Outfit',sans-serif;cursor:pointer}.product-upload-remove:hover{border-color:#e2b9b4;background:#fff7f6;color:#a43d34}.product-upload-main-choice[hidden]{display:none}
 .product-price-row{flex-wrap:wrap;column-gap:6px;row-gap:2px}.product-price-row .product-discount-percent{color:#d63722;font:600 13px/20px 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;white-space:nowrap}
+.offer-image-editor{align-items:start;margin-top:18px}.offer-image-preview{width:min(100%,180px);aspect-ratio:1/1;border:1px solid #e4e9e6;border-radius:8px;background:#f7f9f8;object-fit:contain}
 @media(max-width:760px){.product-price-row .product-discount-percent{font-size:12px;line-height:18px}}
 
 /* Keep product pricing and the add-to-cart action on one shared baseline. */

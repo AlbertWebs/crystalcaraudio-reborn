@@ -5,6 +5,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Crystal Car Audio | Sound that moves you')</title>
     <meta name="description" content="@yield('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="subject" content="Crystal Car Audio - Clear Beats with Premium Car Sound Systems in Nairobi">
+    <meta name="rating" content="General">
+    <meta name="author" content="Designekta Studios">
+    <meta property="fb:app_id" content="431980657174772">
     <meta name="keywords" content="@yield('meta_keywords', 'car audio Kenya, car radios Nairobi, car speakers, car accessories, Crystal Car Audio')">
     <link rel="canonical" href="{{ url()->current() }}">
     <meta name="geo.region" content="KE-30">
@@ -15,7 +21,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ \App\Support\MediaUrl::url('favicon/favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ \App\Support\MediaUrl::url('favicon/apple-icon-180x180.png') }}">
     <link rel="manifest" href="{{ asset('favicon/manifest.json') }}">
-    <meta name="theme-color" content="#0c6661">
+    <meta name="theme-color" content="#1c2c52">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Crystal Car Audio">
@@ -23,7 +29,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="HandheldFriendly" content="true">
     <meta name="format-detection" content="telephone=yes">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="referrer" content="no-referrer">
     <meta name="msapplication-config" content="{{ asset('favicon/browserconfig.xml') }}">
     <meta property="og:site_name" content="Crystal Car Audio">
     <meta property="og:type" content="website">

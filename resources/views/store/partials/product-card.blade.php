@@ -1,6 +1,8 @@
 @php
     $productUrl = route('product-single', $product->slug);
-    $imagePath = $product->image;
+    $imagePath = ($product->is_offer || $product->is_special) && filled($product->offer_image)
+        ? $product->offer_image
+        : $product->image;
     $discountPercent = $product->original_price && $product->original_price > $product->price
         ? (int) round((($product->original_price - $product->price) / $product->original_price) * 100)
         : null;

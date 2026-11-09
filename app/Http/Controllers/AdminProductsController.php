@@ -160,6 +160,7 @@ class AdminProductsController extends Controller
             'images' => ['nullable', 'array', 'max:10'],
             'images.*' => ['image', 'max:5120'],
             'image' => ['nullable', 'image', 'max:5120'],
+            'offer_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'featured' => ['nullable', 'boolean'],
             'is_offer' => ['nullable', 'boolean'],
             'is_special' => ['nullable', 'boolean'],
@@ -197,6 +198,12 @@ class AdminProductsController extends Controller
         unset($data['primary_image']);
         unset($data['primary_upload_index']);
         unset($data['images'], $data['image']);
+
+        if ($request->hasFile('offer_image')) {
+            $data['offer_image'] = $this->storeImage($request->file('offer_image'));
+        } else {
+            unset($data['offer_image']);
+        }
 
         $gallery = collect($product?->gallery ?? [])
             ->filter(fn ($image) => is_string($image) && trim($image) !== '')

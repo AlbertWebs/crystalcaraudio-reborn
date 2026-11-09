@@ -52,6 +52,13 @@
             @else
                 <p class="product-primary-image-note" data-primary-image-note>A newly uploaded image will be used as the main product image.</p>
             @endif
+            <div class="catalogue-form-grid offer-image-editor">
+                <label class="catalogue-field">Special offer image<input type="file" name="offer_image" accept="image/jpeg,image/png,image/webp"><small>Optional image shown on Special Offers cards. Upload a product offer graphic, up to 5 MB.</small></label>
+                @if($editingProduct?->offer_image)
+                    @php($offerImageUrl = str_starts_with($editingProduct->offer_image, 'http') ? $editingProduct->offer_image : \App\Support\MediaUrl::url('uploads/'.ltrim($editingProduct->offer_image, '/')))
+                    <div class="catalogue-field"><span>Current offer image</span><img class="offer-image-preview" src="{{ $offerImageUrl }}" alt="Current Special Offers image for {{ $editingProduct->name }}" loading="lazy" decoding="async"></div>
+                @endif
+            </div>
         </section>
         <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">04</span><div><h2>Store visibility and SEO</h2><p>Products appear in the store when saved. Promotion badges are optional; SEO fields are suggested from your product details and remain editable.</p></div></div>
             <div class="catalogue-flag-row">@foreach(['featured' => 'Featured pick', 'is_offer' => 'Offer', 'is_special' => 'Special', 'trending' => 'Trending', 'is_combo' => 'Homepage combo carousel'] as $flag => $label)<label class="catalogue-check"><input type="checkbox" name="{{ $flag }}" value="1" @checked(old($flag, $editingProduct?->{$flag} ?? false))><span>{{ $label }}</span></label>@endforeach</div>

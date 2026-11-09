@@ -1,7 +1,7 @@
 @extends('store.layout')
 
-@section('title', 'Premium Car Audio Systems in Nairobi, Kenya | Crystal Car Audio')
-@section('meta_description', 'Shop premium car audio systems in Nairobi, Kenya. Browse radios, speakers and amplifiers with fitment advice and delivery across Kenya.')
+@section('title', 'Crystal Car Audio - Clear Beats with Premium Car Sound Systems in Nairobi')
+@section('meta_description', 'Crystal Car Audio offers premium vehicle sound systems and accessories in Nairobi. Discover top-quality car radios, speakers, boosters, equalizers, and car alarm systems. Get crystal-clear sound and reliable security solutions for your vehicle today.')
 @section('meta_image', $heroImageUrl)
 
 @push('structured-data')
