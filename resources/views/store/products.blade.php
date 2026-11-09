@@ -36,7 +36,8 @@
     <span><i aria-hidden="true">↗</i> Delivery across Kenya</span>
     <span><i aria-hidden="true">◈</i> Secure checkout</span>
 </div>
-<section class="section listing listing-storefront collection-listing">
+<section class="section listing listing-storefront collection-listing {{ request()->routeIs('special-offers') ? 'special-offers-listing' : '' }}">
+    @unless(request()->routeIs('special-offers'))
     <aside class="category-filter collection-sidebar" aria-label="Filter products">
         <div class="collection-filter-title"><span>Filter products</span><a href="{{ url()->current() }}">Clear all</a></div>
         <details class="collection-filter-group" open>
@@ -68,6 +69,7 @@
             <input type="hidden" name="sort" value="{{ request('sort', 'recommended') }}">
         </form>
     </aside>
+    @endunless
     <div class="listing-main">
         <div class="listing-toolbar">
             <span class="listing-results"><b>{{ number_format($products->total()) }}</b> products</span>

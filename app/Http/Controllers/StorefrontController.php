@@ -25,7 +25,7 @@ class StorefrontController extends Controller
         $newArrivals = CatalogProduct::query()->latest()->take(8)->get();
         $comboProducts = CatalogProduct::query()
             ->where('is_combo', true)
-            ->orderByDesc('featured')->orderByDesc('updated_at')->take(2)->get();
+            ->orderByDesc('featured')->orderByDesc('updated_at')->get();
         if ($comboProducts->count() < 2) {
             $fallbackProducts = CatalogProduct::query()
                 ->whereIn('slug', ['car-door-speakers-65-320w', 'android-screen-underseat-subwoofer'])
@@ -41,9 +41,11 @@ class StorefrontController extends Controller
                 ->orderByDesc('featured')->latest()->take(2 - $comboProducts->count())->get();
             $comboProducts = $comboProducts->concat($additionalProducts)->values();
         }
-        $comboSlides = $comboProducts->isEmpty()
-            ? collect()
-            : collect([$comboProducts->take(2)->values()]);
+        $completeComboProductCount = intdiv($comboProducts->count(), 2) * 2;
+        $comboSlides = $comboProducts
+            ->take($completeComboProductCount)
+            ->chunk(2)
+            ->values();
         $categories = DB::table('catalog_categories')
             ->leftJoin('catalog_products', 'catalog_products.category', '=', 'catalog_categories.name')
             ->select('catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.image', 'catalog_categories.sort_order', DB::raw('COUNT(catalog_products.id) as product_count'))

@@ -1,10 +1,14 @@
 @php
     $productUrl = route('product-single', $product->slug);
-    $imagePath = ($product->is_offer || $product->is_special) && filled($product->offer_image)
-        ? $product->offer_image
-        : $product->image;
     $discountPercent = $product->original_price && $product->original_price > $product->price
         ? (int) round((($product->original_price - $product->price) / $product->original_price) * 100)
+        : null;
+    $hasActiveOffer = $product->is_offer || $product->is_special || $discountPercent;
+    $imagePath = $hasActiveOffer && filled($product->offer_image)
+        ? $product->offer_image
+        : $product->image;
+    $imageUrl = filled($imagePath)
+        ? \App\Support\MediaUrl::url(str_starts_with($imagePath, 'uploads/') ? $imagePath : 'uploads/'.ltrim($imagePath, '/'))
         : null;
     $highlights = collect($product->specifications ?? [])->filter(fn ($spec) => filled($spec['title'] ?? null) && filled($spec['value'] ?? null))->take(2);
     $brandLabel = $product->brand && strtolower($product->brand) !== 'others' ? $product->brand : ($product->category ?: 'CRYSTAL AUDIO');
@@ -12,8 +16,8 @@
 <article class="product-card">
     <div class="product-card-media">
         <a class="product-image" href="{{ $productUrl }}" aria-label="View {{ $product->name }}">
-            @if($imagePath)
-                <img loading="lazy" decoding="async" src="{{ str_starts_with($imagePath, 'http') ? $imagePath : \App\Support\MediaUrl::url('uploads/'.$imagePath) }}" alt="{{ $product->name }}">
+            @if($imageUrl)
+                <img loading="lazy" decoding="async" src="{{ $imageUrl }}" alt="{{ $product->name }}">
             @else
                 <span class="product-placeholder">◉</span>
             @endif
