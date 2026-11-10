@@ -1,6 +1,7 @@
 @extends('store.layout')
 @section('title', 'Car Audio Dealer in Kenya | Crystal Car Audio')
 @section('meta_description', 'Car radios, speakers and amplifiers from Crystal Car Audio in Nairobi, Kenya. Ask about fitment, installation and delivery across Kenya.')
+@section('meta_image', asset('images/homepage-social-preview.png'))
 @section('content')
 <section class="hero hero-storefront">
     <div class="hero-copy">
