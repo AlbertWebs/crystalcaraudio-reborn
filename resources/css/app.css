@@ -1425,6 +1425,7 @@ html,body{overflow-x:clip}
 @media(max-width:760px){
     .product-card-media>.product-badge{display:none!important}
     .product-card-media>.product-badge-mobile{position:absolute;z-index:4;top:8px;left:8px;display:inline-flex!important;align-items:center;min-height:21px;padding:2px 7px;border:1px solid rgba(255,255,255,.92);border-radius:14px;background:#ed001b;color:#fff;box-shadow:0 2px 6px rgba(24,30,27,.14);font:500 12px/16px 'Outfit Medium','Cairo Medium','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.015em;white-space:nowrap}
+    .store-homepage .product-card-media>.product-badge-mobile{top:6px;left:6px;min-height:8px;padding:0 2px;border-radius:7px;font-size:7px;line-height:8px;letter-spacing:0}
     .product-grid-storefront .product-card h3,.product-card h3{min-height:16px;margin:2px 0 5px;font-size:12px!important;line-height:16px!important}
     .product-card-category{margin-bottom:6px;padding:1px 7px;font-size:12px;line-height:16px}
     .product-card .product-card-buy-row{display:grid;grid-template-columns:minmax(0,1fr) 28px;align-items:center;gap:5px}
