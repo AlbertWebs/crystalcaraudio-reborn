@@ -94,7 +94,11 @@
                     'name' => 'Crystal Car Audio',
                     'url' => $siteUrl.'/',
                     'logo' => $logoUrl,
-                    'sameAs' => ['https://ke.linkedin.com/company/crystal-car-audio'],
+                    'sameAs' => [
+                        'https://www.facebook.com/Crystalclearbeats/',
+                        'https://www.instagram.com/crys_talcaraudio/',
+                        'https://ke.linkedin.com/company/crystal-car-audio',
+                    ],
                     'telephone' => '+254790721397',
                     'email' => 'info@crystalcaraudio.com',
                     'contactPoint' => [
@@ -229,12 +233,11 @@
     <div class="footer-social-bar">
         <strong>FOLLOW US</strong>
         <div class="footer-social-links">
-            <span title="Facebook" role="img" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8.1h2.8l.4-3.2h-3.2v-2c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.2v3.2H10V21h3.4Z"/></svg></span>
+            <a href="https://www.facebook.com/Crystalclearbeats/" target="_blank" rel="noopener noreferrer" aria-label="Crystal Car Audio on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8.1h2.8l.4-3.2h-3.2v-2c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.2v3.2H10V21h3.4Z"/></svg></a>
             <a href="https://ke.linkedin.com/company/crystal-car-audio" target="_blank" rel="noopener noreferrer" aria-label="Crystal Car Audio on LinkedIn">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 2H3.6C2.7 2 2 2.7 2 3.6v16.8c0 .9.7 1.6 1.6 1.6h16.8c.9 0 1.6-.7 1.6-1.6V3.6c0-.9-.7-1.6-1.6-1.6ZM8 18H5V9h3v9ZM6.5 7.8a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4ZM19 18h-3v-4.4c0-1.1 0-2.5-1.5-2.5S13 12.3 13 13.5V18h-3V9h2.9v1.2h.1c.4-.7 1.3-1.5 2.8-1.5 3 0 3.5 2 3.5 4.5V18Z"/></svg>
             </a>
-            <span title="Instagram" role="img" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2.2A2.8 2.8 0 0 0 4.2 7v10A2.8 2.8 0 0 0 7 19.8h10a2.8 2.8 0 0 0 2.8-2.8V7A2.8 2.8 0 0 0 17 4.2H7Zm5 2.1a5.7 5.7 0 1 1 0 11.4 5.7 5.7 0 0 1 0-11.4Zm0 2.2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm5.9-3a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6Z"/></svg></span>
-            <span title="TikTok" role="img" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 5.2a5.8 5.8 0 0 1-3.5-3.5A6.8 6.8 0 0 1 15.8 0h-4.1v15.1a2.8 2.8 0 1 1-2.8-2.8c.4 0 .8.1 1.2.2V8.3a7 7 0 1 0 5.7 6.8V7.4a9.8 9.8 0 0 0 5.1 1.5V4.8c-.5 0-.9.1-1.3.4Z"/></svg></span>
+            <a href="https://www.instagram.com/crys_talcaraudio/" target="_blank" rel="noopener noreferrer" aria-label="Crystal Car Audio on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2.2A2.8 2.8 0 0 0 4.2 7v10A2.8 2.8 0 0 0 7 19.8h10a2.8 2.8 0 0 0 2.8-2.8V7A2.8 2.8 0 0 0 17 4.2H7Zm5 2.1a5.7 5.7 0 1 1 0 11.4 5.7 5.7 0 0 1 0-11.4Zm0 2.2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm5.9-3a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6Z"/></svg></a>
             <a href="/find-us" aria-label="Find Crystal Car Audio on the map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg></a>
         </div>
     </div>
