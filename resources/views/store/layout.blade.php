@@ -280,10 +280,24 @@
 <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"/></svg>
 </button>
-<a class="store-chat-widget" href="https://wa.me/254790721397?text=Hi%20Crystal%20Car%20Audio%2C%20I%20need%20some%20help." target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp chat with Crystal Car Audio">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.03 3.2A12.74 12.74 0 0 0 5.08 22.45L3.3 28.9l6.6-1.73A12.8 12.8 0 1 0 16.03 3.2Zm0 23.37c-1.94 0-3.85-.52-5.52-1.51l-.4-.23-3.92 1.03 1.05-3.82-.26-.42a10.54 10.54 0 1 1 9.05 4.95Zm5.79-7.9c-.32-.16-1.88-.93-2.17-1.03-.29-.11-.5-.16-.71.16-.21.32-.82 1.03-1 1.24-.19.22-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.6-1.89-1.79-2.21-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.54.1-.21.05-.4-.03-.56-.08-.16-.71-1.72-.98-2.36-.26-.62-.52-.53-.71-.54h-.61c-.21 0-.56.08-.85.4-.3.32-1.11 1.08-1.11 2.64s1.14 3.06 1.3 3.27c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.53 1.81.68.76.24 1.46.21 2.01.13.61-.09 1.88-.77 2.15-1.51.26-.75.26-1.38.18-1.51-.08-.14-.29-.22-.61-.38Z"/></svg>
-    <span>Chat with us</span>
-</a>
+<section class="store-chat-panel" id="store-chat-panel" aria-label="Chat with Crystal Car Audio" hidden>
+    <header class="store-chat-header">
+        <span class="store-chat-avatar" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16.03 3.2A12.74 12.74 0 0 0 5.08 22.45L3.3 28.9l6.6-1.73A12.8 12.8 0 1 0 16.03 3.2Zm0 23.37c-1.94 0-3.85-.52-5.52-1.51l-.4-.23-3.92 1.03 1.05-3.82-.26-.42a10.54 10.54 0 1 1 9.05 4.95Zm5.79-7.9c-.32-.16-1.88-.93-2.17-1.03-.29-.11-.5-.16-.71.16-.21.32-.82 1.03-1 1.24-.19.22-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.6-1.89-1.79-2.21-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.54.1-.21.05-.4-.03-.56-.08-.16-.71-1.72-.98-2.36-.26-.62-.52-.53-.71-.54h-.61c-.21 0-.56.08-.85.4-.3.32-1.11 1.08-1.11 2.64s1.14 3.06 1.3 3.27c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.53 1.81.68.76.24 1.46.21 2.01.13.61-.09 1.88-.77 2.15-1.51.26-.75.26-1.38.18-1.51-.08-.14-.29-.22-.61-.38Z"/></svg></span>
+        <span class="store-chat-title"><strong>Crystal Car Audio Support</strong><small>Typically replies instantly</small></span>
+        <button class="store-chat-close" type="button" data-store-chat-close aria-label="Close chat">×</button>
+    </header>
+    <div class="store-chat-content" aria-live="polite"><p>Hello! Welcome to Crystal Car Audio. How can we help you today?</p></div>
+    <form class="store-chat-form" data-store-chat-form>
+        <label class="sr-only" for="store-chat-message">Your message</label>
+        <textarea id="store-chat-message" name="message" placeholder="Type your message here..." rows="1" maxlength="1000" required></textarea>
+        <button type="submit" aria-label="Continue chat in WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7.4 18-3.8-7.8L2 9.4 21 3Zm0 0L9.8 13.2"/></svg></button>
+    </form>
+    <footer class="store-chat-footer"><span>Direct chat via WhatsApp</span><span><i aria-hidden="true"></i>Online</span></footer>
+</section>
+<button class="store-chat-widget" type="button" data-store-chat-toggle aria-controls="store-chat-panel" aria-expanded="false" aria-label="Open WhatsApp chat with Crystal Car Audio" title="Chat with us">
+    <svg class="store-chat-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16.03 3.2A12.74 12.74 0 0 0 5.08 22.45L3.3 28.9l6.6-1.73A12.8 12.8 0 1 0 16.03 3.2Zm0 23.37c-1.94 0-3.85-.52-5.52-1.51l-.4-.23-3.92 1.03 1.05-3.82-.26-.42a10.54 10.54 0 1 1 9.05 4.95Zm5.79-7.9c-.32-.16-1.88-.93-2.17-1.03-.29-.11-.5-.16-.71.16-.21.32-.82 1.03-1 1.24-.19.22-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.6-1.89-1.79-2.21-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.54.1-.21.05-.4-.03-.56-.08-.16-.71-1.72-.98-2.36-.26-.62-.52-.53-.71-.54h-.61c-.21 0-.56.08-.85.4-.3.32-1.11 1.08-1.11 2.64s1.14 3.06 1.3 3.27c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.53 1.81.68.76.24 1.46.21 2.01.13.61-.09 1.88-.77 2.15-1.51.26-.75.26-1.38.18-1.51-.08-.14-.29-.22-.61-.38Z"/></svg>
+    <svg class="store-chat-close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+</button>
 <script>
 (() => {
     const mobileBar = document.querySelector('.mobile-bar');

@@ -1,7 +1,6 @@
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
-Alpine.start();
 
 const backToTop = document.querySelector('[data-back-to-top]');
 if (backToTop) {
@@ -230,10 +229,12 @@ document.querySelectorAll('[data-scroll-rail]').forEach(button => {
 
 document.querySelectorAll('[data-gallery-image]').forEach(button => {
     button.addEventListener('click', () => {
-        const image = document.querySelector('#product-gallery-image');
+        const gallery = button.closest('.product-gallery');
+        const image = gallery?.querySelector('#product-gallery-image');
         if (!image) return;
         image.src = button.dataset.galleryImage;
-        document.querySelectorAll('[data-gallery-image]').forEach(item => {
+        const thumbnailButtons = gallery.querySelectorAll('[data-gallery-image]');
+        thumbnailButtons.forEach(item => {
             const active = item === button;
             item.classList.toggle('is-active', active);
             item.setAttribute('aria-pressed', String(active));
@@ -489,3 +490,38 @@ document.querySelectorAll('[data-combo-carousel]').forEach(carousel => {
     setSlide(0);
     startRotation();
 });
+
+const storeChatPanel = document.querySelector('#store-chat-panel');
+const storeChatToggle = document.querySelector('[data-store-chat-toggle]');
+const storeChatMessage = document.querySelector('#store-chat-message');
+const setStoreChatOpen = isOpen => {
+    if (!storeChatPanel || !storeChatToggle) return;
+    storeChatPanel.hidden = !isOpen;
+    storeChatToggle.classList.toggle('is-open', isOpen);
+    storeChatToggle.setAttribute('aria-expanded', String(isOpen));
+    storeChatToggle.setAttribute('aria-label', `${isOpen ? 'Close' : 'Open'} WhatsApp chat with Crystal Car Audio`);
+    if (isOpen) storeChatMessage?.focus();
+};
+
+storeChatToggle?.addEventListener('click', () => setStoreChatOpen(storeChatPanel?.hidden ?? false));
+document.querySelector('[data-store-chat-close]')?.addEventListener('click', () => {
+    setStoreChatOpen(false);
+    storeChatToggle?.focus();
+});
+storeChatPanel?.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+        setStoreChatOpen(false);
+        storeChatToggle?.focus();
+    }
+});
+document.querySelector('[data-store-chat-form]')?.addEventListener('submit', event => {
+    event.preventDefault();
+    const message = storeChatMessage?.value.trim();
+    if (!message) return;
+    const productName = document.querySelector('.product-purchase-panel h1')?.textContent.trim();
+    const opening = productName ? `Hi Crystal Car Audio, I have a question about ${productName}:` : 'Hi Crystal Car Audio, I have a question:';
+    const whatsappUrl = `https://wa.me/254790721397?text=${encodeURIComponent(`${opening} ${message}`)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+});
+
+Alpine.start();
