@@ -115,6 +115,7 @@ class AdminPortfolioController extends Controller
             'service_area' => ['nullable', 'string', 'max:190'],
             'client_name' => ['nullable', 'string', 'max:190'],
             'description' => ['required', 'string', 'max:50000'],
+            'cover_image' => ['nullable', 'string', 'max:500'],
             'keep_images' => ['nullable', 'array', 'max:16'],
             'keep_images.*' => ['string', 'max:500'],
             'images' => ['nullable', 'array', 'max:8'],
@@ -171,9 +172,17 @@ class AdminPortfolioController extends Controller
     {
         $keep = collect($request->input('keep_images', []))->intersect($existingPaths)->values();
         $uploads = collect($request->file('images', []))
-            ->map(fn (UploadedFile $file) => $this->storeUpload($file, 'images/'.$slug));
+            ->map(fn (UploadedFile $file) => $this->storeUpload($file, 'images/'.$slug))->values();
+        $images = $keep->concat($uploads)->unique()->values();
+        $coverImage = (string) $request->input('cover_image', '');
+        if (Str::startsWith($coverImage, 'upload:')) {
+            $coverImage = (string) $uploads->get((int) substr($coverImage, 7), '');
+        }
+        if ($coverImage !== '' && $images->contains($coverImage)) {
+            $images = collect([$coverImage])->concat($images->reject(fn (string $image) => $image === $coverImage))->values();
+        }
 
-        return $keep->concat($uploads)->unique()->values()->all();
+        return $images->all();
     }
 
     private function storeUpload(UploadedFile $file, string $directory): string

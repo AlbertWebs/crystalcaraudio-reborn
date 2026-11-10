@@ -54,7 +54,7 @@
     @if(count($images))
         <section class="portfolio-project-gallery-section" aria-labelledby="portfolio-gallery-title"><h2 id="portfolio-gallery-title">Installation photos</h2><div class="portfolio-project-gallery">@foreach($images as $image)<figure><img src="{{ $image }}" alt="{{ $project['title'] }} car audio installation photo {{ $loop->iteration }}" loading="lazy" decoding="async"></figure>@endforeach</div></section>
     @endif
-    <div class="portfolio-project-description"><h2>Upgrade overview</h2>{!! nl2br(e(trim(strip_tags((string) ($project['description'] ?? ''))))) !!}@if(filled($project['client_name'] ?? null))<p><strong>Customer:</strong> {{ $project['client_name'] }}</p>@endif</div>
+    <div class="portfolio-project-description"><h2>Upgrade overview</h2>{!! \Illuminate\Support\Str::markdown(trim((string) ($project['description'] ?? '')), ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}@if(filled($project['client_name'] ?? null))<p><strong>Customer:</strong> {{ $project['client_name'] }}</p>@endif</div>
     <a class="text-link" href="{{ route('portfolio') }}">← Back to our portfolio</a>
 </section>
 @endsection
