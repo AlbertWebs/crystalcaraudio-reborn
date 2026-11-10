@@ -1,9 +1,20 @@
 @extends('store.layout')
+@php
+    $categoryImageForPreview = filled($categoryRecord?->image ?? null)
+        ? \App\Support\MediaUrl::category($categoryRecord->image)
+        : null;
+    $firstProductImageForPreview = $products->first()?->image;
+    $socialPreviewImage = $categoryImageForPreview
+        ?: ($firstProductImageForPreview
+            ? \App\Support\MediaUrl::url(str_starts_with($firstProductImageForPreview, 'http') ? $firstProductImageForPreview : 'uploads/'.ltrim($firstProductImageForPreview, '/'))
+            : \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'));
+@endphp
 @section('title', $seoTitle ?? $pageTitle.' | Crystal Car Audio')
 @section('meta_description', $seoDescription ?? $pageDescription)
 @section('meta_keywords', $seoKeywords ?? 'car audio Kenya, car radios Nairobi, car speakers, car accessories, Crystal Car Audio')
 @section('meta_og_title', $seoOgTitle ?? ($seoTitle ?? $pageTitle.' | Crystal Car Audio'))
 @section('meta_og_description', $seoOgDescription ?? ($seoDescription ?? $pageDescription))
+@section('meta_image', $socialPreviewImage)
 @section('content')
 @php
     $breadcrumbCurrent = request()->routeIs('product-category') || filled(request('category'))

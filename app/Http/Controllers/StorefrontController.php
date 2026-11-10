@@ -215,7 +215,7 @@ class StorefrontController extends Controller
             $seoOgDescription = filled($seo['og_description']) ? Str::limit(str_replace('{category}', $pageTitle, $seo['og_description']), 160) : $seoDescription;
         }
 
-        return view('store.products', compact('products', 'pageTitle', 'pageDescription', 'categoryGuide', 'seoTitle', 'seoDescription', 'seoKeywords', 'seoOgTitle', 'seoOgDescription', 'categories', 'brands'));
+        return view('store.products', compact('products', 'categoryRecord', 'pageTitle', 'pageDescription', 'categoryGuide', 'seoTitle', 'seoDescription', 'seoKeywords', 'seoOgTitle', 'seoOgDescription', 'categories', 'brands'));
     }
 
     public function categoryDirectory()

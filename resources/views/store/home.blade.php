@@ -61,9 +61,11 @@
             'conversion-fascia-kits' => ['image' => 'fascia-kits.webp', 'description' => 'Dash kits for a perfect fit'],
             'equalizers' => ['image' => 'equalizers.webp', 'description' => 'Fine-tune your sound'],
             'led-lights' => ['image' => 'in-car-accessories.webp', 'description' => 'Enhance comfort, style & convenience'],
+            'parking-sensors' => ['image' => 'parking-sensors.png', 'description' => 'Parking sensors and installation support'],
+            'car-dashcams' => ['image' => 'car-dashcams.png', 'description' => 'Car dash cameras for your journeys'],
         ];
         $featuredCategories = $categories->filter(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false));
-        $categoryDisplayOrder = ['car-amplifiers-booster' => 1, 'car-audio-installation' => 2, 'car-security-system' => 3, 'car-accessories' => 4, 'conversion-fascia-kits' => 5, 'equalizers' => 6, 'led-lights' => 7];
+        $categoryDisplayOrder = ['car-amplifiers-booster' => 1, 'car-audio-installation' => 2, 'car-security-system' => 3, 'car-accessories' => 4, 'conversion-fascia-kits' => 5, 'equalizers' => 6, 'led-lights' => 7, 'parking-sensors' => 8, 'car-dashcams' => 9];
         $otherCategories = $categories->reject(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false))
             ->sortBy(fn ($category) => $categoryDisplayOrder[$category->slug] ?? 99)->values();
     @endphp
