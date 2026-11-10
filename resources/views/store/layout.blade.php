@@ -11,6 +11,42 @@
     <meta name="rating" content="General">
     <meta name="author" content="Designekta Studios">
     <meta property="fb:app_id" content="431980657174772">
+    <!-- Google Tag Manager -->
+    <script>
+        (function (windowObject, documentObject, scriptTag, dataLayerName, containerId) {
+            windowObject[dataLayerName] = windowObject[dataLayerName] || [];
+            windowObject[dataLayerName].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            const firstScript = documentObject.getElementsByTagName(scriptTag)[0];
+            const tagScript = documentObject.createElement(scriptTag);
+            const layerQuery = dataLayerName !== 'dataLayer' ? '&l=' + dataLayerName : '';
+            tagScript.async = true;
+            tagScript.src = 'https://www.googletagmanager.com/gtm.js?id=' + containerId + layerQuery;
+            firstScript.parentNode.insertBefore(tagScript, firstScript);
+        })(window, document, 'script', 'dataLayer', 'GTM-WGDFGCZZ');
+    </script>
+    <!-- End Google Tag Manager -->
+    <!-- Meta Pixel -->
+    <script>
+        !function (windowObject, documentObject, scriptTag, sourceUrl, pixelFunction, scriptElement, firstScript) {
+            if (windowObject.fbq) return;
+            pixelFunction = windowObject.fbq = function () {
+                pixelFunction.callMethod ? pixelFunction.callMethod.apply(pixelFunction, arguments) : pixelFunction.queue.push(arguments);
+            };
+            if (!windowObject._fbq) windowObject._fbq = pixelFunction;
+            pixelFunction.push = pixelFunction;
+            pixelFunction.loaded = true;
+            pixelFunction.version = '2.0';
+            pixelFunction.queue = [];
+            scriptElement = documentObject.createElement(scriptTag);
+            scriptElement.async = true;
+            scriptElement.src = sourceUrl;
+            firstScript = documentObject.getElementsByTagName(scriptTag)[0];
+            firstScript.parentNode.insertBefore(scriptElement, firstScript);
+        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1672338073611112');
+        fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel -->
     <meta name="keywords" content="@yield('meta_keywords', 'car audio Kenya, car radios Nairobi, car speakers, car accessories, Crystal Car Audio')">
     <link rel="canonical" href="{{ url()->current() }}">
     <meta name="geo.region" content="KE-30">
@@ -125,6 +161,8 @@
     @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
 <body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WGDFGCZZ" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1672338073611112&amp;ev=PageView&amp;noscript=1" alt=""></noscript>
 @php
     $headerCategories = \Illuminate\Support\Facades\DB::table('catalog_categories')->orderByRaw('CASE WHEN sort_order = 0 THEN 1 ELSE 0 END')->orderBy('sort_order')->orderBy('name')->get(['name','slug']);
     $headerAudioCategories = $headerCategories->filter(function ($category) {

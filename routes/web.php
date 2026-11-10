@@ -3,10 +3,10 @@
 use App\Http\Controllers\AdminActivityController;
 use App\Http\Controllers\AdminBusinessIntelligenceController;
 use App\Http\Controllers\AdminCatalogExportController;
-use App\Http\Controllers\AdminMediaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminInstallationBookingController;
 use App\Http\Controllers\AdminInventoryController;
+use App\Http\Controllers\AdminMediaController;
 use App\Http\Controllers\AdminProductsController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminSeoController;
@@ -43,18 +43,84 @@ Route::get('/search-results', [StorefrontController::class, 'products'])->name('
 Route::get('/filter', [StorefrontController::class, 'products'])->name('search-filter');
 Route::get('/filters', [StorefrontController::class, 'products'])->name('search-filters');
 Route::get('/product-tags/{slug}', [StorefrontController::class, 'products'])->name('product-tags');
-Route::get('/sitemap', function () {
-    $paths = collect();
-    $paths = $paths->merge(DB::table('catalog_products')->pluck('slug')->map(fn ($slug) => '/product/'.$slug));
-    $paths = $paths->merge(DB::table('catalog_categories')->pluck('slug')->map(fn ($slug) => '/products/'.$slug));
-    $paths = $paths->merge(DB::table('catalog_tags')->pluck('slug')->map(fn ($slug) => '/product-tags/'.$slug));
-    $paths = $paths->merge(DB::table('catalog_products')->whereNotNull('brand')->where('brand', '!=', '')->distinct()->pluck('brand')->map(fn ($brand) => '/products/brand/'.Str::slug($brand)));
-    $portfolioIds = DB::table('legacy_archive_records')->where('source_table', 'portfolio')->pluck('source_id')->map(fn ($id) => '/our-portfolio/'.$id);
-    $paths = $paths->merge($portfolioIds)->merge(['/products', '/shop-by-category', '/products/shop-by-brand', '/premium-car-audio-systems-nairobi-kenya', '/special-offers', '/about-us', '/find-us', '/our-portfolio', '/shipping-policy', '/terms-and-conditions', '/privacy-policy']);
+Route::get('/sitemap.xml', function () {
+    $categoryPriorities = [
+        'car-radio' => '0.90',
+        'mid-range-speakers' => '0.80',
+        'car-amplifiers-booster' => '0.70',
+        'equalizers' => '0.60',
+    ];
+    $priorityCategorySlugs = array_keys($categoryPriorities);
+    $categoryUrls = DB::table('catalog_categories')
+        ->orderBy('sort_order')
+        ->orderBy('name')
+        ->get(['slug'])
+        ->sortBy(function (object $category) use ($priorityCategorySlugs): int {
+            $position = array_search($category->slug, $priorityCategorySlugs, true);
 
-    return response()->view('store.sitemap', ['paths' => $paths->unique()->values()])->header('Content-Type', 'application/xml; charset=UTF-8');
+            return $position === false ? count($priorityCategorySlugs) : $position;
+        })
+        ->map(fn (object $category): array => [
+            'loc' => url('/products/'.$category->slug),
+            'changefreq' => 'weekly',
+            'priority' => $categoryPriorities[$category->slug] ?? '0.50',
+        ]);
+
+    $staticUrls = [
+        '/products' => '0.50',
+        '/shop-by-category' => '0.50',
+        '/shop-by-brand' => '0.40',
+        '/premium-car-audio-systems-nairobi-kenya' => '0.50',
+        '/special-offers' => '0.50',
+        '/about-us' => '0.40',
+        '/find-us' => '0.40',
+        '/our-portfolio' => '0.40',
+        '/shipping-policy' => '0.30',
+        '/terms-and-conditions' => '0.30',
+        '/privacy-policy' => '0.30',
+    ];
+
+    $urls = collect([[
+        'loc' => url('/'),
+        'changefreq' => 'daily',
+        'priority' => '1.00',
+    ]])->concat($categoryUrls);
+
+    foreach ($staticUrls as $path => $priority) {
+        $urls->push([
+            'loc' => url($path),
+            'changefreq' => 'weekly',
+            'priority' => $priority,
+        ]);
+    }
+
+    $urls = $urls
+        ->concat(DB::table('catalog_products')->whereNotNull('slug')->pluck('slug')->map(fn (string $slug): array => [
+            'loc' => url('/product/'.$slug),
+            'changefreq' => 'weekly',
+            'priority' => '0.40',
+        ]))
+        ->concat(DB::table('catalog_tags')->pluck('slug')->map(fn (string $slug): array => [
+            'loc' => url('/product-tags/'.$slug),
+            'changefreq' => 'weekly',
+            'priority' => '0.30',
+        ]))
+        ->concat(DB::table('catalog_products')->whereNotNull('brand')->where('brand', '!=', '')->distinct()->pluck('brand')->map(fn (string $brand): array => [
+            'loc' => url('/products/brand/'.Str::slug($brand)),
+            'changefreq' => 'weekly',
+            'priority' => '0.30',
+        ]))
+        ->concat(DB::table('legacy_archive_records')->where('source_table', 'portfolio')->pluck('source_id')->map(fn (string $id): array => [
+            'loc' => url('/our-portfolio/'.$id),
+            'changefreq' => 'monthly',
+            'priority' => '0.30',
+        ]))
+        ->unique('loc')
+        ->values();
+
+    return response()->view('store.sitemap', ['urls' => $urls])->header('Content-Type', 'application/xml; charset=UTF-8');
 })->name('sitemap');
-Route::get('/sitemap.xml', fn () => redirect()->route('sitemap', [], 301));
+Route::get('/sitemap', fn () => redirect()->route('sitemap', [], 301));
 
 Route::get('/shopping-cart', [StorefrontController::class, 'cart'])->name('cart');
 Route::post('/shopping-cart/add/{product}', [StorefrontController::class, 'addToCart'])->name('cart.add');
