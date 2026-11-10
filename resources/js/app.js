@@ -258,6 +258,34 @@ document.querySelector('#footer-whatsapp-updates')?.addEventListener('submit', e
     window.location.href = `https://wa.me/254790721397?text=${encodeURIComponent(message)}`;
 });
 
+const productEnquiryDialog = document.querySelector('#product-enquiry-dialog');
+const productEnquiryForm = productEnquiryDialog?.querySelector('[data-product-enquiry-form]');
+document.querySelector('[data-open-product-enquiry]')?.addEventListener('click', () => {
+    if (!productEnquiryDialog?.showModal) return;
+    productEnquiryDialog.showModal();
+    productEnquiryDialog.querySelector('input[name="name"]')?.focus();
+});
+productEnquiryDialog?.querySelector('[data-close-product-enquiry]')?.addEventListener('click', () => productEnquiryDialog.close());
+productEnquiryDialog?.addEventListener('click', event => {
+    if (event.target === productEnquiryDialog) productEnquiryDialog.close();
+});
+productEnquiryForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!productEnquiryForm.reportValidity()) return;
+
+    const values = new FormData(productEnquiryForm);
+    const message = [
+        `Hello Crystal Car Audio, my name is ${values.get('name')}.`,
+        `I’m enquiring about ${productEnquiryForm.dataset.productName}.`,
+        `Product page: ${productEnquiryForm.dataset.productUrl}`,
+        `My phone number: ${values.get('phone')}`,
+        `My question: ${values.get('message')}`,
+    ].join('\n\n');
+    const whatsappUrl = `https://wa.me/254790721397?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    productEnquiryDialog.close();
+});
+
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const scrollProgress = document.createElement('div');
 scrollProgress.className = 'scroll-progress';

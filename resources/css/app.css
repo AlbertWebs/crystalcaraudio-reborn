@@ -1832,3 +1832,20 @@ html,body{overflow-x:clip}
 .product-category-cta-buy>del{color:#929c96;font-size:13px}
 .product-category-cta-buy .button{margin-top:8px;padding:9px 13px}
 @media(max-width:760px){.product-category-cta{margin:0 18px 82px;padding:20px;align-items:flex-start;flex-direction:column;gap:19px}.product-category-cta h2{font-size:23px;line-height:1.25}.product-category-cta-buy{width:100%;grid-template-columns:1fr auto;align-items:center;gap:3px 12px}.product-category-cta-buy>span,.product-category-cta-buy>del{grid-column:1}.product-category-cta-buy>strong{grid-column:1}.product-category-cta-buy .button{grid-column:2;grid-row:1/4;margin:0;justify-self:end;padding:10px 12px;font-size:12px}}
+.product-enquiry-trigger{padding:0;border:0;background:none;text-align:left;cursor:pointer}
+.product-enquiry-dialog{width:min(540px,calc(100vw - 28px));max-width:none;max-height:min(92dvh,760px);overflow:auto;padding:0;border:1px solid #dce5e0;border-radius:18px;background:#fff;color:#202126;box-shadow:0 24px 80px rgba(12,30,25,.24)}
+.product-enquiry-dialog::backdrop{background:rgba(12,24,21,.58);backdrop-filter:blur(3px)}
+.product-enquiry-form{display:grid;gap:10px;padding:clamp(22px,5vw,34px);font-family:'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif}
+.product-enquiry-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:4px}
+.product-enquiry-heading .eyebrow{margin:0 0 7px;color:#0c6661;font:500 11px/17px 'Outfit','Cairo',sans-serif;letter-spacing:.12em}
+.product-enquiry-heading h2{max-width:410px;margin:0;color:#202b26;font:600 clamp(21px,4vw,27px)/1.2 'Manrope','Outfit',sans-serif;letter-spacing:-.025em}
+.product-enquiry-close{flex:0 0 38px;width:38px;height:38px;border:1px solid #e1e9e5;border-radius:50%;background:#f7f9f8;color:#33413a;font-size:24px;line-height:1;cursor:pointer}
+.product-enquiry-intro,.product-enquiry-privacy{margin:0;color:#68766e;font:400 14px/1.55 'Outfit','Cairo',sans-serif}
+.product-enquiry-form>label{margin-top:5px;color:#35433b;font:500 13px/18px 'Outfit','Cairo',sans-serif}
+.product-enquiry-form>input,.product-enquiry-form>textarea{width:100%;min-height:46px;padding:11px 12px;border:1px solid #d8e2dc;border-radius:9px;background:#fff;color:#202126;font:400 15px/1.4 'Outfit','Cairo',sans-serif;outline:none}
+.product-enquiry-form>textarea{min-height:112px;resize:vertical}
+.product-enquiry-form>input:focus,.product-enquiry-form>textarea:focus{border-color:#0c6661;box-shadow:0 0 0 3px rgba(12,102,97,.12)}
+.product-enquiry-privacy{font-size:12px}
+.product-enquiry-submit{min-height:48px;margin-top:5px;border-radius:10px;font:500 15px/22px 'Outfit','Cairo',sans-serif}
+.product-enquiry-submit:focus-visible,.product-enquiry-close:focus-visible,.product-enquiry-trigger:focus-visible{outline:3px solid rgba(12,102,97,.45);outline-offset:3px}
+@media(max-width:520px){.product-enquiry-dialog{border-radius:15px}.product-enquiry-form{gap:8px}.product-enquiry-submit{width:100%}}

@@ -154,10 +154,28 @@
             <article><span>◉</span><div><b>Fitment support</b><small>Advice from our team</small></div></article>
         </div>
         <div class="detail-secondary-actions">
-            <a class="text-link" href="/find-us">Ask about this product ↗</a>
+            <button class="text-link product-enquiry-trigger" type="button" data-open-product-enquiry>Ask about this product ↗</button>
         </div>
     </div>
 </section>
+
+<dialog class="product-enquiry-dialog" id="product-enquiry-dialog" aria-labelledby="product-enquiry-title">
+    <form class="product-enquiry-form" data-product-enquiry-form data-product-name="{{ $product->name }}" data-product-url="{{ route('product-single', $product->slug) }}">
+        <div class="product-enquiry-heading">
+            <div><p class="eyebrow">PRODUCT ENQUIRY</p><h2 id="product-enquiry-title">Ask about {{ $product->name }}</h2></div>
+            <button class="product-enquiry-close" type="button" data-close-product-enquiry aria-label="Close enquiry">×</button>
+        </div>
+        <p class="product-enquiry-intro">Share your question and contact details. We’ll open WhatsApp with your enquiry ready to review and send.</p>
+        <label for="product-enquiry-name">Your name</label>
+        <input id="product-enquiry-name" name="name" type="text" autocomplete="name" maxlength="100" required>
+        <label for="product-enquiry-phone">Phone number</label>
+        <input id="product-enquiry-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" required>
+        <label for="product-enquiry-message">Your enquiry</label>
+        <textarea id="product-enquiry-message" name="message" rows="4" maxlength="1000" placeholder="Ask about fitment, availability, or product details…" required></textarea>
+        <p class="product-enquiry-privacy">Your message will be sent to Crystal Car Audio in WhatsApp. It is not saved on this website.</p>
+        <button class="button button-dark product-enquiry-submit" type="submit">Continue to WhatsApp <span aria-hidden="true">↗</span></button>
+    </form>
+</dialog>
 
 @if($relatedProducts->isNotEmpty())
 <section class="product-collection related-collection"><div class="collection-heading"><div><p class="eyebrow">MORE FROM {{ strtoupper($product->category ?? 'CRYSTAL') }}</p><h2>Related products</h2><p>More gear that fits the same kind of setup.</p></div><div class="collection-actions"><a class="text-link" href="{{ route('product-category', \Illuminate\Support\Str::slug($product->category ?? '')) }}">View category ↗</a><button type="button" class="rail-button" data-scroll-rail="related" data-scroll-by="-1" aria-label="Scroll related products left">←</button><button type="button" class="rail-button" data-scroll-rail="related" data-scroll-by="1" aria-label="Scroll related products right">→</button></div></div><div class="product-rail" id="related">@foreach($relatedProducts as $related)@include('store.partials.product-card', ['product' => $related])@endforeach</div></section>
