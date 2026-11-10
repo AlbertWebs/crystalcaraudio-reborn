@@ -1,5 +1,70 @@
 @extends('store.layout')
-@section('title', $product->name.' | Crystal Car Audio')
+@php
+    $productImageUrls = collect($product->gallery ?? [])->filter()->push($product->image)->filter()->unique()->take(10)
+        ->map(fn ($image) => str_starts_with($image, 'http')
+            ? $image
+            : \App\Support\MediaUrl::url('uploads/'.ltrim($image, '/')))
+        ->values();
+    $productDescriptionForSeo = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) $descriptionPlain), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    $seoTitle = filled($product->meta_title)
+        ? trim($product->meta_title)
+        : $product->name.' in '.($product->category ?: 'Nairobi').' | Crystal Car Audio';
+    $seoDescription = filled($product->meta_description)
+        ? trim(strip_tags($product->meta_description))
+        : 'Shop '.$product->name.($product->brand ? ' by '.$product->brand : '').' in '.($product->category ?: 'Nairobi').', Kenya from Crystal Car Audio. KES '.number_format($product->price).'. '.$productDescriptionForSeo;
+    $seoDescription = \Illuminate\Support\Str::limit($seoDescription, 160);
+    $productAvailability = str_contains(strtolower((string) $product->stock), 'out')
+        ? 'OutOfStock'
+        : (str_contains(strtolower((string) $product->stock), 'pre') ? 'PreOrder' : 'InStock');
+    $productUrl = route('product-single', $product->slug);
+    $productSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        '@id' => $productUrl.'#product',
+        'name' => $product->name,
+        'description' => $productDescriptionForSeo ?: $seoDescription,
+        'image' => $productImageUrls->all(),
+        'category' => $product->category,
+        'offers' => [
+            '@type' => 'Offer',
+            'url' => $productUrl,
+            'priceCurrency' => 'KES',
+            'price' => number_format((float) $product->price, 2, '.', ''),
+            'availability' => 'https://schema.org/'.$productAvailability,
+            'seller' => ['@type' => 'Organization', 'name' => 'Crystal Car Audio'],
+        ],
+    ];
+    if (filled($product->sku)) {
+        $productSchema['sku'] = $product->sku;
+    }
+    if (filled($product->brand)) {
+        $productSchema['brand'] = ['@type' => 'Brand', 'name' => $product->brand];
+    }
+    if ($reviews->isNotEmpty()) {
+        $productSchema['aggregateRating'] = [
+            '@type' => 'AggregateRating',
+            'ratingValue' => round($reviews->avg('rating'), 1),
+            'reviewCount' => $reviews->count(),
+            'bestRating' => 5,
+            'worstRating' => 1,
+        ];
+    }
+@endphp
+@section('title', $seoTitle)
+@section('meta_description', $seoDescription)
+@section('meta_keywords', implode(', ', array_filter([$product->name, $product->brand, $product->category, 'car audio Nairobi', 'Crystal Car Audio Kenya'])))
+@section('meta_og_title', $seoTitle)
+@section('meta_og_description', $seoDescription)
+@section('meta_og_type', 'product')
+@section('meta_image', $productImageUrls->first() ?? \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'))
+@section('meta_product_price', number_format((float) $product->price, 2, '.', ''))
+@section('meta_product_currency', 'KES')
+@section('meta_product_availability', strtolower($productAvailability))
+@section('meta_product_brand', $product->brand)
+@section('meta_product_sku', $product->sku)
+@push('structured-data')
+    <script type="application/ld+json">@json($productSchema)</script>
+@endpush
 @section('content')
 @php
     $productBreadcrumbs = [

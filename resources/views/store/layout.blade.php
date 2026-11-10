@@ -68,11 +68,16 @@
     <meta name="referrer" content="no-referrer">
     <meta name="msapplication-config" content="{{ asset('favicon/browserconfig.xml') }}">
     <meta property="og:site_name" content="Crystal Car Audio">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="@yield('meta_og_type', 'website')">
     <meta property="og:title" content="@yield('meta_og_title', trim($__env->yieldContent('title', 'Crystal Car Audio | Sound that moves you')))" >
     <meta property="og:description" content="@yield('meta_og_description', trim($__env->yieldContent('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')))" >
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:image" content="@yield('meta_image', \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'))">
+    @hasSection('meta_product_price')<meta property="product:price:amount" content="@yield('meta_product_price')">@endif
+    @hasSection('meta_product_currency')<meta property="product:price:currency" content="@yield('meta_product_currency')">@endif
+    @hasSection('meta_product_availability')<meta property="product:availability" content="@yield('meta_product_availability')">@endif
+    @hasSection('meta_product_brand')<meta property="product:brand" content="@yield('meta_product_brand')">@endif
+    @hasSection('meta_product_sku')<meta property="product:retailer_item_id" content="@yield('meta_product_sku')">@endif
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="@yield('meta_image', \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png'))">
     <meta name="twitter:title" content="@yield('meta_og_title', trim($__env->yieldContent('title', 'Crystal Car Audio | Sound that moves you')))" >
