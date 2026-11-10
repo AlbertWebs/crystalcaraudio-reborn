@@ -257,8 +257,8 @@ class StorefrontController extends Controller
         $projects = $this->portfolioRecords();
         $seo = PageSeo::resolve('portfolio', [
             'title' => 'Car Audio Installation Portfolio in Nairobi | Crystal Car Audio',
-            'description' => 'Explore Crystal Car Audio installations across Nairobi and Kenya, from Android radio upgrades to complete speaker and subwoofer systems.',
-            'keywords' => 'car audio installation Nairobi, car radio upgrade Kenya, car speaker installation, car subwoofer installation',
+            'description' => 'See car audio installations in Nairobi: Android radios, reverse cameras, speakers, amplifiers and subwoofers fitted by Crystal Car Audio.',
+            'keywords' => 'car audio installation Nairobi, car radio installation Kenya, Android car radio upgrade, reverse camera installation Nairobi, car speaker installation, car amplifier installation, subwoofer installation Kenya',
             'og_title' => '', 'og_description' => '',
         ]);
 
@@ -288,9 +288,28 @@ class StorefrontController extends Controller
                 try {
                     $record = json_decode(Crypt::decryptString($row->payload), true) ?: [];
                     $record['id'] ??= $row->source_id;
-                    $record['content'] = preg_replace('/\\s*—\\s*/u', ', ', preg_replace('/rnrn/i', "\n\n", (string) ($record['content'] ?? '')));
+                    $content = html_entity_decode((string) ($record['content'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    $content = preg_replace('/<\\/?(?:p|div|li|h[1-6]|section|article)\\b[^>]*>|<br\\s*\\/?\\s*>/i', "\n", $content);
+                    $content = strip_tags($content);
+                    $content = preg_replace('/(?<![A-Za-z])(?:rnrn|rn)(?![A-Za-z])/i', "\n\n", $content);
+                    $content = preg_replace('/\\s*—\\s*/u', ', ', $content);
+                    $record['content'] = trim(preg_replace('/\\n{3,}/', "\n\n", preg_replace('/[ \\t]+/', ' ', $content)));
                     $record['images'] = collect($record)->filter(fn ($value, $key) => preg_match('/^image_/', (string) $key) && filled($value))
-                        ->map(fn ($filename) => MediaUrl::url('uploads/portfolio/'.ltrim((string) $filename, '/')))->values()->all();
+                        ->map(function ($filename) {
+                            $legacyPath = ltrim((string) $filename, '/');
+                            if (str_starts_with($legacyPath, 'http://') || str_starts_with($legacyPath, 'https://')) {
+                                return $legacyPath;
+                            }
+
+                            $legacyFilename = str_starts_with($legacyPath, 'uploads/portfolio/')
+                                ? substr($legacyPath, strlen('uploads/portfolio/'))
+                                : $legacyPath;
+                            $localPath = 'uploads/portfolio/'.str_replace(':', '_', $legacyFilename);
+
+                            return is_file(public_path($localPath))
+                                ? asset($localPath)
+                                : MediaUrl::url('uploads/portfolio/'.$legacyFilename);
+                        })->values()->all();
 
                     return $record;
                 } catch (\Throwable) {
