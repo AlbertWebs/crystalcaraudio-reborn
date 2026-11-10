@@ -75,7 +75,7 @@ class StorefrontController extends Controller
                 'title' => 'Bring more clarity and depth to every drive',
                 'description' => 'Pair quality door speakers with a suitable amplifier or subwoofer for a fuller in-car sound. Browse speaker and audio-system options, and confirm sizes and compatibility before ordering.',
                 'categories' => ['Car Speakers', 'Car Audio System'],
-                'link' => route('product-category', 'mid-range-speakers'),
+                'link' => route('car-speakers'),
                 'link_label' => 'Browse car speakers',
             ],
             [
@@ -128,7 +128,7 @@ class StorefrontController extends Controller
         }
         $category = $request->query('category');
         $categoryRecord = null;
-        if ($request->route()?->getName() === 'product-category') {
+        if (in_array($request->route()?->getName(), ['product-category', 'car-speakers'], true)) {
             $categoryRecord = DB::table('catalog_categories')->where('slug', $slug)->first();
             $category = $categoryRecord->name ?? $category ?? $slug;
         }
@@ -327,8 +327,8 @@ class StorefrontController extends Controller
             : null;
         $relatedProducts = CatalogProduct::query()->where('category', $product->category)->whereKeyNot($product->id)->latest()->take(4)->get();
         $description = trim((string) $product->description);
-        $description = preg_replace('/rnrn/i', "\n", $description);
-        $description = preg_replace('/(?<=>)rn(?=\\s*<)/i', "\n", $description);
+        $description = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $description);
+        $description = preg_replace('/(?<![A-Za-z])(?:rn)+(?![A-Za-z])/i', "\n\n", $description);
         $description = preg_replace('/\\s*—\\s*/u', ', ', $description);
         $descriptionPlain = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $descriptionPlain = trim(preg_replace('/\s+/', ' ', $descriptionPlain));

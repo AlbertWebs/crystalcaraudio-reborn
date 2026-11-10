@@ -72,16 +72,14 @@
         ['name' => 'Products', 'url' => route('categories')],
     ];
     $productCategoryUrl = $categoryRecord
-        ? route('product-category', $categoryRecord->slug)
+        ? ($categoryRecord->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $categoryRecord->slug))
         : ($product->category
-            ? route('product-category', \Illuminate\Support\Str::slug($product->category))
+            ? (\Illuminate\Support\Str::slug($product->category) === 'car-speakers' ? route('car-speakers') : route('product-category', \Illuminate\Support\Str::slug($product->category)))
             : route('categories'));
     if (filled($product->category)) {
         $productBreadcrumbs[] = [
             'name' => $product->category,
-            'url' => $categoryRecord
-                ? route('product-category', $categoryRecord->slug)
-                : route('categories', ['category' => $product->category]),
+            'url' => $productCategoryUrl,
         ];
     }
     if (filled($product->brand) && strtolower($product->brand) !== 'others') {
@@ -178,7 +176,7 @@
 </dialog>
 
 @if($relatedProducts->isNotEmpty())
-<section class="product-collection related-collection"><div class="collection-heading"><div><p class="eyebrow">MORE FROM {{ strtoupper($product->category ?? 'CRYSTAL') }}</p><h2>Related products</h2><p>More gear that fits the same kind of setup.</p></div><div class="collection-actions"><a class="text-link" href="{{ route('product-category', \Illuminate\Support\Str::slug($product->category ?? '')) }}">View category ↗</a><button type="button" class="rail-button" data-scroll-rail="related" data-scroll-by="-1" aria-label="Scroll related products left">←</button><button type="button" class="rail-button" data-scroll-rail="related" data-scroll-by="1" aria-label="Scroll related products right">→</button></div></div><div class="product-rail" id="related">@foreach($relatedProducts as $related)@include('store.partials.product-card', ['product' => $related])@endforeach</div></section>
+<section class="product-collection related-collection"><div class="collection-heading"><div><p class="eyebrow">MORE FROM {{ strtoupper($product->category ?? 'CRYSTAL') }}</p><h2>Related products</h2><p>More gear that fits the same kind of setup.</p></div><div class="collection-actions"><a class="text-link" href="{{ $productCategoryUrl }}">View category ↗</a><button type="button" class="rail-button" data-scroll-rail="related" data-scroll-by="-1" aria-label="Scroll related products left">←</button><button type="button" class="rail-button" data-scroll-rail="related" data-scroll-by="1" aria-label="Scroll related products right">→</button></div></div><div class="product-rail" id="related">@foreach($relatedProducts as $related)@include('store.partials.product-card', ['product' => $related])@endforeach</div></section>
 @endif
 <section class="product-information" id="product-information">
     <nav class="product-information-nav" aria-label="Product information"><a href="#product-description">Description</a><a href="#product-specifications">Specifications</a><a href="#product-reviews">Reviews <span>({{ $reviews->count() }})</span></a></nav>

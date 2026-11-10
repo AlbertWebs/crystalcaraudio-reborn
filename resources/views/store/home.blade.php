@@ -55,7 +55,7 @@
     @php
         $categoryArtwork = [
             'car-radio' => ['image' => 'car-radio.webp', 'description' => 'Android & OEM car radios', 'featured' => true],
-            'mid-range-speakers' => ['image' => 'car-speakers.webp', 'description' => 'Coaxial, component & subwoofers', 'featured' => true],
+            'car-speakers' => ['image' => 'car-speakers.webp', 'description' => 'Coaxial, component & subwoofers', 'featured' => true],
             'car-amplifiers-booster' => ['image' => 'car-amplifiers.webp', 'description' => 'Power up your sound'],
             'car-audio-installation' => ['image' => 'car-audio-installation.webp', 'description' => 'Professional & reliable fitment'],
             'car-security-system' => ['image' => 'car-audio-system.webp', 'description' => 'Complete sound system packages'],
@@ -84,7 +84,7 @@
         @foreach($featuredCategories as $category)
               @php($artwork = $categoryArtwork[$category->slug] ?? null)
               @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
-            <a href="{{ route('product-category', $category->slug) }}" class="category-feature-card">
+            <a href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}" class="category-feature-card">
                   @if($categoryImage)<img src="{{ $categoryImage }}" alt="{{ $category->name }}" loading="lazy" decoding="async">@endif
                 <span class="category-feature-copy"><span class="category-feature-kicker">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }} <i>·</i> PREMIUM AUDIO</span><h3>{{ $category->name }}</h3><span class="category-feature-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-feature-cta"><span>{{ $category->product_count }} products</span><b aria-hidden="true">→</b></span></span>
                 <span class="category-feature-arrow" aria-hidden="true">↗</span>
@@ -96,7 +96,7 @@
               @php($categoryNumber = $loop->iteration + $featuredCategories->count())
               @php($artwork = $categoryArtwork[$category->slug] ?? null)
               @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
-            <a href="{{ route('product-category', $category->slug) }}" class="category-tile-card{{ $categoryNumber >= 3 && $categoryNumber <= 8 ? ' category-tile-card-mobile-editorial' : '' }}">
+            <a href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}" class="category-tile-card{{ $categoryNumber >= 3 && $categoryNumber <= 8 ? ' category-tile-card-mobile-editorial' : '' }}">
                   @if($categoryImage)<img src="{{ $categoryImage }}" alt="" loading="lazy" decoding="async">@endif
                 <span class="category-tile-copy"><span class="category-tile-kicker">{{ str_pad((string) $categoryNumber, 2, '0', STR_PAD_LEFT) }} <i>·</i> CATEGORY</span><h3>{{ $category->name }}</h3><span class="category-tile-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-tile-cta">{{ $category->product_count }} products <b aria-hidden="true">→</b></span></span>
             </a>

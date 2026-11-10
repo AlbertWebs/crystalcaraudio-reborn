@@ -10,7 +10,7 @@
         ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('home')],
         ['@type' => 'ListItem', 'position' => 2, 'name' => 'Shop by category', 'item' => route('shop-by-category')],
     ]];
-    $categoryListSchema = ['@context' => 'https://schema.org', '@type' => 'ItemList', 'name' => 'Car audio product categories in Kenya', 'itemListElement' => $categories->values()->map(fn ($category, $index) => ['@type' => 'ListItem', 'position' => $index + 1, 'name' => $category->name, 'url' => route('product-category', $category->slug)])->all()];
+    $categoryListSchema = ['@context' => 'https://schema.org', '@type' => 'ItemList', 'name' => 'Car audio product categories in Kenya', 'itemListElement' => $categories->values()->map(fn ($category, $index) => ['@type' => 'ListItem', 'position' => $index + 1, 'name' => $category->name, 'url' => $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug)])->all()];
 @endphp
 <section class="page-hero collection-hero collection-hero-shop">
     <nav class="collection-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="{{ route('home') }}">Home</a></li><li aria-current="page">Shop by category</li></ol></nav>
@@ -23,7 +23,7 @@
     <div class="section-heading"><div><p class="eyebrow eyebrow-accent">THE CRYSTAL COLLECTION</p><h2>Find your next upgrade</h2><p>Choose a category to see available products, pricing and fitment details.</p></div><a class="text-link" href="{{ route('categories') }}">View all products <span aria-hidden="true">↗</span></a></div>
     <div class="category-directory-grid">
         @foreach($categories as $index => $category)
-            <a class="category-directory-card" href="{{ route('product-category', $category->slug) }}">
+            <a class="category-directory-card" href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}">
                 <div class="category-directory-art">
                     @if($category->image)<img src="{{ \App\Support\MediaUrl::category($category->image) }}" alt="{{ $category->name }}" loading="lazy">@else<span aria-hidden="true">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>@endif
                     <span class="category-directory-number">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>

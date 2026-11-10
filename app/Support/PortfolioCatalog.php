@@ -143,7 +143,8 @@ class PortfolioCatalog
         $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $content = preg_replace('/<\/?(?:p|div|li|h[1-6]|section|article)\b[^>]*>|<br\s*\/?\s*>/i', "\n", $content);
         $content = strip_tags($content);
-        $content = preg_replace('/(?<![A-Za-z])(?:rnrn|rn)(?![A-Za-z])/i', "\n\n", $content);
+        $content = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $content);
+        $content = preg_replace('/(?<![A-Za-z])(?:rn)+(?![A-Za-z])/i', "\n\n", $content);
         $content = preg_replace('/\s*—\s*/u', ', ', $content);
 
         return trim(preg_replace('/\n{3,}/', "\n\n", preg_replace('/[ \t]+/', ' ', $content)));

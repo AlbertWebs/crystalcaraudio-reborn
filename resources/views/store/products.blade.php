@@ -17,7 +17,7 @@
 @section('meta_image', $socialPreviewImage)
 @section('content')
 @php
-    $breadcrumbCurrent = request()->routeIs('product-category') || filled(request('category'))
+    $breadcrumbCurrent = request()->routeIs('product-category', 'car-speakers') || filled(request('category'))
         ? $pageTitle
         : (request()->routeIs('special-offers') ? 'Special offers' : (request()->routeIs('product-tags') ? $pageTitle : 'All products'));
     $breadcrumbItems = [
@@ -56,7 +56,7 @@
             <nav class="category-filter-links" aria-label="Browse products by category">
                 <a href="{{ route('categories') }}" class="{{ request()->routeIs('categories') ? 'is-active' : '' }}" @if(request()->routeIs('categories')) aria-current="page" @endif><span>All products</span><span class="category-filter-arrow" aria-hidden="true">↗</span></a>
                 @foreach($categories->reject(fn ($category) => in_array($category->slug, ['car-audio-system', 'car-audio-systems'], true)) as $category)
-                    <a href="{{ route('product-category', $category->slug) }}" class="{{ request()->routeIs('product-category') && request()->route('slug') === $category->slug ? 'is-active' : '' }}" @if(request()->routeIs('product-category') && request()->route('slug') === $category->slug) aria-current="page" @endif><span>{{ $category->name }}</span><span class="category-filter-arrow" aria-hidden="true">↗</span></a>
+                    <a href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}" class="{{ request()->routeIs('product-category', 'car-speakers') && request()->route('slug') === $category->slug ? 'is-active' : '' }}" @if(request()->routeIs('product-category', 'car-speakers') && request()->route('slug') === $category->slug) aria-current="page" @endif><span>{{ $category->name }}</span><span class="category-filter-arrow" aria-hidden="true">↗</span></a>
                 @endforeach
                 <a href="{{ route('special-offers') }}" class="{{ request()->routeIs('special-offers') ? 'is-active' : '' }}" @if(request()->routeIs('special-offers')) aria-current="page" @endif><span>Special offers</span><span class="category-filter-arrow" aria-hidden="true">↗</span></a>
             </nav>

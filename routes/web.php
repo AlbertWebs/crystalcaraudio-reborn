@@ -36,6 +36,9 @@ Route::get('/shop-by-brand', fn () => redirect()->route('shop-by-brand', [], 301
 Route::get('/products/brand', fn () => redirect()->route('shop-by-brand', [], 301));
 Route::get('/products/brand/{brand}', [StorefrontController::class, 'products'])->name('products.brand');
 Route::get('/products/car-audio-installation', fn () => redirect()->route('portfolio', [], 301));
+Route::get('/car-speakers', [StorefrontController::class, 'products'])->defaults('slug', 'car-speakers')->name('car-speakers');
+Route::get('/products/mid-range-speakers', fn () => redirect()->route('car-speakers', [], 301));
+Route::get('/products/car-speakers', fn () => redirect()->route('car-speakers', [], 301));
 Route::get('/products/car-audio-system', fn () => redirect()->route('car-audio-systems', [], 301));
 Route::get('/products/car-audio-systems', fn () => redirect()->route('car-audio-systems', [], 301));
 Route::get('/products/{slug}', [StorefrontController::class, 'products'])->name('product-category');
@@ -52,7 +55,7 @@ Route::get('/product-tags/{slug}', [StorefrontController::class, 'products'])->n
 Route::get('/sitemap.xml', function () {
     $categoryPriorities = [
         'car-radio' => '0.90',
-        'mid-range-speakers' => '0.80',
+        'car-speakers' => '0.80',
         'car-amplifiers-booster' => '0.70',
         'equalizers' => '0.60',
     ];
@@ -68,7 +71,7 @@ Route::get('/sitemap.xml', function () {
             return $position === false ? count($priorityCategorySlugs) : $position;
         })
         ->map(fn (object $category): array => [
-            'loc' => url('/products/'.$category->slug),
+            'loc' => $category->slug === 'car-speakers' ? url('/car-speakers') : url('/products/'.$category->slug),
             'changefreq' => 'weekly',
             'priority' => $categoryPriorities[$category->slug] ?? '0.50',
         ]);
