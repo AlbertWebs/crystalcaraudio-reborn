@@ -1819,3 +1819,16 @@ html,body{overflow-x:clip}
 .specification-add-button{margin-top:12px;border-color:#a9ccc0;background:#f1f8f5;color:#0c6661}
 .specification-add-button:hover{border-color:#78b1a2;background:#e8f4ef}
 @media(max-width:760px){.specification-editor-row{grid-template-columns:1fr;gap:9px}.specification-remove-button{justify-self:start}}
+.product-category-cta{max-width:1190px;margin:0 auto 70px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:28px;border:1px solid #dce9e3;border-radius:12px;background:linear-gradient(120deg,#f5faf7,#fff 70%);font-family:'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif}
+.product-category-cta-copy{min-width:0}
+.product-category-cta-copy .eyebrow{margin:0 0 8px;color:#0c6661;font-size:11px;letter-spacing:.13em}
+.product-category-cta h2{max-width:760px;margin:0;color:#26352d;font:600 clamp(22px,3vw,32px)/1.2 'Manrope','Outfit',sans-serif;letter-spacing:-.035em}
+.product-category-cta h2 a{color:#0c6661;text-decoration:underline;text-decoration-color:#9cc9bd;text-underline-offset:4px}
+.product-category-cta-brand{margin:10px 0 0;color:#69776f;font-size:13px}
+.product-category-cta-brand strong{color:#34473d}
+.product-category-cta-buy{min-width:190px;display:grid;justify-items:start;gap:4px}
+.product-category-cta-buy>span{color:#77857d;font-size:11px}
+.product-category-cta-buy>strong{color:#26352d;font:700 23px/1.2 'Manrope','Outfit',sans-serif}
+.product-category-cta-buy>del{color:#929c96;font-size:13px}
+.product-category-cta-buy .button{margin-top:8px;padding:9px 13px}
+@media(max-width:760px){.product-category-cta{margin:0 18px 82px;padding:20px;align-items:flex-start;flex-direction:column;gap:19px}.product-category-cta h2{font-size:23px;line-height:1.25}.product-category-cta-buy{width:100%;grid-template-columns:1fr auto;align-items:center;gap:3px 12px}.product-category-cta-buy>span,.product-category-cta-buy>del{grid-column:1}.product-category-cta-buy>strong{grid-column:1}.product-category-cta-buy .button{grid-column:2;grid-row:1/4;margin:0;justify-self:end;padding:10px 12px;font-size:12px}}

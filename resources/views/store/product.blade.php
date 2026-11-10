@@ -6,6 +6,11 @@
         ['name' => 'Home', 'url' => route('home')],
         ['name' => 'Products', 'url' => route('categories')],
     ];
+    $productCategoryUrl = $categoryRecord
+        ? route('product-category', $categoryRecord->slug)
+        : ($product->category
+            ? route('product-category', \Illuminate\Support\Str::slug($product->category))
+            : route('categories'));
     if (filled($product->category)) {
         $productBreadcrumbs[] = [
             'name' => $product->category,
@@ -117,6 +122,19 @@
     @forelse($reviews as $review)<article class="customer-review"><div class="review-stars" aria-label="{{ number_format($review['rating'], 1) }} out of 5 stars">{{ str_repeat('★', (int) round($review['rating'])) }}{{ str_repeat('☆', 5 - (int) round($review['rating'])) }}</div><h3>{{ $review['title'] ?: 'Customer review' }}</h3>@if($review['content'])<p>{{ $review['content'] }}</p>@endif<div><b>{{ $review['name'] ?: 'Crystal customer' }}</b>@if($review['created_at'])<small>{{ \Illuminate\Support\Carbon::parse($review['created_at'])->format('M Y') }}</small>@endif</div></article>@empty
         <div class="reviews-empty"><span>☆</span><div><b>No reviews yet</b><p>Be the first to share your experience with this product.</p></div></div>
     @endforelse
+</section>
+<section class="product-category-cta" aria-label="Shop {{ $product->name }} from Crystal Car Audio">
+    <div class="product-category-cta-copy">
+        <p class="eyebrow">FROM CRYSTAL CAR AUDIO</p>
+        <h2>Get {{ $product->name }}@if($product->category) in <a href="{{ $productCategoryUrl }}">{{ $product->category }}</a>@endif</h2>
+        @if($product->brand)<p class="product-category-cta-brand">Brand: <strong>{{ $product->brand }}</strong></p>@endif
+    </div>
+    <div class="product-category-cta-buy">
+        <span>Current price</span>
+        <strong>KES {{ number_format($product->price) }}</strong>
+        @if($discountPercent)<del>KES {{ number_format($product->original_price) }}</del>@endif
+        <a class="button button-dark" href="#detail-purchase-form">Shop this product <span aria-hidden="true">→</span></a>
+    </div>
 </section>
 <div class="product-action-dock"><button class="button button-light" type="submit" form="detail-purchase-form" name="buy_now" value="0" @if(!$inStock) disabled @endif>Add to bag</button><button class="button button-dark" type="submit" form="detail-purchase-form" name="buy_now" value="1" @if(!$inStock) disabled @endif>Buy now</button></div>
 @endsection
