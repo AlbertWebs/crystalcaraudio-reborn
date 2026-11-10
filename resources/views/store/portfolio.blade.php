@@ -4,8 +4,12 @@
 @section('meta_keywords', $seo['keywords'])
 @section('meta_og_title', $seo['og_title'] ?: $seo['title'])
 @section('meta_og_description', $seo['og_description'] ?: $seo['description'])
-@php($portfolioPreviewImage = $projects->first()['images'][0] ?? null)
-@if($portfolioPreviewImage)@section('meta_image', $portfolioPreviewImage)@endif
+@php
+    $portfolioPreviewImage = $projects->first()['images'][0] ?? null;
+@endphp
+@if($portfolioPreviewImage)
+    @section('meta_image', $portfolioPreviewImage)
+@endif
 @section('content')
 @php
     $breadcrumbSchema = ['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => [
