@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminInstallationBookingController;
 use App\Http\Controllers\AdminInventoryController;
 use App\Http\Controllers\AdminMediaController;
+use App\Http\Controllers\AdminPortfolioController;
 use App\Http\Controllers\AdminProductsController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminSeoController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\StorefrontController;
+use App\Support\PortfolioCatalog;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -112,8 +114,8 @@ Route::get('/sitemap.xml', function () {
             'changefreq' => 'weekly',
             'priority' => '0.30',
         ]))
-        ->concat(DB::table('legacy_archive_records')->where('source_table', 'portfolio')->pluck('source_id')->map(fn (string $id): array => [
-            'loc' => url('/our-portfolio/'.$id),
+        ->concat(app(PortfolioCatalog::class)->all()->map(fn (array $project): array => [
+            'loc' => url('/our-portfolio/'.$project['slug']),
             'changefreq' => 'monthly',
             'priority' => '0.30',
         ]))
@@ -193,6 +195,11 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::put('/media/{assetKey}', [AdminMediaController::class, 'update'])->where('assetKey', '[a-z0-9_]+')->middleware('can:manage-store-products')->name('media.update');
     Route::get('/seo', [AdminSeoController::class, 'edit'])->middleware('can:manage-store-products')->name('seo');
     Route::put('/seo', [AdminSeoController::class, 'update'])->middleware('can:manage-store-products')->name('seo.update');
+    Route::get('/portfolio', [AdminPortfolioController::class, 'index'])->middleware('can:manage-store-products')->name('portfolio');
+    Route::get('/portfolio/create', [AdminPortfolioController::class, 'create'])->middleware('can:manage-store-products')->name('portfolio.create');
+    Route::post('/portfolio', [AdminPortfolioController::class, 'store'])->middleware('can:manage-store-products')->name('portfolio.store');
+    Route::get('/portfolio/{project}/edit', [AdminPortfolioController::class, 'edit'])->middleware('can:manage-store-products')->name('portfolio.edit');
+    Route::patch('/portfolio/{project}', [AdminPortfolioController::class, 'update'])->middleware('can:manage-store-products')->name('portfolio.update');
     Route::get('/orders', [AdminStoreManagementController::class, 'orders'])->middleware('can:manage-store-orders')->name('orders');
     Route::get('/customers', [AdminStoreManagementController::class, 'customers'])->middleware('can:manage-store-orders')->name('customers');
     Route::get('/installations', [AdminInstallationBookingController::class, 'index'])->middleware('can:manage-installations')->name('installations');
@@ -220,4 +227,4 @@ foreach (['find-us', 'about-us', 'terms-and-conditions', 'privacy-policy', 'ship
     Route::get('/'.$slug, [StorefrontController::class, 'info'])->defaults('slug', $slug)->name('page.'.$slug);
 }
 Route::get('/our-portfolio', [StorefrontController::class, 'portfolio'])->name('portfolio');
-Route::get('/our-portfolio/{id}', [StorefrontController::class, 'portfolioProject'])->whereNumber('id')->name('folio');
+Route::get('/our-portfolio/{slug}', [StorefrontController::class, 'portfolioProject'])->name('folio');

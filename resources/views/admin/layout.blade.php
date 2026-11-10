@@ -27,6 +27,7 @@
         <nav class="admin-nav">
             @can('manage-store-products')
                 <a class="{{ request()->routeIs('admin.products*') ? 'is-active' : '' }}" href="{{ route('admin.products') }}"><span class="admin-nav-icon">▧</span>Products</a>
+                <a class="{{ request()->routeIs('admin.portfolio*') ? 'is-active' : '' }}" href="{{ route('admin.portfolio') }}"><span class="admin-nav-icon">▧</span>Installation portfolio</a>
                 <a class="{{ request()->routeIs('admin.categories*') ? 'is-active' : '' }}" href="{{ route('admin.categories') }}"><span class="admin-nav-icon">▦</span>Categories</a>
                 <a class="{{ request()->routeIs('admin.media*') ? 'is-active' : '' }}" href="{{ route('admin.media') }}"><span class="admin-nav-icon">▧</span>Banners &amp; backgrounds</a>
                 <a class="{{ request()->routeIs('admin.exports*') ? 'is-active' : '' }}" href="{{ route('admin.exports') }}"><span class="admin-nav-icon">⇩</span>Product exports</a>

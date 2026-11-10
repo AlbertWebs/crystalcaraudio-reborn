@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CatalogProduct;
 use App\Support\MediaUrl;
 use App\Support\PageSeo;
+use App\Support\PortfolioCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -252,9 +253,9 @@ class StorefrontController extends Controller
         return view('store.brand-directory', compact('brands', 'seo'));
     }
 
-    public function portfolio()
+    public function portfolio(PortfolioCatalog $catalog)
     {
-        $projects = $this->portfolioRecords();
+        $projects = $catalog->all();
         $seo = PageSeo::resolve('portfolio', [
             'title' => 'Car Audio Installation Portfolio in Nairobi | Crystal Car Audio',
             'description' => 'See car audio installations in Nairobi: Android radios, reverse cameras, speakers, amplifiers and subwoofers fitted by Crystal Car Audio.',
@@ -265,57 +266,41 @@ class StorefrontController extends Controller
         return view('store.portfolio', compact('projects', 'seo'));
     }
 
-    public function portfolioProject(string $id)
+    public function portfolioProject(string $slug, PortfolioCatalog $catalog)
     {
-        $project = $this->portfolioRecords()->first(fn ($record) => (string) ($record['id'] ?? '') === (string) $id);
+        $projects = $catalog->all();
+        $project = $projects->first(fn ($record) => $record['slug'] === $slug);
+        if (! $project && ctype_digit($slug)) {
+            $project = $catalog->all(true)->first(fn ($record) => (string) ($record['legacy_source_id'] ?? '') === $slug);
+            if ($project) {
+                return redirect()->route('folio', $project['slug'], 301);
+            }
+        }
         abort_unless($project, 404);
         $seo = PageSeo::resolve('portfolio', [
             'title' => 'Car Audio Installation Portfolio in Nairobi | Crystal Car Audio',
-            'description' => 'Explore Crystal Car Audio installations across Nairobi and Kenya, from Android radio upgrades to complete speaker and subwoofer systems.',
+            'description' => 'See completed car audio upgrades by Crystal Car Audio in Nairobi, Kenya.',
             'keywords' => 'car audio installation Nairobi, car radio upgrade Kenya, car speaker installation, car subwoofer installation',
             'og_title' => '', 'og_description' => '',
         ]);
-        $seo['title'] = trim(strip_tags((string) ($project['title'] ?? 'Car Audio Installation'))).' | Crystal Car Audio';
-        $seo['description'] = Str::limit(trim(strip_tags((string) ($project['content'] ?? 'Car audio installation by Crystal Car Audio in Nairobi, Kenya.'))), 160);
+        $vehicle = trim(implode(' ', array_filter([
+            $project['vehicle_make'] ?? null,
+            $project['vehicle_model'] ?? null,
+            $project['vehicle_year'] ?? null,
+        ])));
+        $vehicleLabel = $vehicle !== '' ? $vehicle : trim(strip_tags((string) ($project['title'] ?? 'Car audio')));
+        $seo['title'] = Str::limit($vehicleLabel.' Car Audio Upgrade | Crystal Car Audio', 70);
+        $description = trim(strip_tags((string) ($project['description'] ?? '')));
+        $description = $vehicleLabel.' '.strtolower((string) ($project['upgrade_type'] ?? 'car audio upgrade')).' in '.($project['service_area'] ?: 'Nairobi').', installed by Crystal Car Audio. '.$description;
+        $seo['description'] = Str::limit($description, 158);
+        $seo['keywords'] = implode(', ', array_filter([
+            'car audio installation Nairobi',
+            strtolower($vehicleLabel).' car audio upgrade',
+            strtolower((string) ($project['upgrade_type'] ?? 'car audio installation')),
+            'car radio and speaker installation Kenya',
+        ]));
 
         return view('store.portfolio-project', compact('project', 'seo'));
-    }
-
-    private function portfolioRecords()
-    {
-        return DB::table('legacy_archive_records')->where('source_table', 'portfolio')->orderBy('source_id')->get(['source_id', 'payload'])
-            ->map(function ($row) {
-                try {
-                    $record = json_decode(Crypt::decryptString($row->payload), true) ?: [];
-                    $record['id'] ??= $row->source_id;
-                    $content = html_entity_decode((string) ($record['content'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                    $content = preg_replace('/<\\/?(?:p|div|li|h[1-6]|section|article)\\b[^>]*>|<br\\s*\\/?\\s*>/i', "\n", $content);
-                    $content = strip_tags($content);
-                    $content = preg_replace('/(?<![A-Za-z])(?:rnrn|rn)(?![A-Za-z])/i', "\n\n", $content);
-                    $content = preg_replace('/\\s*—\\s*/u', ', ', $content);
-                    $record['content'] = trim(preg_replace('/\\n{3,}/', "\n\n", preg_replace('/[ \\t]+/', ' ', $content)));
-                    $record['images'] = collect($record)->filter(fn ($value, $key) => preg_match('/^image_/', (string) $key) && filled($value))
-                        ->map(function ($filename) {
-                            $legacyPath = ltrim((string) $filename, '/');
-                            if (str_starts_with($legacyPath, 'http://') || str_starts_with($legacyPath, 'https://')) {
-                                return $legacyPath;
-                            }
-
-                            $legacyFilename = str_starts_with($legacyPath, 'uploads/portfolio/')
-                                ? substr($legacyPath, strlen('uploads/portfolio/'))
-                                : $legacyPath;
-                            $localPath = 'uploads/portfolio/'.str_replace(':', '_', $legacyFilename);
-
-                            return is_file(public_path($localPath))
-                                ? asset($localPath)
-                                : MediaUrl::url('uploads/portfolio/'.$legacyFilename);
-                        })->values()->all();
-
-                    return $record;
-                } catch (\Throwable) {
-                    return null;
-                }
-            })->filter(fn ($record) => is_array($record) && filled($record['title'] ?? null))->values();
     }
 
     public function product(string $slug)
