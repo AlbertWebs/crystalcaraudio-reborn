@@ -186,13 +186,13 @@
 .detail-purchase-form .button{font-size:14px}
 .delivery-detail-cards b{font-size:14px}.delivery-detail-cards small{font-size:12px}
 .detail-secondary-actions .text-link{font-size:12px;font-family:'Outfit Regular', 'Cairo Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;line-height:30px;color:#000}
-.product-information{max-width:1260px;margin:0 auto;padding:14px 35px 62px;scroll-margin-top:110px}
+.product-information{max-width:1500px;margin:0 auto;padding:14px clamp(22px,5.5vw,84px) 62px;scroll-margin-top:110px}
 .product-information-nav{display:flex;gap:30px;border-bottom:1px solid var(--line);padding:0 0 14px;margin-bottom:35px;position:sticky;top:82px;background:#fff;z-index:5}
 .product-information-nav a{font-size:13px;color:#606562}.product-information-nav a:first-child{font-weight:600;color:var(--brand);border-bottom:2px solid var(--brand);margin-bottom:-16px;padding-bottom:14px}
 .product-information-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:55px;align-items:start}
 .product-description-panel h2,.product-specification-panel h2,.reviews-heading h2{font:700 20px/30px 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0;margin:0 0 18px}
 .product-description-panel>p:not(.eyebrow){font-size:14px;line-height:30px;color:#575e5a;margin:0 0 14px;white-space:pre-line}
-.product-specification-panel{padding:25px 26px;background:#f6f8f7;border:1px solid #e9eeeb}
+.product-specification-panel{position:static;align-self:start;padding:25px 26px;background:#f6f8f7;border:1px solid #e9eeeb}
 .product-specification-panel dl{margin:0}
 .product-specification-panel dl>div{display:grid;grid-template-columns:.8fr 1.2fr;gap:15px;padding:12px 0;border-bottom:1px solid #e2e9e5}
 .product-specification-panel dl>div:last-child{border-bottom:0}
@@ -382,8 +382,8 @@
 /* Product purchase dock: use the same calm Outfit typography as the footer. */
 .product-action-dock{z-index:35;gap:12px;padding:14px 20px;background:rgba(255,255,255,.96);border-top:1px solid #e6e9e7;box-shadow:0 -8px 28px rgba(17,31,29,.09);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .product-action-dock .button{width:min(280px,calc((100vw - 64px)/2));min-height:52px;padding:0 24px;border-radius:999px;font-family:'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif!important;font-size:16px;font-weight:500;line-height:24px;letter-spacing:.01em;transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease}
-.product-action-dock .button-light{color:#104e4a;background:#fff;border:1px solid #b9d1ce;box-shadow:0 2px 8px rgba(12,102,97,.04)}
-.product-action-dock .button-dark{color:#fff;background:#0c6661;border:1px solid #0c6661;box-shadow:0 5px 14px rgba(12,102,97,.18)}
+.product-action-dock .button-light{color:#104e4a;background:rgba(255,255,255,.78);border:1px solid rgba(185,209,206,.82);box-shadow:0 2px 8px rgba(12,102,97,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.product-action-dock .button-dark{color:#fff;background:rgba(12,102,97,.84);border:1px solid rgba(12,102,97,.72);box-shadow:0 5px 14px rgba(12,102,97,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .product-action-dock .button-light:hover{background:#f1f8f7;border-color:#0c6661;transform:translateY(-1px)}
 .product-action-dock .button-dark:hover{background:#084b47;border-color:#084b47;transform:translateY(-1px);box-shadow:0 7px 18px rgba(12,102,97,.24)}
 .product-action-dock button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
