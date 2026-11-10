@@ -36,7 +36,7 @@
 @endphp
 <section class="page-hero collection-hero collection-hero-shop">
     <nav class="collection-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="{{ route('home') }}">Home</a></li><li><a href="{{ route('categories') }}">Products</a></li><li aria-current="page">{{ $breadcrumbCurrent }}</li></ol></nav>
-    <p class="eyebrow eyebrow-accent">{{ request()->routeIs('special-offers') ? 'CURRENT DEALS' : 'THE CRYSTAL COLLECTION' }}</p>
+    <p class="eyebrow eyebrow-accent">{{ request()->routeIs('special-offers') ? 'CURRENT DEALS' : (request()->routeIs('product-tags') ? 'PRODUCT TAG' : 'THE CRYSTAL COLLECTION') }}</p>
     <h1>{{ $pageTitle }}</h1>
     <p class="collection-hero-description">{{ $pageDescription }}</p>
     @if(filled($categoryGuide ?? null))<details class="collection-category-guide"><summary>Read category guide</summary><p>{{ $categoryGuide }}</p></details>@endif

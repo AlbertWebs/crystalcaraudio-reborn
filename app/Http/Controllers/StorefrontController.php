@@ -180,10 +180,12 @@ class StorefrontController extends Controller
             $seoTitle = 'Car Audio Deals & Special Offers in Kenya | Crystal Car Audio';
             $seoDescription = $pageDescription;
         } elseif ($request->route()?->getName() === 'product-tags' && $slug) {
-            $pageTitle = (string) (DB::table('catalog_tags')->where('slug', $slug)->value('name') ?? 'Tagged products');
-            $pageDescription = 'Explore the '.$pageTitle.' collection.';
+            $tagRecord = DB::table('catalog_tags')->where('slug', $slug)->first(['name', 'description']);
+            $pageTitle = (string) ($tagRecord->name ?? 'Tagged products');
+            $tagDescription = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) ($tagRecord->description ?? '')), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+            $pageDescription = $tagDescription ?: 'Explore the '.$pageTitle.' collection.';
             $seoTitle = $pageTitle.' Products in Kenya | Crystal Car Audio';
-            $seoDescription = $pageDescription.' Shop selected products with expert advice and delivery across Kenya.';
+            $seoDescription = Str::limit($pageDescription, 160);
         }
 
         if ($request->route()?->getName() === 'products.brand' && $brand) {
