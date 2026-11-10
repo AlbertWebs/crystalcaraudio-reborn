@@ -79,6 +79,15 @@
         @endforeach
     </section>
 @endif
+@if($slug === 'terms-and-conditions')
+    <section class="section info-content" aria-labelledby="econfirm-terms-heading">
+        <article class="info-record">
+            <h2 id="econfirm-terms-heading">eConfirm escrow terms</h2>
+            <p>If you choose eConfirm Escrow for an order, the escrow payment service is provided by eConfirm and is subject to its own terms. Those terms cover escrow funding and release, service fees, disputes, and the responsibilities of buyers and sellers. Please review the <a href="https://econfirm.co.ke/terms-and-conditions" target="_blank" rel="noopener noreferrer">eConfirm Terms and Conditions</a> before funding an escrow payment.</p>
+            <p>Learn more about the service at <a href="https://econfirm.co.ke/" target="_blank" rel="noopener noreferrer">econfirm.co.ke</a>.</p>
+        </article>
+    </section>
+@endif
 @endif
 
 <style>
