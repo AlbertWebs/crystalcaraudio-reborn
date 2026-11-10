@@ -192,7 +192,7 @@
 .product-information-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:55px;align-items:start}
 .product-description-panel h2,.product-specification-panel h2,.reviews-heading h2{font:700 20px/30px 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0;margin:0 0 18px}
 .product-description-panel>p:not(.eyebrow){font-size:14px;line-height:30px;color:#575e5a;margin:0 0 14px;white-space:pre-line}
-.product-specification-panel{position:static;align-self:start;padding:25px 26px;background:#f6f8f7;border:1px solid #e9eeeb}
+.product-specification-panel{position:sticky;top:140px;align-self:start;padding:25px 26px;background:#f6f8f7;border:1px solid #e9eeeb}
 .product-specification-panel dl{margin:0}
 .product-specification-panel dl>div{display:grid;grid-template-columns:.8fr 1.2fr;gap:15px;padding:12px 0;border-bottom:1px solid #e2e9e5}
 .product-specification-panel dl>div:last-child{border-bottom:0}
