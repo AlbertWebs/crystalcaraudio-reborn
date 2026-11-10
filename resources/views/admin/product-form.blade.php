@@ -36,7 +36,26 @@
                 <label class="catalogue-field">Low-stock alert at<input type="number" min="0" step="1" name="low_stock_threshold" value="{{ old('low_stock_threshold', $editingProduct->low_stock_threshold ?? 5) }}"></label>
             </div>
         </section>
-        <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">03</span><div><h2>Product images</h2><p>Upload up to 10 PNG, JPG, or WebP images, up to 5 MB each. Recommended: <strong>1200 × 1200 px</strong> square.</p></div></div>
+        @php
+            $specificationRows = old('specifications', $editingProduct?->specifications ?? []);
+            $specificationRows = is_array($specificationRows) ? array_values($specificationRows) : [];
+            if ($specificationRows === []) {
+                $specificationRows = [['title' => '', 'value' => '']];
+            }
+        @endphp
+        <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">03</span><div><h2>Specifications</h2><p>Add technical features as a name and value, like the legacy editor.</p></div></div>
+            <div class="specification-editor-list" data-specification-list data-next-index="{{ count($specificationRows) }}">
+                @foreach($specificationRows as $index => $specification)
+                    <div class="specification-editor-row" data-specification-row>
+                        <label class="catalogue-field">Specification<input type="text" name="specifications[{{ $index }}][title]" value="{{ $specification['title'] ?? '' }}" maxlength="120" placeholder="e.g. Frequency Response"></label>
+                        <label class="catalogue-field">Value<input type="text" name="specifications[{{ $index }}][value]" value="{{ $specification['value'] ?? '' }}" maxlength="500" placeholder="e.g. 10Hz–50KHz, ±1dB"></label>
+                        <button type="button" class="specification-remove-button" data-remove-specification aria-label="Remove specification">Remove</button>
+                    </div>
+                @endforeach
+            </div>
+            <button type="button" class="specification-add-button" data-add-specification>Add specification</button>
+        </section>
+        <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">04</span><div><h2>Product images</h2><p>Upload up to 10 PNG, JPG, or WebP images, up to 5 MB each. Recommended: <strong>1200 × 1200 px</strong> square.</p></div></div>
             <label class="product-image-dropzone" data-dropzone><input type="file" name="images[]" accept="image/png,image/jpeg,image/webp" data-image-input multiple><span class="product-image-placeholder" data-image-placeholder><b aria-hidden="true">↑</b><strong>Drop images here, or browse files</strong><small>Recommended image size: 1200 × 1200 px (square). Select multiple product views and choose the main image.</small></span></label>
             <fieldset class="product-primary-image-choices product-upload-main-choice" data-upload-main-choice hidden><legend>Main image <small>Select the uploaded image shown first on the product page.</small></legend><div class="product-primary-image-grid" data-upload-image-grid></div><p class="product-primary-image-note">Choose one image as the main product image. The remaining images will be saved in the gallery.</p></fieldset>
             @php
@@ -60,7 +79,7 @@
                 @endif
             </div>
         </section>
-        <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">04</span><div><h2>Store visibility and SEO</h2><p>Products appear in the store when saved. Promotion badges are optional; SEO fields are suggested from your product details and remain editable.</p></div></div>
+        <section class="catalogue-form-section"><div class="product-form-section-heading"><span class="product-form-section-number">05</span><div><h2>Store visibility and SEO</h2><p>Products appear in the store when saved. Promotion badges are optional; SEO fields are suggested from your product details and remain editable.</p></div></div>
             <div class="catalogue-flag-row">@foreach(['featured' => 'Featured pick', 'is_offer' => 'Offer', 'is_special' => 'Special', 'trending' => 'Trending', 'is_combo' => 'Homepage combo carousel'] as $flag => $label)<label class="catalogue-check"><input type="checkbox" name="{{ $flag }}" value="1" @checked(old($flag, $editingProduct?->{$flag} ?? false))><span>{{ $label }}</span></label>@endforeach</div>
             <div class="catalogue-form-grid"><label class="catalogue-field">SEO title<input data-seo-title data-auto-generated="{{ $metaTitleGenerated ? 'true' : 'false' }}" name="meta_title" maxlength="255" value="{{ old('meta_title', $metaTitle) }}" placeholder="Generated from product name, brand, and category"><small data-seo-title-hint>{{ $metaTitleGenerated ? 'Suggested from product details. Edit to customize.' : 'Custom SEO title.' }}</small></label><label class="catalogue-field">SEO description<textarea data-seo-description data-auto-generated="{{ $metaDescriptionGenerated ? 'true' : 'false' }}" name="meta_description" maxlength="320" rows="3" placeholder="Generated from the product description">{{ old('meta_description', $metaDescription) }}</textarea><small data-seo-description-hint>{{ $metaDescriptionGenerated ? 'Suggested from the product description. Edit to customize.' : 'Custom SEO description.' }}</small></label></div>
         </section>
@@ -90,10 +109,29 @@
     const feedback = document.querySelector('.product-form-feedback');
     const submitButton = form.querySelector('[data-submit-button]');
     const primaryChoices = [...form.querySelectorAll('input[name="primary_image"]')];
+    const specificationList = form.querySelector('[data-specification-list]');
+    const addSpecificationButton = form.querySelector('[data-add-specification]');
+    let nextSpecificationIndex = Number(specificationList?.dataset.nextIndex || 0);
     let selectedFiles = [];
     let selectedUploadIndex = null;
     let primaryChoiceBeforeUpload = primaryChoices.find(choice => choice.checked)?.value || null;
     const imagePreviewUrls = new Map();
+    const addSpecificationRow = () => {
+        if (!specificationList) return;
+        const row = document.createElement('div');
+        const index = nextSpecificationIndex++;
+        row.className = 'specification-editor-row';
+        row.dataset.specificationRow = '';
+        row.innerHTML = `<label class="catalogue-field">Specification<input type="text" name="specifications[${index}][title]" maxlength="120" placeholder="e.g. Frequency Response"></label><label class="catalogue-field">Value<input type="text" name="specifications[${index}][value]" maxlength="500" placeholder="e.g. 10Hz–50KHz, ±1dB"></label><button type="button" class="specification-remove-button" data-remove-specification aria-label="Remove specification">Remove</button>`;
+        specificationList.append(row);
+    };
+    addSpecificationButton?.addEventListener('click', addSpecificationRow);
+    specificationList?.addEventListener('click', event => {
+        const removeButton = event.target.closest('[data-remove-specification]');
+        if (!removeButton) return;
+        removeButton.closest('[data-specification-row]')?.remove();
+        if (!specificationList.querySelector('[data-specification-row]')) addSpecificationRow();
+    });
     let seoTitleCustomized = seoTitleInput.dataset.autoGenerated !== 'true';
     let seoDescriptionCustomized = seoDescriptionInput.dataset.autoGenerated !== 'true';
     const truncateAtWord = (value, limit) => {

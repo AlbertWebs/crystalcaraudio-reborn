@@ -153,6 +153,10 @@ class AdminProductsController extends Controller
             'stock_quantity' => ['nullable', 'integer', 'min:0', 'max:1000000'],
             'low_stock_threshold' => ['nullable', 'integer', 'min:0', 'max:1000000'],
             'description' => ['nullable', 'string', 'max:20000'],
+            'specifications' => ['nullable', 'array', 'max:50'],
+            'specifications.*' => ['array:title,value'],
+            'specifications.*.title' => ['nullable', 'string', 'max:120'],
+            'specifications.*.value' => ['nullable', 'string', 'max:500'],
             'primary_image' => ['nullable', 'string', 'max:2048', Rule::in(collect($product?->gallery ?? [])->filter()->push($product?->image)->filter()->unique()->values()->all())],
             'primary_upload_index' => ['nullable', 'integer', 'min:0', 'max:9'],
             'meta_title' => ['nullable', 'string', 'max:255'],
@@ -187,6 +191,18 @@ class AdminProductsController extends Controller
         }
         if (array_key_exists('description', $data)) {
             $data['description'] = $this->sanitizeDescription((string) $data['description']);
+        }
+
+        if (array_key_exists('specifications', $data)) {
+            $data['specifications'] = collect($data['specifications'] ?? [])
+                ->filter(fn ($specification) => is_array($specification))
+                ->map(fn (array $specification): array => [
+                    'title' => trim((string) ($specification['title'] ?? '')),
+                    'value' => trim((string) ($specification['value'] ?? '')),
+                ])
+                ->filter(fn (array $specification): bool => $specification['title'] !== '' && $specification['value'] !== '')
+                ->values()
+                ->all();
         }
 
         if (array_key_exists('stock_quantity', $data) && $data['stock_quantity'] !== null) {

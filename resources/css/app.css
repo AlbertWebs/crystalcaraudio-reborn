@@ -1810,3 +1810,12 @@ html,body{overflow-x:clip}
 .special-offers-listing .product-grid-storefront{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 @media(max-width:1050px) and (min-width:761px){.special-offers-listing .product-grid-storefront{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}}
 @media(max-width:760px){.special-offers-listing .product-grid-storefront{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}}
+.specification-editor-list{display:grid;gap:10px}
+.specification-editor-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) auto;align-items:end;gap:12px;padding:13px;border:1px solid #e3ebe6;border-radius:8px;background:#fbfdfc}
+.specification-editor-row .catalogue-field{min-width:0}
+.specification-remove-button,.specification-add-button{min-height:38px;padding:0 13px;border:1px solid #dce6e0;border-radius:7px;background:#fff;color:#43584d;font:500 12px/18px 'Outfit',sans-serif;cursor:pointer}
+.specification-remove-button{margin-bottom:1px;color:#8b4d4d}
+.specification-remove-button:hover{border-color:#e3caca;background:#fff8f8}
+.specification-add-button{margin-top:12px;border-color:#a9ccc0;background:#f1f8f5;color:#0c6661}
+.specification-add-button:hover{border-color:#78b1a2;background:#e8f4ef}
+@media(max-width:760px){.specification-editor-row{grid-template-columns:1fr;gap:9px}.specification-remove-button{justify-self:start}}
