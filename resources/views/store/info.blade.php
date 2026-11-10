@@ -39,6 +39,13 @@
         <a href="https://www.google.com/maps/search/?api=1&amp;query=Crystal+Car+Audio+Nairobi+Kenya" target="_blank" rel="noopener noreferrer">Open in Google Maps <span aria-hidden="true">↗</span></a>
     </article>
 </section>
+<section class="find-us-map-section" aria-labelledby="find-us-map-title">
+    <div class="find-us-map-heading">
+        <div><p class="eyebrow">VISIT OUR NAIROBI LOCATION</p><h2 id="find-us-map-title">Find Crystal Car Audio</h2><p>Roasters, Garden Estate Road, opposite MCK Ruaraka Church, next to Big Fish, Nairobi.</p></div>
+        <a class="button button-dark" href="https://www.google.com/maps/search/?api=1&amp;query=-1.2839931%2C36.827792" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="find-us-map-frame"><iframe title="Map to Crystal Car Audio on Garden Estate Road, Nairobi" src="https://www.google.com/maps/embed?pb=%211m14%211m8%211m3%211d15955.266044126078%212d36.827792%213d-1.2839931%213m2%211i1024%212i768%214f13.1%213m3%211m2%211s0x0%3A0x69ba04f279949126%212sCrystal+Car+Audio%215e0%213m2%211sen%212ske%214v1648821969454%215m2%211sen%212ske" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+</section>
 @else
 <section class="page-hero compact info-hero">
     <p class="eyebrow">CRYSTAL CAR AUDIO</p>
@@ -109,6 +116,13 @@
     .contact-card>a span{font-size:14px;transition:transform .2s}
     .contact-card>a:hover span{transform:translate(2px,-2px)}
     .contact-card>a:focus-visible,.contact-hero>.button:focus-visible{outline:2px solid #72c9bd;outline-offset:4px}
+    .find-us-map-section{width:min(100% - 48px,1220px);margin:0 auto 78px;padding:26px;border:1px solid #e5ebe7;border-radius:14px;background:#fbfcfb}
+    .find-us-map-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:20px}
+    .find-us-map-heading .eyebrow{margin-bottom:7px}
+    .find-us-map-heading h2{margin:0;color:var(--ink);font:600 clamp(24px,3vw,34px)/1.2 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.035em}
+    .find-us-map-heading p:not(.eyebrow){margin:8px 0 0;color:#68746d;font:400 15px/1.65 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif}
+    .find-us-map-frame{height:390px;overflow:hidden;border-radius:10px;background:#e8eeea}
+    .find-us-map-frame iframe{display:block;width:100%;height:100%;border:0}
     .info-hero{padding-top:52px;padding-bottom:52px}
     .info-hero h1{font-size:clamp(38px,5vw,58px)}
     .info-hero>.button{margin-top:18px}
@@ -118,6 +132,6 @@
     .info-record h2{font:600 24px/1.3 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.025em;margin:0 0 12px;color:var(--ink)}
     .info-record p{font:400 16px/1.8 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;color:#555;margin:0 0 12px;overflow-wrap:anywhere}
     .info-record small{font:400 12px/1.8 'Outfit','Cairo','Helvetica Neue',Helvetica,Arial,sans-serif;color:#76777c}
-    @media(max-width:760px){.contact-hero,.contact-directory{width:calc(100% - 36px)}.contact-hero{align-items:flex-start;flex-direction:column;padding:42px 0 26px;gap:21px}.contact-hero h1{font-size:40px}.contact-directory{grid-template-columns:1fr;gap:12px;padding:22px 0 52px}.contact-card{min-height:220px;padding:22px}.contact-card-icon{margin-bottom:14px}.contact-card>p:not(.eyebrow){font-size:16px;line-height:24px}.info-hero{padding-top:38px;padding-bottom:38px}.info-content{padding-top:32px;padding-bottom:48px}.info-record h2{font-size:21px}.info-record p{font-size:15px}}
+    @media(max-width:760px){.contact-hero,.contact-directory{width:calc(100% - 36px)}.contact-hero{align-items:flex-start;flex-direction:column;padding:42px 0 26px;gap:21px}.contact-hero h1{font-size:40px}.contact-directory{grid-template-columns:1fr;gap:12px;padding:22px 0 52px}.contact-card{min-height:220px;padding:22px}.contact-card-icon{margin-bottom:14px}.contact-card>p:not(.eyebrow){font-size:16px;line-height:24px}.find-us-map-section{width:calc(100% - 36px);margin-bottom:54px;padding:17px}.find-us-map-heading{align-items:flex-start;flex-direction:column}.find-us-map-frame{height:300px}.info-hero{padding-top:38px;padding-bottom:38px}.info-content{padding-top:32px;padding-bottom:48px}.info-record h2{font-size:21px}.info-record p{font-size:15px}}
 </style>
 @endsection
