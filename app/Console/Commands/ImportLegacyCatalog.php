@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class ImportLegacyCatalog extends Command
 {
-    protected $signature = 'legacy:import-catalog {--sql= : Path to the legacy SQL dump} {--catalog-only : Refresh catalogue data without re-importing the archive} {--skip-wishlist : Keep the already-imported large legacy wishlist archive untouched}';
+    protected $signature = 'legacy:import-catalog {--sql= : Path to the legacy SQL dump} {--catalog-only : Refresh catalogue data without re-importing the archive} {--galleries-only : Restore missing legacy product gallery images without changing product data} {--dry-run : Report changes without writing them} {--skip-wishlist : Keep the already-imported large legacy wishlist archive untouched}';
 
     protected $description = 'Import legacy categories and products without changing the original dump.';
 
@@ -25,6 +25,10 @@ class ImportLegacyCatalog extends Command
         }
         $counts = ['category' => 0, 'product' => 0];
         foreach (['category', 'product'] as $table) {
+            if ($this->option('galleries-only') && $table !== 'product') {
+                continue;
+            }
+
             foreach ($this->records($path, $table) as $record) {
                 if ($table === 'category') {
                     $slug = trim((string) ($record['slung'] ?? '')) ?: Str::slug($record['cat'] ?? 'category');
@@ -62,6 +66,29 @@ class ImportLegacyCatalog extends Command
                 ])
                     ->map(fn ($field) => $this->resolveImage(trim((string) ($record[$field] ?? ''))))
                     ->filter()->unique()->values()->all();
+
+                if ($this->option('galleries-only')) {
+                    $existingProduct = DB::table('catalog_products')->where('legacy_id', $legacyId)->first(['id', 'image', 'gallery']);
+                    if (! $existingProduct) {
+                        continue;
+                    }
+
+                    $existingGallery = collect(json_decode((string) $existingProduct->gallery, true) ?: [])
+                        ->push($existingProduct->image)->filter()->unique();
+                    $mergedGallery = $existingGallery->concat($gallery)->filter()->unique()->values();
+                    if ($mergedGallery->count() > $existingGallery->count()) {
+                        if (! $this->option('dry-run')) {
+                            DB::table('catalog_products')->where('id', $existingProduct->id)->update([
+                                'gallery' => json_encode($mergedGallery->all(), JSON_THROW_ON_ERROR),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                        $counts[$table]++;
+                    }
+
+                    continue;
+                }
+
                 $specifications = json_decode((string) ($record['extras'] ?? ''), true);
                 $price = is_numeric($record['price'] ?? null) ? (float) $record['price'] : (is_numeric($record['price_raw'] ?? null) ? (float) $record['price_raw'] : 0);
                 $originalPrice = is_numeric($record['price_raw'] ?? null) && (float) $record['price_raw'] > $price ? (float) $record['price_raw'] : null;
@@ -80,7 +107,13 @@ class ImportLegacyCatalog extends Command
                 ]);
                 $counts[$table]++;
             }
-            $this->info("Imported {$counts[$table]} {$table} records.");
+            $this->info($this->option('galleries-only')
+                ? "Restored legacy galleries for {$counts[$table]} products."
+                : "Imported {$counts[$table]} {$table} records.");
+        }
+
+        if ($this->option('galleries-only')) {
+            return self::SUCCESS;
         }
 
         foreach ($this->records($path, 'tags') as $record) {
