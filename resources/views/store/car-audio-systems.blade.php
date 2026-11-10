@@ -33,7 +33,7 @@
     <div class="portfolio-grid portfolio-service-grid">
         <article class="portfolio-card"><div class="portfolio-card-copy"><h3>Start with a car radio</h3><p>Choose a head unit with the connectivity and controls you need, then confirm dashboard fitment.</p><a class="text-link" href="{{ route('product-category', 'car-radio') }}">Shop car radios ↗</a></div></article>
         <article class="portfolio-card"><div class="portfolio-card-copy"><h3>Match speakers and bass</h3><p>Door speakers, subwoofers and suitable amplification can bring clarity and fuller low frequencies to your setup.</p><a class="text-link" href="{{ route('car-speakers') }}">Shop car speakers ↗</a></div></article>
-        <article class="portfolio-card"><div class="portfolio-card-copy"><h3>Get fitment advice</h3><p>Share your vehicle make, model and year with our team to check compatibility before you buy.</p><a class="text-link" href="{{ route('find-us') }}">Talk to Crystal Car Audio ↗</a></div></article>
+        <article class="portfolio-card"><div class="portfolio-card-copy"><h3>Get fitment advice</h3><p>Share your vehicle make, model and year with our team to check compatibility before you buy.</p><a class="text-link" href="{{ route('page.find-us') }}">Talk to Crystal Car Audio ↗</a></div></article>
     </div>
 </section>
 <section class="section listing listing-storefront collection-listing">
