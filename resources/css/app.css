@@ -1856,3 +1856,35 @@ html,body{overflow-x:clip}
 .product-enquiry-submit:focus-visible,.product-enquiry-close:focus-visible,.product-enquiry-trigger:focus-visible{outline:3px solid rgba(12,102,97,.45);outline-offset:3px}
 @media(max-width:520px){.product-enquiry-dialog{border-radius:15px}.product-enquiry-form{gap:8px}.product-enquiry-submit{width:100%}}
 .store-chat-avatar{position:relative}
+.store-chat-widget{position:fixed;z-index:111;left:24px;bottom:24px;width:56px;height:56px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:#08b681;color:#fff;box-shadow:0 8px 18px rgba(8,182,129,.29);cursor:pointer;transition:transform .18s ease,background-color .18s ease,box-shadow .18s ease}
+.store-chat-widget:hover{transform:translateY(-2px);background:#079f71;box-shadow:0 10px 22px rgba(8,182,129,.35)}
+.store-chat-widget:focus-visible,.store-chat-close:focus-visible,.store-chat-form button:focus-visible{outline:3px solid rgba(8,125,75,.32);outline-offset:3px}
+.store-chat-icon,.store-chat-close-icon{width:31px;height:31px;fill:currentColor}
+.store-chat-close-icon{display:none;width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
+.store-chat-widget.is-open .store-chat-icon{display:none}
+.store-chat-widget.is-open .store-chat-close-icon{display:block}
+.store-chat-panel{position:fixed;z-index:110;left:24px;bottom:96px;width:min(384px,calc(100vw - 48px));display:grid;grid-template-rows:72px minmax(96px,auto) auto 28px;overflow:hidden;border:1px solid #e6ece8;border-radius:16px;background:#fff;box-shadow:0 18px 34px rgba(20,35,29,.25);font-family:'Outfit','Cairo',sans-serif}
+.store-chat-panel[hidden]{display:none!important}
+.store-chat-header{display:flex;align-items:center;gap:12px;padding:12px 15px;background:#07966a;color:#fff}
+.store-chat-avatar{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.16)}
+.store-chat-avatar:after{content:'';position:absolute;right:1px;bottom:1px;width:8px;height:8px;border:1px solid #07966a;border-radius:50%;background:#35dfb2}
+.store-chat-avatar svg{width:27px;height:27px;fill:currentColor}
+.store-chat-title{min-width:0;display:grid;gap:2px}
+.store-chat-title strong{font:600 14px/19px 'Outfit','Cairo',sans-serif}
+.store-chat-title small{font:400 12px/16px 'Outfit','Cairo',sans-serif;color:rgba(255,255,255,.88)}
+.store-chat-close{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;margin-left:auto;border:0;border-radius:50%;background:transparent;color:#fff;font:300 25px/1 Arial,sans-serif;cursor:pointer}
+.store-chat-close:hover{background:rgba(255,255,255,.14)}
+.store-chat-content{min-height:96px;display:flex;align-items:flex-start;padding:16px;background:#effbf5}
+.store-chat-content p{max-width:300px;margin:0;padding:12px 14px;border:1px solid #edf0ef;border-radius:3px 16px 16px 16px;background:#fff;color:#536070;font:400 13px/20px 'Outfit','Cairo',sans-serif}
+.store-chat-form{position:relative;display:flex;align-items:flex-end;gap:8px;margin:11px 11px 0;padding:7px;border:2px solid #2865ff;border-radius:13px;background:#fff}
+.store-chat-form textarea{width:100%;min-height:36px;max-height:100px;resize:vertical;padding:3px 4px;border:0;outline:0;background:transparent;color:#253044;font:400 13px/19px 'Outfit','Cairo',sans-serif}
+.store-chat-form textarea::placeholder{color:#8a93a3}
+.store-chat-form button{width:29px;height:29px;flex:0 0 29px;display:grid;place-items:center;margin-bottom:1px;border:0;border-radius:8px;background:#07966a;color:#fff;cursor:pointer}
+.store-chat-form button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.store-chat-footer{display:flex;align-items:center;justify-content:space-between;padding:4px 12px 8px;color:#98a1ae;font:400 10px/14px 'Outfit','Cairo',sans-serif}
+.store-chat-footer>span:last-child{display:inline-flex;align-items:center;gap:5px;color:#138d6a}
+.store-chat-footer i{width:10px;height:10px;border-radius:50%;background:#d4f4e8}
+.store-chat-widget[hidden]{display:none!important}
+@media(max-width:760px){.store-chat-widget{left:14px;bottom:calc(90px + env(safe-area-inset-bottom));width:56px;height:56px}.store-chat-panel{left:14px;bottom:calc(162px + env(safe-area-inset-bottom));width:min(384px,calc(100vw - 28px));max-height:calc(100dvh - 190px);grid-template-rows:72px minmax(96px,auto) auto 28px}.store-chat-content{overflow:auto}}
+@media(max-height:520px){.store-chat-panel{max-height:calc(100dvh - 100px);grid-template-rows:64px minmax(65px,1fr) auto 27px}.store-chat-content{min-height:65px;padding:10px}.store-chat-header{padding:8px 13px}}
+@media(prefers-reduced-motion:reduce){.store-chat-widget{transition:none}}
