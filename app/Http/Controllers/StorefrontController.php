@@ -306,6 +306,7 @@ class StorefrontController extends Controller
         $relatedProducts = CatalogProduct::query()->where('category', $product->category)->whereKeyNot($product->id)->latest()->take(4)->get();
         $description = trim((string) $product->description);
         $description = preg_replace('/rnrn/i', "\n", $description);
+        $description = preg_replace('/(?<=>)rn(?=\\s*<)/i', "\n", $description);
         $description = preg_replace('/\\s*—\\s*/u', ', ', $description);
         $descriptionPlain = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $descriptionPlain = trim(preg_replace('/\s+/', ' ', $descriptionPlain));
