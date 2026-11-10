@@ -32,6 +32,7 @@ Route::get('/products/shop-by-brand', [StorefrontController::class, 'brandDirect
 Route::get('/shop-by-brand', fn () => redirect()->route('shop-by-brand', [], 301));
 Route::get('/products/brand', fn () => redirect()->route('shop-by-brand', [], 301));
 Route::get('/products/brand/{brand}', [StorefrontController::class, 'products'])->name('products.brand');
+Route::get('/products/car-audio-installation', fn () => redirect()->route('portfolio', [], 301));
 Route::get('/products/{slug}', [StorefrontController::class, 'products'])->name('product-category');
 Route::get('/special-offers', [StorefrontController::class, 'products'])->name('special-offers');
 Route::get('/product/{slug}', [StorefrontController::class, 'product'])->name('product-single');
@@ -52,6 +53,7 @@ Route::get('/sitemap.xml', function () {
     ];
     $priorityCategorySlugs = array_keys($categoryPriorities);
     $categoryUrls = DB::table('catalog_categories')
+        ->where('slug', '!=', 'car-audio-installation')
         ->orderBy('sort_order')
         ->orderBy('name')
         ->get(['slug'])
