@@ -8,10 +8,10 @@
     $productDescriptionForSeo = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) $descriptionPlain), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
     $seoTitle = filled($product->meta_title)
         ? trim($product->meta_title)
-        : $product->name.' in '.($product->category ?: 'Nairobi').' | Crystal Car Audio';
+        : $product->name.' | Crystal Car Audio';
     $seoDescription = filled($product->meta_description)
         ? trim(strip_tags($product->meta_description))
-        : 'Shop '.$product->name.($product->brand ? ' by '.$product->brand : '').' in '.($product->category ?: 'Nairobi').', Kenya from Crystal Car Audio. KES '.number_format($product->price).'. '.$productDescriptionForSeo;
+        : 'Shop '.$product->name.($product->category ? ' in '.$product->category : '').' at Crystal Car Audio in Nairobi, Kenya. KES '.number_format($product->price).'. Get expert fitment advice and delivery across Kenya.';
     $seoDescription = \Illuminate\Support\Str::limit($seoDescription, 160);
     $productAvailability = str_contains(strtolower((string) $product->stock), 'out')
         ? 'OutOfStock'
@@ -109,7 +109,7 @@
         <div class="product-gallery-main">
             @if($discountPercent)<span class="product-badge badge-sale">Save {{ $discountPercent }}%</span>@endif
             @if($gallery->isNotEmpty())
-                <img id="product-gallery-image" src="{{ str_starts_with($gallery->first(), 'http') ? $gallery->first() : \App\Support\MediaUrl::url('uploads/'.$gallery->first()) }}" alt="{{ $product->name }}" loading="eager" fetchpriority="high" decoding="async">
+                <img id="product-gallery-image" src="{{ str_starts_with($gallery->first(), 'http') ? $gallery->first() : \App\Support\MediaUrl::url('uploads/'.$gallery->first()) }}" alt="{{ $product->name }} product image" loading="eager" fetchpriority="high" decoding="async">
             @else
                 <span class="product-placeholder">◉</span>
             @endif
@@ -117,7 +117,7 @@
         @if($gallery->count() > 1)
             <div class="product-thumbnails" aria-label="Product images">
                 @foreach($gallery as $image)
-                    <button type="button" data-gallery-image="{{ str_starts_with($image, 'http') ? $image : \App\Support\MediaUrl::url('uploads/'.$image) }}" class="{{ $loop->first ? 'is-active' : '' }}" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-label="Show image {{ $loop->iteration }}"><img loading="lazy" decoding="async" src="{{ str_starts_with($image, 'http') ? $image : \App\Support\MediaUrl::url('uploads/'.$image) }}" alt=""></button>
+                    <button type="button" data-gallery-image="{{ str_starts_with($image, 'http') ? $image : \App\Support\MediaUrl::url('uploads/'.$image) }}" class="{{ $loop->first ? 'is-active' : '' }}" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-label="Show {{ $product->name }} image {{ $loop->iteration }}"><img loading="lazy" decoding="async" src="{{ str_starts_with($image, 'http') ? $image : \App\Support\MediaUrl::url('uploads/'.$image) }}" alt="{{ $product->name }} product view {{ $loop->iteration }}"></button>
                 @endforeach
             </div>
         @endif
@@ -167,7 +167,7 @@
     <nav class="product-information-nav" aria-label="Product information"><a href="#product-description">Description</a><a href="#product-specifications">Specifications</a><a href="#product-reviews">Reviews <span>({{ $reviews->count() }})</span></a></nav>
     <div class="product-information-grid">
         <article class="product-description-panel" id="product-description">
-            <p class="eyebrow">PRODUCT DETAILS</p><h2>Made for the way you drive.</h2>
+            <p class="eyebrow">PRODUCT DETAILS</p><h2>About {{ $product->name }}</h2>
             @forelse($detailParagraphs as $paragraph)<p>{{ $paragraph }}</p>@empty<p>Contact our team for more information about this product and compatibility with your vehicle.</p>@endforelse
         </article>
         <aside class="product-specification-panel" id="product-specifications">
