@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class ImportLegacyCatalog extends Command
 {
-    protected $signature = 'legacy:import-catalog {--sql= : Path to the legacy SQL dump} {--catalog-only : Refresh catalogue data without re-importing the archive} {--galleries-only : Restore missing legacy product gallery images without changing product data} {--dry-run : Report changes without writing them} {--skip-wishlist : Keep the already-imported large legacy wishlist archive untouched}';
+    protected $signature = 'legacy:import-catalog {--sql= : Path to the legacy SQL dump} {--catalog-only : Refresh catalogue data without re-importing the archive} {--galleries-only : Restore missing legacy product gallery images without changing product data} {--gallery-manifest= : JSON gallery map to apply without the original SQL dump} {--export-galleries= : Export public product image paths to a JSON gallery map} {--dry-run : Report changes without writing them} {--skip-wishlist : Keep the already-imported large legacy wishlist archive untouched}';
 
     protected $description = 'Import legacy categories and products without changing the original dump.';
 
@@ -18,11 +18,79 @@ class ImportLegacyCatalog extends Command
     public function handle(): int
     {
         $path = $this->option('sql') ?: base_path('../crystal3_crystal.sql');
-        if (! is_file($path)) {
+        $usesGalleryManifest = $this->option('galleries-only') && filled($this->option('gallery-manifest'));
+        if (! is_file($path) && ! $usesGalleryManifest) {
             $this->error("SQL dump not found: {$path}");
 
             return self::FAILURE;
         }
+
+        if ($manifestPath = $this->option('export-galleries')) {
+            $manifest = [];
+            foreach ($this->records($path, 'product') as $record) {
+                $legacyId = (string) ($record['id'] ?? '');
+                if ($legacyId === '') {
+                    continue;
+                }
+
+                $fields = (bool) ($record['offer'] ?? false) ? ['offer_banner'] : [];
+                $images = collect([
+                    ...$fields, 'fb_pixels', 'thumbnail', 'image_one', 'image_two', 'image_three', 'image_four',
+                ])->map(fn ($field) => $this->resolveImage(trim((string) ($record[$field] ?? ''))))
+                    ->filter()->unique()->values()->all();
+                if ($images !== []) {
+                    $manifest[$legacyId] = $images;
+                }
+            }
+
+            if (file_put_contents($manifestPath, json_encode($manifest, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR)) === false) {
+                $this->error("Could not write gallery manifest: {$manifestPath}");
+
+                return self::FAILURE;
+            }
+            $this->info('Exported legacy image paths for '.count($manifest).' products.');
+
+            return self::SUCCESS;
+        }
+
+        if ($this->option('galleries-only') && ($manifestPath = $this->option('gallery-manifest'))) {
+            if (! is_file($manifestPath) || ! is_array($manifest = json_decode((string) file_get_contents($manifestPath), true))) {
+                $this->error("Gallery manifest is missing or invalid: {$manifestPath}");
+
+                return self::FAILURE;
+            }
+
+            $restored = 0;
+            foreach ($manifest as $legacyId => $images) {
+                $existingProduct = DB::table('catalog_products')->where('legacy_id', (string) $legacyId)->first(['id', 'image', 'gallery']);
+                if (! $existingProduct || ! is_array($images)) {
+                    continue;
+                }
+
+                $existingGallery = collect(json_decode((string) $existingProduct->gallery, true) ?: [])
+                    ->push($existingProduct->image)->filter()->unique();
+                $availableLegacyImages = collect($images)
+                    ->map(fn ($image) => $this->resolveImage((string) $image))
+                    ->filter()->unique();
+                $mergedGallery = $existingGallery->concat($availableLegacyImages)->filter()->unique()->values();
+                if ($mergedGallery->count() <= $existingGallery->count()) {
+                    continue;
+                }
+
+                if (! $this->option('dry-run')) {
+                    DB::table('catalog_products')->where('id', $existingProduct->id)->update([
+                        'gallery' => json_encode($mergedGallery->all(), JSON_THROW_ON_ERROR),
+                        'updated_at' => now(),
+                    ]);
+                }
+                $restored++;
+            }
+
+            $this->info(($this->option('dry-run') ? 'Would restore galleries for ' : 'Restored galleries for ')."{$restored} products.");
+
+            return self::SUCCESS;
+        }
+
         $counts = ['category' => 0, 'product' => 0];
         foreach (['category', 'product'] as $table) {
             if ($this->option('galleries-only') && $table !== 'product') {

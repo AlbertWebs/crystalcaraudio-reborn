@@ -100,8 +100,7 @@
 <script type="application/ld+json">@json($productBreadcrumbSchema)</script>
 <section class="product-detail-page">
     @php
-        $gallery = collect($product->gallery ?? [])->filter()->unique()->values();
-        if ($gallery->isEmpty() && $product->image) $gallery = collect([$product->image]);
+        $gallery = collect($product->gallery ?? [])->filter()->push($product->image)->filter()->unique()->values();
         $discountPercent = $product->original_price && $product->original_price > $product->price ? (int) round((($product->original_price - $product->price) / $product->original_price) * 100) : null;
         $inStock = !str_contains(strtolower((string) $product->stock), 'out');
     @endphp
