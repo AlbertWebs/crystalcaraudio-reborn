@@ -111,6 +111,7 @@
     .contact-card>a:focus-visible,.contact-hero>.button:focus-visible{outline:2px solid #72c9bd;outline-offset:4px}
     .info-hero{padding-top:52px;padding-bottom:52px}
     .info-hero h1{font-size:clamp(38px,5vw,58px)}
+    .info-hero>.button{margin-top:18px}
     .info-content{max-width:960px;margin:0 auto;padding-top:48px;padding-bottom:72px}
     .info-record{padding:0 0 28px;margin:0 0 28px;border-bottom:1px solid var(--line)}
     .info-record:last-child{margin-bottom:0}
