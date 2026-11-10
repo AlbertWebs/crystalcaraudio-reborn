@@ -45,10 +45,21 @@ class ImportLegacyCatalog extends Command
                 }
                 $name = trim((string) ($record['name'] ?? '')) ?: 'Product '.$legacyId;
                 $slug = trim((string) ($record['slung'] ?? '')) ?: Str::slug($name.'-'.$legacyId);
-                $image = trim((string) ($record['thumbnail'] ?? '')) ?: trim((string) ($record['image_one'] ?? ''));
+                $image = trim((string) ($record['fb_pixels'] ?? ''))
+                    ?: trim((string) ($record['thumbnail'] ?? ''))
+                    ?: trim((string) ($record['image_one'] ?? ''));
                 $storedImage = $this->resolveImage($image);
                 $offerImage = $this->resolveImage(trim((string) ($record['offer_banner'] ?? '')));
-                $gallery = collect(['thumbnail', 'image_one', 'image_two', 'image_three', 'image_four'])
+                $galleryFields = (bool) ($record['offer'] ?? false) ? ['offer_banner'] : [];
+                $gallery = collect([
+                    ...$galleryFields,
+                    'fb_pixels',
+                    'thumbnail',
+                    'image_one',
+                    'image_two',
+                    'image_three',
+                    'image_four',
+                ])
                     ->map(fn ($field) => $this->resolveImage(trim((string) ($record[$field] ?? ''))))
                     ->filter()->unique()->values()->all();
                 $specifications = json_decode((string) ($record['extras'] ?? ''), true);
