@@ -174,6 +174,7 @@
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1672338073611112&amp;ev=PageView&amp;noscript=1" alt=""></noscript>
 @php
     $headerCategories = \Illuminate\Support\Facades\DB::table('catalog_categories')->orderByRaw('CASE WHEN sort_order = 0 THEN 1 ELSE 0 END')->orderBy('sort_order')->orderBy('name')->get(['name','slug']);
+    $headerCategories = $headerCategories->reject(fn ($category) => in_array($category->slug, ['car-audio-system', 'car-audio-systems'], true));
     $headerAudioCategories = $headerCategories->filter(function ($category) {
         foreach (['audio', 'radio', 'speaker', 'amplifier', 'equalizer'] as $term) {
             if (str_contains(strtolower($category->name), $term)) return true;
@@ -207,6 +208,7 @@
             @foreach($headerAudioCategories->skip(1) as $category)
                 <a href="{{ route('product-category', $category->slug) }}">{{ $category->name }}</a>
             @endforeach
+            <a href="{{ route('car-audio-systems') }}">Car Audio Systems</a>
             <a href="{{ route('special-offers') }}">Offers</a>
         </nav>
         <div class="header-actions">

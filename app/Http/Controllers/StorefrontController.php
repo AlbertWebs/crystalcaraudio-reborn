@@ -48,6 +48,7 @@ class StorefrontController extends Controller
             ->chunk(2)
             ->values();
         $categories = DB::table('catalog_categories')
+            ->whereNotIn('catalog_categories.slug', ['car-audio-system', 'car-audio-systems'])
             ->leftJoin('catalog_products', 'catalog_products.category', '=', 'catalog_categories.name')
             ->select('catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.image', 'catalog_categories.sort_order', DB::raw('COUNT(catalog_products.id) as product_count'))
             ->groupBy('catalog_categories.id', 'catalog_categories.name', 'catalog_categories.slug', 'catalog_categories.image', 'catalog_categories.sort_order')
@@ -101,6 +102,20 @@ class StorefrontController extends Controller
         return view('store.premium-car-audio', compact('sections', 'heroProduct', 'heroImageUrl'));
     }
 
+    public function carAudioSystems()
+    {
+        $products = CatalogProduct::query()
+            ->where('category', 'Car Audio System')
+            ->orderByDesc('featured')->orderByDesc('trending')->latest()
+            ->paginate(24);
+        $categories = DB::table('catalog_categories')
+            ->whereNotIn('slug', ['car-audio-system', 'car-audio-systems'])
+            ->orderByRaw('CASE WHEN sort_order = 0 THEN 1 ELSE 0 END')
+            ->orderBy('sort_order')->orderBy('name')->get();
+
+        return view('store.car-audio-systems', compact('products', 'categories'));
+    }
+
     public function products(Request $request, ?string $slug = null, ?string $brand = null)
     {
         $brand ??= $request->route('brand') ? (string) $request->route('brand') : null;
@@ -149,7 +164,7 @@ class StorefrontController extends Controller
             default => $query->orderByDesc('featured')->latest(),
         };
         $products = $query->paginate(24)->withQueryString();
-        $categories = DB::table('catalog_categories')->orderByRaw('CASE WHEN sort_order = 0 THEN 1 ELSE 0 END')->orderBy('sort_order')->orderBy('name')->get();
+        $categories = DB::table('catalog_categories')->whereNotIn('slug', ['car-audio-system', 'car-audio-systems'])->orderByRaw('CASE WHEN sort_order = 0 THEN 1 ELSE 0 END')->orderBy('sort_order')->orderBy('name')->get();
         $brands = CatalogProduct::query()->whereNotNull('brand')->where('brand', '!=', '')->distinct()->orderBy('brand')->pluck('brand');
         $pageTitle = 'Find your sound.';
         $pageDescription = 'Thoughtfully selected audio and accessories for the way you drive.';
@@ -225,6 +240,7 @@ class StorefrontController extends Controller
     {
         $productCounts = DB::table('catalog_products')->select('category', DB::raw('COUNT(*) as product_count'))->groupBy('category');
         $categories = DB::table('catalog_categories')
+            ->whereNotIn('catalog_categories.slug', ['car-audio-system', 'car-audio-systems'])
             ->leftJoinSub($productCounts, 'product_counts', 'product_counts.category', '=', 'catalog_categories.name')
             ->select('catalog_categories.*', DB::raw('COALESCE(product_counts.product_count, 0) as product_count'))
             ->orderByRaw('CASE WHEN catalog_categories.sort_order = 0 THEN 1 ELSE 0 END')

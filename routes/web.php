@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
 Route::get('/home', [StorefrontController::class, 'home'])->name('home-page');
 Route::get('/premium-car-audio-systems-nairobi-kenya', [StorefrontController::class, 'premiumCarAudio'])->name('premium-car-audio');
+Route::get('/car-audio-systems', [StorefrontController::class, 'carAudioSystems'])->name('car-audio-systems');
 Route::get('/products', [StorefrontController::class, 'products'])->name('categories');
 Route::get('/products/category', [StorefrontController::class, 'products'])->name('category');
 Route::get('/shop-by-category', [StorefrontController::class, 'categoryDirectory'])->name('shop-by-category');
@@ -35,6 +36,8 @@ Route::get('/shop-by-brand', fn () => redirect()->route('shop-by-brand', [], 301
 Route::get('/products/brand', fn () => redirect()->route('shop-by-brand', [], 301));
 Route::get('/products/brand/{brand}', [StorefrontController::class, 'products'])->name('products.brand');
 Route::get('/products/car-audio-installation', fn () => redirect()->route('portfolio', [], 301));
+Route::get('/products/car-audio-system', fn () => redirect()->route('car-audio-systems', [], 301));
+Route::get('/products/car-audio-systems', fn () => redirect()->route('car-audio-systems', [], 301));
 Route::get('/products/{slug}', [StorefrontController::class, 'products'])->name('product-category');
 Route::get('/special-offers', [StorefrontController::class, 'products'])->name('special-offers');
 Route::get('/product/{slug}', [StorefrontController::class, 'product'])->name('product-single');
@@ -55,7 +58,7 @@ Route::get('/sitemap.xml', function () {
     ];
     $priorityCategorySlugs = array_keys($categoryPriorities);
     $categoryUrls = DB::table('catalog_categories')
-        ->where('slug', '!=', 'car-audio-installation')
+        ->whereNotIn('slug', ['car-audio-installation', 'car-audio-system', 'car-audio-systems'])
         ->orderBy('sort_order')
         ->orderBy('name')
         ->get(['slug'])
@@ -75,6 +78,7 @@ Route::get('/sitemap.xml', function () {
         '/shop-by-category' => '0.50',
         '/shop-by-brand' => '0.40',
         '/premium-car-audio-systems-nairobi-kenya' => '0.50',
+        '/car-audio-systems' => '0.80',
         '/special-offers' => '0.50',
         '/about-us' => '0.40',
         '/find-us' => '0.40',
