@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CatalogProduct;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -31,13 +32,33 @@ class AdminCatalogExportController extends Controller
 
     public function index()
     {
-        $total = CatalogProduct::query()->count();
-        $merchantEligible = $this->merchantProducts()->count();
+        $catalogue = CatalogProduct::query()->orderBy('name')->get();
+        $excluded = $catalogue
+            ->map(fn (CatalogProduct $product): array => [
+                'product' => $product,
+                'reasons' => $this->merchantExclusionReasons($product),
+            ])
+            ->filter(fn (array $item): bool => $item['reasons'] !== [])
+            ->values();
+        $page = LengthAwarePaginator::resolveCurrentPage('needs_updates_page');
+        $perPage = 25;
+        $excludedProducts = new LengthAwarePaginator(
+            $excluded->forPage($page, $perPage)->values(),
+            $excluded->count(),
+            $perPage,
+            $page,
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+                'pageName' => 'needs_updates_page',
+            ],
+        );
 
         return view('admin.exports', [
-            'totalProducts' => $total,
-            'merchantEligible' => $merchantEligible,
-            'merchantSkipped' => max(0, $total - $merchantEligible),
+            'totalProducts' => $catalogue->count(),
+            'merchantEligible' => $catalogue->count() - $excluded->count(),
+            'merchantSkipped' => $excluded->count(),
+            'excludedProducts' => $excludedProducts,
         ]);
     }
 
@@ -146,32 +167,66 @@ class AdminCatalogExportController extends Controller
     private function merchantProducts(): Collection
     {
         return CatalogProduct::query()
-            ->where('price', '>', 0)
-            ->whereNotNull('name')->whereRaw("TRIM(name) <> ''")
-            ->whereNotNull('description')->whereRaw("TRIM(description) <> ''")
-            ->whereNotNull('image')->whereRaw("TRIM(image) <> ''")
-            ->whereNotNull('category')->whereRaw("TRIM(category) <> ''")
-            ->whereNotNull('brand')->whereRaw("TRIM(brand) <> ''")
-            ->whereRaw("LOWER(TRIM(brand)) NOT IN ('other', 'others', 'unknown', 'n/a', 'na', 'none')")
-            ->whereNotNull('sku')->whereRaw("TRIM(sku) <> ''")
-            ->whereRaw("LOWER(TRIM(stock)) NOT IN ('pre-order', 'preorder')")
-            ->where(function ($query): void {
-                $query->whereNotNull('stock_quantity')
-                    ->orWhereRaw("LOWER(TRIM(stock)) IN ('in stock', 'out of stock')");
-            })
             ->orderBy('id')
             ->get()
-            ->filter(fn (CatalogProduct $product): bool => $this->hasMerchantTextLengths($product))
+            ->filter(fn (CatalogProduct $product): bool => $this->merchantExclusionReasons($product) === [])
             ->values();
     }
 
-    private function hasMerchantTextLengths(CatalogProduct $product): bool
+    private function merchantExclusionReasons(CatalogProduct $product): array
     {
+        $reasons = [];
         $title = $this->plainText($product->name);
         $description = $this->plainText($product->description);
+        $brand = trim((string) $product->brand);
+        $normalizedBrand = Str::lower($brand);
+        $sku = trim((string) $product->sku);
+        $category = trim((string) $product->category);
+        $stock = Str::lower(trim((string) $product->stock));
 
-        return $title !== '' && Str::length($title) <= 150
-            && $description !== '' && Str::length($description) <= 5000;
+        if ($title === '') {
+            $reasons[] = 'Product title is missing.';
+        } elseif (Str::length($title) > 150) {
+            $reasons[] = 'Product title exceeds Google’s 150-character limit.';
+        }
+
+        if ($description === '') {
+            $reasons[] = 'Product description is missing.';
+        } elseif (Str::length($description) > 5000) {
+            $reasons[] = 'Product description exceeds Google’s 5,000-character limit.';
+        }
+
+        if ((float) $product->price <= 0) {
+            $reasons[] = 'Price must be greater than zero.';
+        }
+
+        if (trim((string) $product->image) === '') {
+            $reasons[] = 'Main product image is missing.';
+        }
+
+        if ($category === '') {
+            $reasons[] = 'Product category is missing.';
+        }
+
+        if ($brand === '') {
+            $reasons[] = 'Brand is missing.';
+        } elseif (in_array($normalizedBrand, ['other', 'others', 'unknown', 'n/a', 'na', 'none'], true)) {
+            $reasons[] = 'Brand is set to “'.$brand.'”; enter the actual manufacturer brand.';
+        }
+
+        if ($sku === '') {
+            $reasons[] = 'Manufacturer part number is missing; add the product code (exported as MPN).';
+        }
+
+        if (Str::contains($stock, ['pre-order', 'preorder'])) {
+            $reasons[] = 'Stock is preorder, but no availability date is recorded.';
+        } elseif ($product->stock_quantity === null && ! in_array($stock, ['in stock', 'out of stock'], true)) {
+            $reasons[] = 'Stock status “'.trim((string) $product->stock).'” is not recognized.';
+        } elseif ($product->stock_quantity !== null && (int) $product->stock_quantity < 0) {
+            $reasons[] = 'Stock quantity cannot be negative.';
+        }
+
+        return $reasons;
     }
 
     private function catalogueRows(): array

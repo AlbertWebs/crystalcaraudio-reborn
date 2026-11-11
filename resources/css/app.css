@@ -1689,6 +1689,19 @@ html,body{overflow-x:clip}
 .admin-export-card ul{display:grid;gap:8px;margin:0 0 22px;padding:0;list-style:none}.admin-export-card li{position:relative;padding-left:19px;color:#52616a;font:400 12px/18px 'Outfit',sans-serif}.admin-export-card li:before{position:absolute;left:0;color:#0b837a;content:'✓';font-weight:600}
 .admin-export-card .admin-primary-action,.admin-export-card .admin-secondary-action{min-height:41px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding:0 14px;border-radius:8px;font:500 13px/19px 'Outfit',sans-serif;text-decoration:none}.admin-export-card .admin-primary-action{background:#087c76;color:#fff}.admin-export-card .admin-primary-action:hover{background:#06665f}.admin-export-card .admin-secondary-action{border:1px solid #d5e2dd;background:#fff;color:#25534d}.admin-export-card .admin-secondary-action:hover{border-color:#88bdb2;background:#f5fbf8}.admin-export-footnote{margin-top:11px;color:#77858c;font:400 12px/18px 'Outfit',sans-serif}
 .admin-export-note{display:flex;align-items:flex-start;gap:11px;margin-top:16px;padding:13px 15px;border:1px solid #f1dfb8;border-radius:9px;background:#fffaf0}.admin-export-note>span{width:21px;height:21px;flex:0 0 21px;display:grid;place-items:center;border-radius:50%;background:#f4e4bd;color:#8d681c;font:600 12px/1 'Outfit',sans-serif}.admin-export-note p{margin:0;color:#6f5d38;font:400 12px/19px 'Outfit',sans-serif}.admin-export-note a{color:#086d66;text-decoration:underline;text-underline-offset:2px}
+.admin-export-issues{margin-top:22px;overflow:hidden;border:1px solid #e1e9e5;border-radius:13px;background:#fff;box-shadow:0 5px 18px rgba(24,51,42,.035)}
+.admin-export-issues-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 22px 15px}
+.admin-export-issues-heading h2{margin:0;color:#1a2b36;font:600 19px/25px 'Outfit',sans-serif;letter-spacing:-.02em}
+.admin-export-issues-heading p{margin:5px 0 0;color:#718087;font:400 13px/20px 'Outfit',sans-serif}
+.admin-export-issues .admin-table{min-width:900px}
+.admin-export-issues .admin-table td:first-child{min-width:190px;max-width:260px}
+.admin-export-issues .admin-table td:first-child strong{display:block;overflow-wrap:anywhere}
+.admin-export-issues .admin-table td:nth-child(2){min-width:180px}
+.admin-export-reasons{display:grid;gap:5px;margin:0;padding-left:17px;color:#805d25;font:400 12px/18px 'Outfit',sans-serif}
+.admin-export-reasons li::marker{color:#c18728}
+.admin-export-edit-link{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:#087c76;font:500 12px/18px 'Outfit',sans-serif;text-decoration:none}
+.admin-export-edit-link:hover{text-decoration:underline;text-underline-offset:3px}
+.admin-export-issues-empty{margin:0;padding:22px;color:#087c76;font:500 13px/20px 'Outfit',sans-serif}
 @media(max-width:1000px){.admin-export-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-export-card-featured{grid-column:1/-1}.admin-export-card>p{min-height:0}}
 @media(max-width:680px){.admin-export-page .admin-page-heading{align-items:flex-start;flex-direction:column}.admin-export-stats{grid-template-columns:1fr;gap:9px}.admin-export-stats article{min-height:70px}.admin-export-grid{grid-template-columns:1fr}.admin-export-card-featured{grid-column:auto}.admin-export-card{padding:18px}.admin-export-card-top{margin-bottom:15px}}
 
