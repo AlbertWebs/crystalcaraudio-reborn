@@ -58,6 +58,10 @@
         </div>
 
         @if($excludedProducts->count() > 0)
+            @if($excludedProducts->hasPages())
+                @include('admin.partials.catalogue-pagination', ['paginator' => $excludedProducts, 'ariaLabel' => 'Products needing updates pages', 'summaryNoun' => 'excluded products'])
+            @endif
+
             <div class="admin-table-wrap">
                 <table class="admin-table">
                     <thead>
@@ -77,7 +81,7 @@
             </div>
 
             @if($excludedProducts->hasPages())
-                @include('admin.partials.catalogue-pagination', ['paginator' => $excludedProducts])
+                @include('admin.partials.catalogue-pagination', ['paginator' => $excludedProducts, 'ariaLabel' => 'Products needing updates pages', 'summaryNoun' => 'excluded products'])
             @endif
         @else
             <p class="admin-export-issues-empty">All products currently pass the Merchant feed data checks.</p>

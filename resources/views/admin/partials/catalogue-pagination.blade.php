@@ -4,8 +4,8 @@
     $startPage = max(1, $currentPage - 1);
     $endPage = min($lastPage, $currentPage + 1);
 @endphp
-<div class="catalogue-pagination" role="navigation" aria-label="Product catalogue pages">
-    <p class="catalogue-pagination-summary">Showing <strong>{{ number_format($paginator->firstItem() ?? 0) }}–{{ number_format($paginator->lastItem() ?? 0) }}</strong> of <strong>{{ number_format($paginator->total()) }}</strong> products <span>· Page {{ number_format($currentPage) }} of {{ number_format($lastPage) }}</span></p>
+<div class="catalogue-pagination" role="navigation" aria-label="{{ $ariaLabel ?? 'Product catalogue pages' }}">
+    <p class="catalogue-pagination-summary">Showing <strong>{{ number_format($paginator->firstItem() ?? 0) }}–{{ number_format($paginator->lastItem() ?? 0) }}</strong> of <strong>{{ number_format($paginator->total()) }}</strong> {{ $summaryNoun ?? 'products' }} <span>· Page {{ number_format($currentPage) }} of {{ number_format($lastPage) }}</span></p>
     <div class="catalogue-pagination-controls">
         @if($paginator->onFirstPage())<span class="catalogue-page-step is-disabled" aria-disabled="true"><span aria-hidden="true">←</span><span>Previous</span></span>@else<a class="catalogue-page-step" href="{{ $paginator->previousPageUrl() }}" rel="prev"><span aria-hidden="true">←</span><span>Previous</span></a>@endif
         <div class="catalogue-page-numbers" aria-label="Choose a page">

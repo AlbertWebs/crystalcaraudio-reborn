@@ -1697,6 +1697,18 @@ html,body{overflow-x:clip}
 .admin-export-issues .admin-table td:first-child{min-width:190px;max-width:260px}
 .admin-export-issues .admin-table td:first-child strong{display:block;overflow-wrap:anywhere}
 .admin-export-issues .admin-table td:nth-child(2){min-width:180px}
+.admin-app .admin-dashboard.admin-export-page .catalogue-pagination{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px;padding:12px 18px;border-top:1px solid #edf1ee;background:#fbfdfc}
+.admin-app .admin-dashboard.admin-export-page .catalogue-pagination-summary{margin:0;color:#65746d;font:400 12px/19px 'Outfit',sans-serif}
+.admin-app .admin-dashboard.admin-export-page .catalogue-pagination-summary strong{color:#26362e;font-weight:600}
+.admin-app .admin-dashboard.admin-export-page .catalogue-pagination-summary>span{margin-left:5px;color:#89958f}
+.admin-app .admin-dashboard.admin-export-page .catalogue-pagination-controls,.admin-app .admin-dashboard.admin-export-page .catalogue-page-numbers{display:flex;align-items:center;gap:5px}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-step,.admin-app .admin-dashboard.admin-export-page .catalogue-page-number{min-width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 10px;border:1px solid #dfe8e3;border-radius:7px;background:#fff;color:#43534a;text-decoration:none;font:500 12px/18px 'Outfit',sans-serif;transition:background .15s,border-color .15s,color .15s}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-number{min-width:36px;padding:0 8px}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-step:hover,.admin-app .admin-dashboard.admin-export-page .catalogue-page-number:hover{border-color:#a8cec2;background:#f2f8f5;color:#0c6661}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-number.is-current{border-color:#0c6661;background:#0c6661;color:#fff;box-shadow:0 2px 6px #0c666126}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-step.is-disabled{background:#f5f8f6;color:#aeb8b2;cursor:not-allowed}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-ellipsis{min-width:19px;text-align:center;color:#8b9690;font:400 13px/20px 'Outfit',sans-serif}
+.admin-app .admin-dashboard.admin-export-page .catalogue-page-step:focus-visible,.admin-app .admin-dashboard.admin-export-page .catalogue-page-number:focus-visible{outline:3px solid #0c66613a;outline-offset:2px}
 .admin-export-reasons{display:grid;gap:5px;margin:0;padding-left:17px;color:#805d25;font:400 12px/18px 'Outfit',sans-serif}
 .admin-export-reasons li::marker{color:#c18728}
 .admin-export-edit-link{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:#087c76;font:500 12px/18px 'Outfit',sans-serif;text-decoration:none}
@@ -1704,6 +1716,7 @@ html,body{overflow-x:clip}
 .admin-export-issues-empty{margin:0;padding:22px;color:#087c76;font:500 13px/20px 'Outfit',sans-serif}
 @media(max-width:1000px){.admin-export-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-export-card-featured{grid-column:1/-1}.admin-export-card>p{min-height:0}}
 @media(max-width:680px){.admin-export-page .admin-page-heading{align-items:flex-start;flex-direction:column}.admin-export-stats{grid-template-columns:1fr;gap:9px}.admin-export-stats article{min-height:70px}.admin-export-grid{grid-template-columns:1fr}.admin-export-card-featured{grid-column:auto}.admin-export-card{padding:18px}.admin-export-card-top{margin-bottom:15px}}
+@media(max-width:760px){.admin-app .admin-dashboard.admin-export-page .catalogue-pagination{align-items:stretch;flex-direction:column;gap:10px;padding:12px 14px}.admin-app .admin-dashboard.admin-export-page .catalogue-pagination-summary{font-size:12px}.admin-app .admin-dashboard.admin-export-page .catalogue-pagination-controls{justify-content:space-between;flex-wrap:wrap;gap:6px}.admin-export-issues-heading{padding:16px 14px 12px}}
 
 @media(max-width:760px){
     .category-tile-grid .category-tile-card-mobile-editorial{display:flex;grid-column:auto;height:auto;min-height:300px;aspect-ratio:.61;flex-direction:column;border:1px solid #d8e8e3;border-radius:16px;background:#fff;box-shadow:0 8px 20px rgba(15,56,48,.08)}

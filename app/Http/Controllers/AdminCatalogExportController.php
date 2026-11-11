@@ -40,8 +40,9 @@ class AdminCatalogExportController extends Controller
             ])
             ->filter(fn (array $item): bool => $item['reasons'] !== [])
             ->values();
-        $page = LengthAwarePaginator::resolveCurrentPage('needs_updates_page');
         $perPage = 25;
+        $lastPage = max(1, (int) ceil($excluded->count() / $perPage));
+        $page = min(max(LengthAwarePaginator::resolveCurrentPage('needs_updates_page'), 1), $lastPage);
         $excludedProducts = new LengthAwarePaginator(
             $excluded->forPage($page, $perPage)->values(),
             $excluded->count(),
@@ -292,7 +293,12 @@ class AdminCatalogExportController extends Controller
 
     private function plainText(?string $value): string
     {
-        return trim(html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $plainText = html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $plainText = preg_replace('/(?:rn){2,}/i', ' ', $plainText) ?? $plainText;
+        $plainText = preg_replace('/(?<![A-Za-z])(?:rn)+(?![A-Za-z])/i', ' ', $plainText) ?? $plainText;
+        $plainText = preg_replace('/\s+/u', ' ', $plainText) ?? $plainText;
+
+        return trim($plainText);
     }
 
     private function csvSafeCell(mixed $value): string|float|int
