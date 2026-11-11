@@ -7,14 +7,14 @@
         <div>
             <p class="eyebrow">CATALOGUE TOOLS</p>
             <h1>Product exports</h1>
-            <p>Download a current product feed for Google Merchant Center or export your full catalogue for spreadsheets.</p>
+            <p>Download a filtered Google Merchant Center feed or export your full catalogue for spreadsheets.</p>
         </div>
         <a class="admin-primary-action" href="{{ route('admin.products') }}">Manage catalogue <span aria-hidden="true">→</span></a>
     </div>
 
     <div class="admin-export-stats" aria-label="Catalogue export summary">
         <article><span class="admin-export-stat-icon" aria-hidden="true">▧</span><div><small>Catalogue products</small><strong>{{ number_format($totalProducts) }}</strong></div></article>
-        <article><span class="admin-export-stat-icon is-teal" aria-hidden="true">✓</span><div><small>Merchant feed ready</small><strong>{{ number_format($merchantEligible) }}</strong></div></article>
+        <article><span class="admin-export-stat-icon is-teal" aria-hidden="true">✓</span><div><small>Passes feed checks</small><strong>{{ number_format($merchantEligible) }}</strong></div></article>
         <article><span class="admin-export-stat-icon is-amber" aria-hidden="true">!</span><div><small>Needs feed details</small><strong>{{ number_format($merchantSkipped) }}</strong></div></article>
     </div>
 
@@ -22,10 +22,10 @@
         <article class="admin-export-card admin-export-card-featured">
             <div class="admin-export-card-top"><span class="admin-export-card-icon" aria-hidden="true">G</span><span class="admin-export-format">Google Merchant Center</span></div>
             <h2>Google product feed</h2>
-            <p>Merchant-ready CSV with product titles, descriptions, URLs, image links, price, stock availability, brand, category and sale price.</p>
-            <ul><li>Includes {{ number_format($merchantEligible) }} products with required details</li><li>Prices are formatted in KES</li><li>Products without a price, image or description are skipped</li></ul>
+            <p>CSV containing only products that pass the required feed data checks for title, description, image, price, stock status, category, brand and manufacturer part number.</p>
+            <ul><li>Includes {{ number_format($merchantEligible) }} products that meet the feed checks</li><li>Uses the product code as the manufacturer part number (MPN)</li><li>Product links use crystalcaraudio.com and prices are formatted in KES</li></ul>
             <a class="admin-primary-action" href="{{ route('admin.exports.download', 'merchant') }}">Download Merchant feed <span aria-hidden="true">↓</span></a>
-            <small class="admin-export-footnote">Google must be able to access each product and image URL. Keep image links publicly crawlable.</small>
+            <small class="admin-export-footnote">Google still checks product and image links, price and stock accuracy, and account policies after upload.</small>
         </article>
 
         <article class="admin-export-card">
@@ -46,7 +46,7 @@
     </section>
 
     @if($merchantSkipped > 0)
-        <aside class="admin-export-note"><span aria-hidden="true">i</span><p><strong>{{ number_format($merchantSkipped) }} products are not in the Merchant feed.</strong> Add a price, product description and main image to include them. You can update products from <a href="{{ route('admin.products') }}">catalogue management</a>.</p></aside>
+        <aside class="admin-export-note"><span aria-hidden="true">i</span><p><strong>{{ number_format($merchantSkipped) }} products are excluded from the Merchant feed.</strong> Add complete product details, a valid brand and a manufacturer part number, then check that the price, stock status and image are accurate. You can update products from <a href="{{ route('admin.products') }}">catalogue management</a>.</p></aside>
     @endif
 </div>
 @endsection

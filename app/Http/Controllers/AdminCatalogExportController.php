@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CatalogProduct;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -11,6 +12,8 @@ use ZipArchive;
 
 class AdminCatalogExportController extends Controller
 {
+    private const MERCHANT_BASE_URL = 'https://crystalcaraudio.com';
+
     private const CATALOGUE_COLUMNS = [
         'id' => 'Product ID',
         'sku' => 'SKU',
@@ -56,9 +59,9 @@ class AdminCatalogExportController extends Controller
     private function downloadMerchantFeed()
     {
         $headers = [
-            'id', 'title', 'description', 'link', 'image_link', 'availability', 'condition', 'price', 'brand', 'product_type', 'sale_price',
+            'id', 'title', 'description', 'link', 'image_link', 'availability', 'condition', 'price', 'brand', 'mpn', 'product_type', 'sale_price',
         ];
-        $products = $this->merchantProducts()->orderBy('id')->get();
+        $products = $this->merchantProducts();
 
         return response()->streamDownload(function () use ($headers, $products): void {
             $output = fopen('php://output', 'wb');
@@ -73,12 +76,13 @@ class AdminCatalogExportController extends Controller
                     (string) $product->id,
                     $this->plainText($product->name),
                     $this->plainText($product->description),
-                    route('product-single', $product->slug),
+                    $this->productUrl($product->slug),
                     $this->imageUrl($product->image),
                     $this->merchantAvailability($product),
                     'new',
                     number_format($hasSalePrice ? $regularPrice : $price, 2, '.', '').' KES',
                     trim((string) $product->brand),
+                    trim((string) $product->sku),
                     trim((string) $product->category),
                     $hasSalePrice ? number_format($price, 2, '.', '').' KES' : '',
                 ];
@@ -139,13 +143,35 @@ class AdminCatalogExportController extends Controller
         ])->deleteFileAfterSend(true);
     }
 
-    private function merchantProducts()
+    private function merchantProducts(): Collection
     {
         return CatalogProduct::query()
             ->where('price', '>', 0)
             ->whereNotNull('name')->whereRaw("TRIM(name) <> ''")
             ->whereNotNull('description')->whereRaw("TRIM(description) <> ''")
-            ->whereNotNull('image')->whereRaw("TRIM(image) <> ''");
+            ->whereNotNull('image')->whereRaw("TRIM(image) <> ''")
+            ->whereNotNull('category')->whereRaw("TRIM(category) <> ''")
+            ->whereNotNull('brand')->whereRaw("TRIM(brand) <> ''")
+            ->whereRaw("LOWER(TRIM(brand)) NOT IN ('other', 'others', 'unknown', 'n/a', 'na', 'none')")
+            ->whereNotNull('sku')->whereRaw("TRIM(sku) <> ''")
+            ->whereRaw("LOWER(TRIM(stock)) NOT IN ('pre-order', 'preorder')")
+            ->where(function ($query): void {
+                $query->whereNotNull('stock_quantity')
+                    ->orWhereRaw("LOWER(TRIM(stock)) IN ('in stock', 'out of stock')");
+            })
+            ->orderBy('id')
+            ->get()
+            ->filter(fn (CatalogProduct $product): bool => $this->hasMerchantTextLengths($product))
+            ->values();
+    }
+
+    private function hasMerchantTextLengths(CatalogProduct $product): bool
+    {
+        $title = $this->plainText($product->name);
+        $description = $this->plainText($product->description);
+
+        return $title !== '' && Str::length($title) <= 150
+            && $description !== '' && Str::length($description) <= 5000;
     }
 
     private function catalogueRows(): array
@@ -162,7 +188,7 @@ class AdminCatalogExportController extends Controller
                 'original_price' => $product->original_price === null ? '' : (float) $product->original_price,
                 'stock' => (string) $product->stock,
                 'stock_quantity' => $product->stock_quantity === null ? '' : (int) $product->stock_quantity,
-                'product_url' => route('product-single', $product->slug),
+                'product_url' => $this->productUrl($product->slug),
                 'image_url' => $this->imageUrl($product->image),
             ];
         })->all();
@@ -186,7 +212,12 @@ class AdminCatalogExportController extends Controller
             }
         }
 
-        return asset('uploads/'.ltrim($image, '/'));
+        return self::MERCHANT_BASE_URL.'/uploads/'.ltrim($image, '/');
+    }
+
+    private function productUrl(string $slug): string
+    {
+        return self::MERCHANT_BASE_URL.'/product/'.rawurlencode($slug);
     }
 
     private function merchantAvailability(CatalogProduct $product): string
