@@ -3,10 +3,21 @@
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @php
+        $noIndexRoute = request()->routeIs('cart', 'checkout', 'checkout.*', 'search*');
+        $searchFilterKeys = ['q', 'category', 'brand', 'sort', 'min_price', 'max_price'];
+        $hasSearchFilters = array_intersect($searchFilterKeys, array_keys(request()->query())) !== [];
+        $robotsDirective = $noIndexRoute || $hasSearchFilters ? 'noindex,follow' : 'index,follow';
+        $canonicalUrl = url()->current();
+        $pageNumber = (int) request()->query('page', 1);
+        if (! $noIndexRoute && ! $hasSearchFilters && $pageNumber > 1) {
+            $canonicalUrl .= '?page='.$pageNumber;
+        }
+    @endphp
     <title>@yield('title', 'Crystal Car Audio | Sound that moves you')</title>
     <meta name="description" content="@yield('meta_description', 'Shop car audio, multimedia, speakers and accessories at Crystal Car Audio Kenya. Expert advice, secure checkout and delivery across Kenya.')">
-    <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index,follow">
+    <meta name="robots" content="{{ $robotsDirective }}">
+    <meta name="googlebot" content="{{ $robotsDirective }}">
     <meta name="subject" content="Crystal Car Audio - Clear Beats with Premium Car Sound Systems in Nairobi">
     <meta name="rating" content="General">
     <meta name="author" content="Designekta Studios">
@@ -48,7 +59,7 @@
     </script>
     <!-- End Meta Pixel -->
     <meta name="keywords" content="@yield('meta_keywords', 'car audio Kenya, car radios Nairobi, car speakers, car accessories, Crystal Car Audio')">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
     <meta name="geo.region" content="KE-30">
     <meta name="geo.placename" content="Nairobi">
     <link rel="icon" href="{{ \App\Support\MediaUrl::url('favicon.ico') }}" sizes="any">

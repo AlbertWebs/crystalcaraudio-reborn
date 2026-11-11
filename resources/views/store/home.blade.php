@@ -1,13 +1,13 @@
 @extends('store.layout')
-@section('title', 'Car Audio Dealer in Kenya | Crystal Car Audio')
-@section('meta_description', 'Car radios, speakers and amplifiers from Crystal Car Audio in Nairobi, Kenya. Ask about fitment, installation and delivery across Kenya.')
+@section('title', 'Car Audio Systems & Radios in Kenya | Crystal Car Audio')
+@section('meta_description', 'Shop car radios, speakers, subwoofers and amplifiers in Nairobi, Kenya. Get fitment advice, installation and nationwide delivery from Crystal Car Audio.')
 @section('meta_image', asset('images/homepage-social-preview.png'))
 @section('body_class', 'store-homepage')
 @section('content')
 <section class="hero hero-storefront">
     <div class="hero-copy">
         <p class="eyebrow eyebrow-accent">SHOP AUDIO COMBOS</p>
-        <h1>Build a <span class="hero-sound-underline">sound</span><br>that moves you.</h1>
+        <h1>Car audio systems<br>that move you.</h1>
         <p class="hero-lead">Car radios, speakers, amplifiers and complete audio systems, expertly matched and professionally installed for a richer, more immersive drive.</p>
         <div class="hero-actions">
             <a class="button button-dark" href="{{ route('categories') }}"><svg class="hero-cart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 1.9-1.5L20 8H6"/><circle cx="10" cy="19" r="1"/><circle cx="18" cy="19" r="1"/></svg> Build Your Sound System <span>→</span></a>

@@ -37,7 +37,7 @@
     if (filled($product->sku)) {
         $productSchema['sku'] = $product->sku;
     }
-    if (filled($product->brand)) {
+    if (filled($product->brand) && strtolower(trim($product->brand)) !== 'others') {
         $productSchema['brand'] = ['@type' => 'Brand', 'name' => $product->brand];
     }
     if ($reviews->isNotEmpty()) {
@@ -60,10 +60,14 @@
 @section('meta_product_price', number_format((float) $product->price, 2, '.', ''))
 @section('meta_product_currency', 'KES')
 @section('meta_product_availability', strtolower($productAvailability))
-@section('meta_product_brand', $product->brand)
+@if(filled($product->brand) && strtolower(trim($product->brand)) !== 'others')
+    @section('meta_product_brand', $product->brand)
+@endif
 @section('meta_product_sku', $product->sku)
 @push('structured-data')
-    <script type="application/ld+json">@json($productSchema)</script>
+    @if($productImageUrls->isNotEmpty() && (float) $product->price > 0)
+        <script type="application/ld+json">@json($productSchema)</script>
+    @endif
 @endpush
 @section('content')
 @php

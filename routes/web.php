@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
+Route::get('/public', fn () => redirect('/', 301));
+Route::get('/public/{path}', fn (string $path) => redirect('/'.ltrim($path, '/'), 301))->where('path', '.*');
 Route::get('/home', [StorefrontController::class, 'home'])->name('home-page');
 Route::get('/premium-car-audio-systems-nairobi-kenya', [StorefrontController::class, 'premiumCarAudio'])->name('premium-car-audio');
 Route::get('/products/car-audio-systems', [StorefrontController::class, 'carAudioSystems'])->name('car-audio-systems');
