@@ -58,7 +58,7 @@
             'car-speakers' => ['image' => 'car-speakers.webp', 'description' => 'Coaxial, component & subwoofers', 'featured' => true],
             'car-amplifiers-booster' => ['image' => 'car-amplifiers.webp', 'description' => 'Power up your sound'],
             'car-audio-installation' => ['image' => 'car-audio-installation.webp', 'description' => 'Professional & reliable fitment'],
-            'car-security-system' => ['image' => 'car-audio-system.webp', 'description' => 'Complete sound system packages'],
+            'car-audio-system' => ['image' => 'car-audio-system.webp', 'description' => 'Complete sound system packages'],
             'car-accessories' => ['image' => 'car-security.webp', 'description' => 'Vehicle security & tracking'],
             'conversion-fascia-kits' => ['image' => 'fascia-kits.webp', 'description' => 'Dash kits for a perfect fit'],
             'equalizers' => ['image' => 'equalizers.webp', 'description' => 'Fine-tune your sound'],
@@ -67,7 +67,7 @@
             'car-dashcams' => ['image' => 'car-dashcams.png', 'description' => 'Car dash cameras for your journeys'],
         ];
         $featuredCategories = $categories->filter(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false));
-        $categoryDisplayOrder = ['car-amplifiers-booster' => 1, 'car-audio-installation' => 2, 'car-security-system' => 3, 'car-accessories' => 4, 'conversion-fascia-kits' => 5, 'equalizers' => 6, 'led-lights' => 7, 'parking-sensors' => 8, 'car-dashcams' => 9];
+        $categoryDisplayOrder = ['car-amplifiers-booster' => 1, 'car-audio-installation' => 2, 'car-audio-system' => 3, 'car-accessories' => 4, 'conversion-fascia-kits' => 5, 'equalizers' => 6, 'led-lights' => 7, 'parking-sensors' => 8, 'car-dashcams' => 9];
         $otherCategories = $categories->reject(fn ($category) => ($categoryArtwork[$category->slug]['featured'] ?? false))
             ->sortBy(fn ($category) => $categoryDisplayOrder[$category->slug] ?? 99)->values();
     @endphp

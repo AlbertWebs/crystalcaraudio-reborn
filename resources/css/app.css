@@ -1541,6 +1541,30 @@ html,body{overflow-x:clip}
 }
 @media(max-width:600px){.category-directory-section,.brand-directory-section,.portfolio-section,.portfolio-project-content{width:min(100% - 32px,1370px);padding-block:38px 56px}.category-directory-section .section-heading,.brand-directory-section .section-heading,.portfolio-section .section-heading{align-items:start;flex-direction:column;margin-bottom:20px}.category-directory-grid,.portfolio-grid{grid-template-columns:1fr;gap:14px}.category-directory-art{height:210px}.brand-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.brand-directory-card{grid-template-columns:36px 1fr;column-gap:9px;padding:12px}.brand-directory-initial{width:36px;height:36px;font-size:16px}.brand-directory-name{font-size:15px}.brand-directory-products{font-size:12px}.brand-directory-arrow{display:none}.portfolio-card-image{height:220px}.portfolio-project-hero{padding:18px 18px 32px}.portfolio-project-gallery{grid-template-columns:1fr;gap:12px}.portfolio-project-gallery figure,.portfolio-project-gallery figure:first-child:nth-last-child(odd){grid-column:auto;height:260px}.admin-seo-fields{grid-template-columns:1fr}.admin-seo-fields label:nth-child(2){grid-row:auto}}
 
+/* Keep the car-audio landing page's guide and product cards on a shared, readable grid. */
+.collection-hero-shop .collection-hero-actions{display:flex;align-items:center;gap:20px;margin-top:22px}
+.collection-hero-shop .collection-help-link{color:#0c6661;font:500 13px/20px 'Outfit Medium','Outfit','Cairo',sans-serif;text-decoration:underline;text-decoration-color:#a7d3c8;text-underline-offset:4px}
+.car-audio-system-guide{padding-block:54px 24px}
+.car-audio-system-guide .section-heading{margin-bottom:24px}
+.car-audio-system-guide .portfolio-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.car-audio-system-guide .portfolio-card{min-height:190px;border-color:#e2e9e5;border-radius:14px;box-shadow:0 5px 18px rgba(25,55,45,.035)}
+.car-audio-system-guide .portfolio-card-copy{padding:22px}
+.car-audio-system-guide .portfolio-card-copy h3{font-size:19px;line-height:1.3}
+.car-audio-system-listing.listing{display:block;width:min(100% - 48px,1370px);max-width:1370px;margin:0 auto;padding:24px 0 76px}
+.car-audio-system-listing .listing-main{width:100%;min-width:0}
+.car-audio-system-listing .listing-toolbar{margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #e8eeea}
+.car-audio-system-listing .product-grid-storefront{grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:18px}
+.car-audio-system-listing .product-card{min-width:0;border:1px solid #e7ece9;border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(25,55,45,.035)}
+.car-audio-system-listing .product-image{height:auto;aspect-ratio:1.15;background:#f7f8f6}
+.car-audio-system-listing .product-card-body{padding:15px}
+.car-audio-system-listing .product-card h3{min-height:42px;font-size:15px;line-height:21px}
+.car-audio-system-listing .pagination-wrap{margin-top:28px}
+.car-audio-system-listing .empty-catalog{max-width:760px;border:1px solid #e5ece8;border-radius:14px}
+.car-audio-system-listing .empty-catalog h2{font-size:24px}
+.car-audio-faq-title{max-width:100%}
+@media(max-width:900px){.car-audio-system-guide .portfolio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.car-audio-system-listing .product-grid-storefront{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.collection-hero-shop .collection-hero-actions{align-items:flex-start;flex-direction:column;gap:13px;margin-top:18px}.car-audio-system-guide{padding-block:38px 12px}.car-audio-system-guide .portfolio-grid{grid-template-columns:1fr;gap:12px}.car-audio-system-guide .portfolio-card{min-height:0}.car-audio-system-guide .portfolio-card-copy{padding:18px}.car-audio-system-listing.listing{width:calc(100% - 32px);padding:18px 0 54px}.car-audio-system-listing .product-grid-storefront{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.car-audio-system-listing .product-card-body{padding:10px}.car-audio-system-listing .product-card h3{min-height:36px;font-size:13px;line-height:18px}}
+
 @media(max-width:760px){
     body{padding-bottom:0}
     .mobile-bar{opacity:0;pointer-events:none;transform:translate(-50%,14px);transition:opacity .22s ease,transform .22s ease}

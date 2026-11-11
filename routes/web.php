@@ -26,7 +26,8 @@ use Illuminate\Support\Str;
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
 Route::get('/home', [StorefrontController::class, 'home'])->name('home-page');
 Route::get('/premium-car-audio-systems-nairobi-kenya', [StorefrontController::class, 'premiumCarAudio'])->name('premium-car-audio');
-Route::get('/car-audio-systems', [StorefrontController::class, 'carAudioSystems'])->name('car-audio-systems');
+Route::get('/products/car-audio-systems', [StorefrontController::class, 'carAudioSystems'])->name('car-audio-systems');
+Route::get('/car-audio-systems', fn () => redirect()->route('car-audio-systems', [], 301));
 Route::get('/products', [StorefrontController::class, 'products'])->name('categories');
 Route::get('/products/category', [StorefrontController::class, 'products'])->name('category');
 Route::get('/shop-by-category', [StorefrontController::class, 'categoryDirectory'])->name('shop-by-category');
@@ -40,7 +41,8 @@ Route::get('/car-speakers', [StorefrontController::class, 'products'])->defaults
 Route::get('/products/mid-range-speakers', fn () => redirect()->route('car-speakers', [], 301));
 Route::get('/products/car-speakers', fn () => redirect()->route('car-speakers', [], 301));
 Route::get('/products/car-audio-system', fn () => redirect()->route('car-audio-systems', [], 301));
-Route::get('/products/car-audio-systems', fn () => redirect()->route('car-audio-systems', [], 301));
+Route::get('/products/car-audo-system', fn () => redirect()->route('car-audio-systems', [], 301));
+Route::get('/products/car-security-system', fn () => redirect()->route('car-audio-systems', [], 301));
 Route::get('/products/{slug}', [StorefrontController::class, 'products'])->name('product-category');
 Route::get('/special-offers', [StorefrontController::class, 'products'])->name('special-offers');
 Route::get('/product/{slug}', [StorefrontController::class, 'product'])->name('product-single');
@@ -81,7 +83,7 @@ Route::get('/sitemap.xml', function () {
         '/shop-by-category' => '0.50',
         '/shop-by-brand' => '0.40',
         '/premium-car-audio-systems-nairobi-kenya' => '0.50',
-        '/car-audio-systems' => '0.80',
+        '/products/car-audio-systems' => '0.80',
         '/special-offers' => '0.50',
         '/about-us' => '0.40',
         '/find-us' => '0.40',

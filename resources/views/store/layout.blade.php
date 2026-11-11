@@ -208,7 +208,7 @@
             @foreach($headerAudioCategories->skip(1) as $category)
                 <a href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}">{{ $category->name }}</a>
             @endforeach
-            <a href="{{ route('car-audio-systems') }}">Car Audio Systems</a>
+            <a href="{{ route('car-audio-systems') }}">Car Audio System</a>
             <a href="{{ route('special-offers') }}">Offers</a>
         </nav>
         <div class="header-actions">

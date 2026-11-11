@@ -25,10 +25,11 @@
     <p class="eyebrow eyebrow-accent">COMPLETE SOUND UPGRADES · NAIROBI, KENYA</p>
     <h1>Car Audio Systems in Nairobi &amp; Kenya</h1>
     <p class="collection-hero-description">Build a car sound system around the way you drive and listen. Explore complete audio products and get help matching radios, speakers, amplifiers and subwoofers to your vehicle.</p>
+    <div class="collection-hero-actions"><a class="button button-dark" href="#system-products">Shop car audio systems <span aria-hidden="true">↓</span></a><a class="collection-help-link" href="https://wa.me/254790721397?text={{ rawurlencode('Hi, I need help choosing a car audio system.') }}">Get fitment advice <span aria-hidden="true">↗</span></a></div>
 </section>
 <script type="application/ld+json">@json($breadcrumbSchema)</script>
 <script type="application/ld+json">@json($collectionSchema)</script>
-<section class="section portfolio-section" aria-labelledby="system-guide-title">
+<section class="section portfolio-section car-audio-system-guide" aria-labelledby="system-guide-title">
     <div class="section-heading"><div><p class="eyebrow eyebrow-accent">PLAN YOUR CAR SOUND UPGRADE</p><h2 id="system-guide-title">Choose a balanced car audio system</h2><p>A good setup starts with equipment that works together and fits your vehicle. Browse the current system products below or explore individual components.</p></div></div>
     <div class="portfolio-grid portfolio-service-grid">
         <article class="portfolio-card"><div class="portfolio-card-copy"><h3>Start with a car radio</h3><p>Choose a head unit with the connectivity and controls you need, then confirm dashboard fitment.</p><a class="text-link" href="{{ route('product-category', 'car-radio') }}">Shop car radios ↗</a></div></article>
@@ -36,7 +37,7 @@
         <article class="portfolio-card"><div class="portfolio-card-copy"><h3>Get fitment advice</h3><p>Share your vehicle make, model and year with our team to check compatibility before you buy.</p><a class="text-link" href="{{ route('page.find-us') }}">Talk to Crystal Car Audio ↗</a></div></article>
     </div>
 </section>
-<section class="section listing listing-storefront collection-listing">
+<section class="section listing listing-storefront collection-listing car-audio-system-listing" id="system-products" aria-label="Car audio system products">
     <div class="listing-main">
         <div class="listing-toolbar"><span class="listing-results"><b>{{ number_format($products->total()) }}</b> car audio system products</span></div>
         @if($products->isNotEmpty())
