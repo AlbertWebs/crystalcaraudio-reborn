@@ -299,7 +299,7 @@ class AdminController extends Controller
 
         $this->recordActivity($request, 'products.zero_price_imported', null, 'Updated prices for '.count($priceUpdates).' products from the zero-price CSV upload.');
 
-        return redirect()->route('admin.home')->with('success', number_format(count($priceUpdates)).' product price'.(count($priceUpdates) === 1 ? '' : 's').' updated from the CSV.');
+        return redirect()->to(route('admin.home').'#inventory')->with('pricing_import_count', count($priceUpdates));
     }
 
     private function spreadsheetSafeText(string $value): string

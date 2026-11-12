@@ -97,6 +97,10 @@
             <div><p class="eyebrow">PRICING REVIEW</p><h2 id="zero-price-title">Products priced at KES 0</h2><p class="zero-price-help">Export the full list, enter prices in the new_price_kes column, then upload the CSV to update the catalogue.</p></div>
             <div class="zero-price-header-actions"><span class="zero-price-count">{{ number_format($zeroPriceProductsCount) }} products</span><a class="button button-dark zero-price-export" href="{{ route('admin.products.zero-price-prices.export') }}">Export pricing CSV <span aria-hidden="true">↓</span></a></div>
         </div>
+        @if(session()->has('pricing_import_count'))
+            @php($updatedPricingCount = (int) session('pricing_import_count'))
+            <div class="admin-global-notice" role="status">{{ number_format($updatedPricingCount) }} product {{ $updatedPricingCount === 1 ? 'price was' : 'prices were' }} updated from the CSV.</div>
+        @endif
         @if($errors->has('product_ids') || $errors->has('product_ids.*') || $errors->has('stock') || $errors->has('pricing_file'))
             <div class="admin-notice admin-notice-error" role="alert">@foreach($errors->get('pricing_file') as $error)<p>{{ $error }}</p>@endforeach{{ $errors->first('product_ids') ?: $errors->first('product_ids.*') ?: $errors->first('stock') }}</div>
         @endif
