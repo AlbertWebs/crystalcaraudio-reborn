@@ -203,7 +203,7 @@
 <header class="site-header">
     <div class="header-topline"><a href="{{ route('home') }}">Crystal Car Audio <span>|</span> Nairobi</a><p>Kenya's Trusted Car Audio Dealer for Premium Sound Systems &amp; Accessories</p><a class="topline-contact" href="tel:+254790721397">Call +254 790 721 397</a></div>
     <div class="header-main">
-        <a class="brand" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img class="brand-logo" src="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio" fetchpriority="high" decoding="async"></a>
+        <a class="brand" href="{{ route('home') }}" aria-label="Crystal Car Audio home"><img class="brand-logo" src="{{ \App\Support\MediaUrl::url('uploads/logo/Crystal%20Logo-06.png') }}" alt="Crystal Car Audio" loading="eager" fetchpriority="high" decoding="async"></a>
         <button class="menu-toggle" aria-label="Open navigation" data-menu-toggle aria-expanded="false">☰</button>
         <nav class="main-nav" data-main-nav aria-label="Main navigation">
             <a href="{{ route('categories') }}">Shop all</a>

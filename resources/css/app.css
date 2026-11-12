@@ -1981,7 +1981,15 @@ html,body{overflow-x:clip}
 /* Keep the store announcement line readable at every viewport width. */
 .storefront-site .site-header .header-topline{height:auto;min-height:40px;grid-template-areas:"location tagline contact";grid-template-columns:minmax(180px,1fr) minmax(0,2fr) minmax(180px,1fr);gap:clamp(8px,1.2vw,18px);padding-block:6px;line-height:20px}
 .storefront-site .site-header .header-topline>a:first-child{grid-area:location}
-.storefront-site .site-header .header-topline>p{grid-area:tagline;white-space:nowrap;font-size:clamp(12px,.98vw,15px);line-height:20px}
+.storefront-site .site-header .header-topline>p{grid-area:tagline;white-space:nowrap;font-size:clamp(9px,1.111vw,16px);line-height:20px}
 .storefront-site .site-header .header-topline .topline-contact{grid-area:contact;font-size:clamp(12px,.95vw,14px);line-height:20px}
-@media(max-width:1100px){.storefront-site .site-header .header-topline{grid-template-areas:"location contact" "tagline tagline";grid-template-columns:minmax(0,1fr) max-content;row-gap:2px;min-height:54px}.storefront-site .site-header .header-topline>p{white-space:normal;font-size:13px;line-height:17px}}
-@media(max-width:760px){.storefront-site .site-header .header-topline{grid-template-areas:"location contact" "tagline tagline";grid-template-columns:minmax(0,1fr) max-content;gap:1px 8px;min-height:50px;padding:5px 12px}.storefront-site .site-header .header-topline>a:first-child,.storefront-site .site-header .header-topline .topline-contact{font-size:clamp(10px,3.1vw,12px);line-height:16px}.storefront-site .site-header .header-topline>p{display:block;font-size:11px;line-height:14px;text-align:center}}
+@media(max-width:1100px){.storefront-site .site-header .header-topline{grid-template-areas:"location contact" "tagline tagline";grid-template-columns:minmax(0,1fr) max-content;row-gap:2px;min-height:54px}.storefront-site .site-header .header-topline>p{white-space:nowrap;font-size:clamp(10px,1.25vw,14px);line-height:17px}}
+@media(max-width:760px){.storefront-site .site-header .header-topline{grid-template-areas:"location contact" "tagline tagline";grid-template-columns:minmax(0,1fr) max-content;gap:1px 8px;min-height:50px;padding:5px 12px}.storefront-site .site-header .header-topline>a:first-child,.storefront-site .site-header .header-topline .topline-contact{font-size:clamp(10px,3.1vw,12px);line-height:16px}.storefront-site .site-header .header-topline>p{display:block;white-space:nowrap;font-size:clamp(8px,2.35vw,11px);line-height:14px;text-align:center}}
+
+.storefront-site img.image-is-loading{background-color:#edf2ef;background-image:linear-gradient(100deg,#edf2ef 18%,#f7f9f8 38%,#edf2ef 58%);background-size:220% 100%;animation:store-image-shimmer 1.25s linear infinite;color:transparent}
+.storefront-site img.image-is-loaded{background-image:none;animation:none}
+.storefront-site img.image-is-error{background-color:#edf2ef;background-image:none;animation:none}
+@keyframes store-image-shimmer{to{background-position-x:-220%}}
+@media(prefers-reduced-motion:reduce){.storefront-site img.image-is-loading{animation:none;background-image:linear-gradient(100deg,#edf2ef,#f7f9f8,#edf2ef)}}
+
+.storefront-site .expert-cta-store{width:100%;max-width:none;margin-inline:calc(50% - 50vw);padding-inline:var(--storefront-content-edge)}

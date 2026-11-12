@@ -2,6 +2,67 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+const prepareStoreImage = image => {
+    if (!(image instanceof HTMLImageElement) || image.closest('noscript')) return;
+    if (image.getAttribute('width') === '1' && image.getAttribute('height') === '1') return;
+
+    if (!image.hasAttribute('loading')) {
+        image.loading = image.fetchPriority === 'high' ? 'eager' : 'lazy';
+    }
+    if (!image.hasAttribute('decoding')) image.decoding = 'async';
+
+    image.classList.remove('image-is-loaded', 'image-is-error');
+    const sourceAtStart = image.currentSrc || image.src;
+    const markLoaded = () => {
+        if ((image.currentSrc || image.src) !== sourceAtStart) return;
+        image.classList.remove('image-is-loading', 'image-is-error');
+        image.classList.add('image-is-loaded');
+    };
+    const markError = () => {
+        if ((image.currentSrc || image.src) !== sourceAtStart) return;
+        image.classList.remove('image-is-loading', 'image-is-loaded');
+        image.classList.add('image-is-error');
+    };
+
+    image.classList.add('image-is-loading');
+    image.addEventListener('load', markLoaded, { once: true });
+    image.addEventListener('error', markError, { once: true });
+    if (image.complete) {
+        if (image.naturalWidth > 0) markLoaded();
+        else markError();
+    }
+};
+
+const prepareStoreImages = root => {
+    if (root instanceof HTMLImageElement) prepareStoreImage(root);
+    root.querySelectorAll?.('img').forEach(prepareStoreImage);
+};
+
+const initializeStoreImages = () => {
+    const store = document.querySelector('.storefront-site');
+    if (!store) return;
+
+    prepareStoreImages(store);
+    const imageObserver = new MutationObserver(changes => {
+        changes.forEach(change => {
+            if (change.type === 'attributes') {
+                prepareStoreImage(change.target);
+                return;
+            }
+            change.addedNodes.forEach(node => {
+                if (node instanceof Element) prepareStoreImages(node);
+            });
+        });
+    });
+    imageObserver.observe(store, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeStoreImages, { once: true });
+} else {
+    initializeStoreImages();
+}
+
 const backToTop = document.querySelector('[data-back-to-top]');
 if (backToTop) {
     let scrollUpdatePending = false;
