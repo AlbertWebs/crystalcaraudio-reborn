@@ -585,4 +585,67 @@ document.querySelector('[data-store-chat-form]')?.addEventListener('submit', eve
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 });
 
+document.querySelectorAll('[data-installation-request-form]').forEach(form => {
+    const serviceSelect = form.querySelector('[name="service"]');
+    const serviceDetail = form.querySelector('[name="service_detail"]');
+    const serviceDetailWrapper = form.querySelector('[data-service-detail-wrapper]');
+    const feedback = form.querySelector('[data-installation-feedback]');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const syncServiceDetail = () => {
+        const isOtherService = serviceSelect?.value === 'Other';
+        if (serviceDetailWrapper) serviceDetailWrapper.hidden = !isOtherService;
+        if (serviceDetail) {
+            serviceDetail.disabled = !isOtherService;
+            serviceDetail.required = isOtherService;
+        }
+    };
+
+    serviceSelect?.addEventListener('change', syncServiceDetail);
+    syncServiceDetail();
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!feedback || !submitButton || submitButton.disabled) return;
+
+        const originalButtonContent = submitButton.innerHTML;
+        submitButton.disabled = true;
+        submitButton.setAttribute('aria-busy', 'true');
+        submitButton.textContent = 'Sending request…';
+        feedback.hidden = false;
+        feedback.className = 'portfolio-request-feedback is-loading';
+        feedback.setAttribute('role', 'status');
+        feedback.textContent = 'Sending your request securely…';
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: new FormData(form),
+            });
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                const messages = Object.values(result.errors || {}).flat();
+                throw new Error(messages.join(' ') || result.message || 'We could not send your request. Please check your details and try again.');
+            }
+
+            feedback.className = 'portfolio-request-feedback is-success';
+            feedback.textContent = result.message || 'Your installation request has been sent.';
+            form.reset();
+            syncServiceDetail();
+        } catch (error) {
+            feedback.className = 'portfolio-request-feedback is-error';
+            feedback.setAttribute('role', 'alert');
+            feedback.textContent = error.message || 'We could not send your request. Please try again.';
+            feedback.focus();
+        } finally {
+            submitButton.disabled = false;
+            submitButton.removeAttribute('aria-busy');
+            submitButton.innerHTML = originalButtonContent;
+        }
+    });
+});
+
 Alpine.start();

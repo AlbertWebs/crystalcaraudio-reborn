@@ -316,7 +316,16 @@ class StorefrontController extends Controller
             'car radio and speaker installation Kenya',
         ]));
 
-        return view('store.portfolio-project', compact('project', 'seo'));
+        $installedProducts = collect();
+        if ($slug === 'toyota-axio-full-system-upgrade') {
+            $installedProducts = CatalogProduct::query()
+                ->whereIn('sku', ['KFC-W3010', 'GM-E7004', 'TS-S20', 'KFC-S1666'])
+                ->get()
+                ->sortBy(fn (CatalogProduct $product) => array_search($product->sku, ['KFC-W3010', 'GM-E7004', 'TS-S20', 'KFC-S1666'], true))
+                ->values();
+        }
+
+        return view('store.portfolio-project', compact('project', 'seo', 'installedProducts'));
     }
 
     public function product(string $slug)

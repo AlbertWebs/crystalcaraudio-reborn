@@ -17,6 +17,7 @@ use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\StorefrontController;
+use App\Http\Controllers\StorefrontInstallationRequestController;
 use App\Support\PortfolioCatalog;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\DB;
@@ -240,4 +241,7 @@ foreach (['find-us', 'about-us', 'terms-and-conditions', 'privacy-policy', 'ship
     Route::get('/'.$slug, [StorefrontController::class, 'info'])->defaults('slug', $slug)->name('page.'.$slug);
 }
 Route::get('/our-portfolio', [StorefrontController::class, 'portfolio'])->name('portfolio');
+Route::post('/our-portfolio/installation-requests', [StorefrontInstallationRequestController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('portfolio.installation-requests.store');
 Route::get('/our-portfolio/{slug}', [StorefrontController::class, 'portfolioProject'])->name('folio');

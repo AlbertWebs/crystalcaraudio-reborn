@@ -55,6 +55,27 @@
         <section class="portfolio-project-gallery-section" aria-labelledby="portfolio-gallery-title"><h2 id="portfolio-gallery-title">Installation photos</h2><div class="portfolio-project-gallery">@foreach($images as $image)<figure><img src="{{ $image }}" alt="{{ $project['title'] }} car audio installation photo {{ $loop->iteration }}" loading="lazy" decoding="async"></figure>@endforeach</div></section>
     @endif
     <div class="portfolio-project-description"><h2>Upgrade overview</h2>{!! \Illuminate\Support\Str::markdown(trim((string) ($project['description'] ?? '')), ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}@if(filled($project['client_name'] ?? null))<p><strong>Customer:</strong> {{ $project['client_name'] }}</p>@endif</div>
+    @if(isset($installedProducts) && $installedProducts->isNotEmpty())
+        <section class="portfolio-installed-products" aria-labelledby="installed-products-title">
+            <p class="eyebrow eyebrow-accent">EQUIPMENT IN THIS INSTALLATION</p>
+            <h2 id="installed-products-title">Products installed in this Toyota Axio</h2>
+            <p>Explore the same models featured in this upgrade. Each link opens the product page for specifications, current availability and fitment support from Crystal Car Audio.</p>
+            <div class="portfolio-installed-product-grid">
+                @foreach($installedProducts as $installedProduct)
+                    <article class="portfolio-installed-product">
+                        <a class="portfolio-installed-product-image" href="{{ route('product-single', $installedProduct->slug) }}" aria-label="View {{ $installedProduct->name }}">
+                            @if($installedProduct->image)
+                                <img src="{{ \App\Support\MediaUrl::url('uploads/'.ltrim($installedProduct->image, '/')) }}" alt="{{ $installedProduct->name }} installed in the Toyota Axio audio upgrade" loading="lazy" decoding="async">
+                            @else
+                                <span aria-hidden="true">{{ $installedProduct->brand }}</span>
+                            @endif
+                        </a>
+                        <div><small>{{ $installedProduct->brand }} · {{ $installedProduct->category }}</small><h3><a href="{{ route('product-single', $installedProduct->slug) }}">{{ $installedProduct->name }}</a></h3><a class="text-link" href="{{ route('product-single', $installedProduct->slug) }}">View product details <span aria-hidden="true">↗</span></a></div>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
     <a class="text-link" href="{{ route('portfolio') }}">← Back to our portfolio</a>
 </section>
 @endsection

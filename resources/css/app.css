@@ -1463,6 +1463,34 @@ html,body{overflow-x:clip}
 .brand-directory-initial{grid-row:1/3;display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:#e9f4f2;color:#0c6661;font-size:20px;font-weight:600}
 .brand-directory-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;font-weight:500}.brand-directory-products{color:#7b8480;font-size:13px}.brand-directory-arrow{grid-column:3;grid-row:1/3;width:34px;height:34px;flex-basis:34px}
 .portfolio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.portfolio-card{overflow:hidden;border:1px solid #e5e9e7;border-radius:14px;background:#fff;color:inherit;text-decoration:none;transition:transform .2s,border-color .2s,box-shadow .2s}
+.portfolio-request-section{scroll-margin-top:110px}
+.portfolio-request-card{max-width:940px;margin:0 auto;padding:clamp(20px,4vw,38px);border:1px solid #e1eae5;border-radius:18px;background:linear-gradient(145deg,#fff,#f6faf8);box-shadow:0 14px 36px rgba(22,58,47,.07)}
+.portfolio-request-heading{max-width:680px;margin-bottom:24px}
+.portfolio-request-heading .eyebrow{margin:0 0 8px}
+.portfolio-request-heading h2{margin:0;color:#192722;font:600 clamp(27px,3.4vw,38px)/1.1 'Outfit SemiBold','Cairo SemiBold','Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.04em}
+.portfolio-request-heading>p:last-child{margin:10px 0 0;color:#68766f;font:400 15px/1.65 'Outfit Regular','Cairo Regular','Helvetica Neue',Helvetica,Arial,sans-serif}
+.portfolio-request-form{position:relative}
+.portfolio-request-trap{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}
+.portfolio-request-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.portfolio-request-grid>label{min-width:0;display:grid;align-content:start;gap:7px;color:#34443b;font:500 13px/19px 'Outfit Medium','Cairo Medium','Helvetica Neue',Helvetica,Arial,sans-serif}
+.portfolio-request-grid>label>span:first-child{color:#0c716b}
+.portfolio-request-grid .portfolio-request-optional{color:#87948d;font:400 11px/16px 'Outfit Regular','Cairo Regular','Helvetica Neue',Helvetica,Arial,sans-serif}
+.portfolio-request-grid input,.portfolio-request-grid select,.portfolio-request-grid textarea{width:100%;min-width:0;min-height:46px;padding:11px 12px;border:1px solid #dce6e0;border-radius:9px;background:#fff;color:#25312b;font:400 14px/20px 'Outfit Regular','Cairo Regular','Helvetica Neue',Helvetica,Arial,sans-serif}
+.portfolio-request-grid textarea{min-height:110px;resize:vertical}
+.portfolio-request-grid input:focus,.portfolio-request-grid select:focus,.portfolio-request-grid textarea:focus{outline:3px solid #0c716b22;border-color:#0c8a80}
+.portfolio-request-grid input::placeholder,.portfolio-request-grid textarea::placeholder{color:#98a39d}
+.portfolio-request-grid .portfolio-request-wide{grid-column:1/-1}
+.portfolio-request-feedback{margin-top:18px;padding:13px 15px;border:1px solid #dce6e0;border-radius:9px;font:500 13px/20px 'Outfit Medium','Cairo Medium','Helvetica Neue',Helvetica,Arial,sans-serif}
+.portfolio-request-feedback.is-loading{background:#f4f8f6;color:#52635a}
+.portfolio-request-feedback.is-success{border-color:#b9ddc8;background:#eff9f2;color:#216b43}
+.portfolio-request-feedback.is-error{border-color:#efcfca;background:#fff5f3;color:#a23d32}
+.portfolio-request-submit{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:21px;padding-top:18px;border-top:1px solid #e5ece8}
+.portfolio-request-submit>p{margin:0;color:#78857e;font:400 12px/18px 'Outfit Regular','Cairo Regular','Helvetica Neue',Helvetica,Arial,sans-serif}
+.portfolio-request-submit .button{min-height:48px;flex:0 0 auto;padding:11px 17px;border-radius:9px}
+.portfolio-request-submit .button:disabled{opacity:.65;cursor:wait}
+@media(max-width:600px){.portfolio-request-card{padding:20px 16px;border-radius:14px}.portfolio-request-grid{grid-template-columns:1fr;gap:13px}.portfolio-request-grid .portfolio-request-wide{grid-column:auto}.portfolio-request-submit{align-items:stretch;flex-direction:column}.portfolio-request-submit .button{width:100%}}
+.admin-booking-customer-notes{display:grid;gap:4px;margin:0 0 10px;padding:10px 12px;border-radius:6px;background:#f6f9f7;color:#57645d;font:400 11px/17px 'Outfit',sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.admin-booking-customer-notes strong{color:#728078;font:600 9px/13px 'Outfit',sans-serif;letter-spacing:.07em;text-transform:uppercase}
 .portfolio-service-grid .portfolio-card{height:100%}.portfolio-faq-list{display:grid;max-width:960px;gap:10px}.portfolio-faq-list details{padding:18px 20px;border:1px solid #e5e9e7;border-radius:10px;background:#fff}.portfolio-faq-list summary{color:#202622;font-weight:600;cursor:pointer}.portfolio-faq-list details p{margin:12px 0 0;color:#66716d;font-size:14px;line-height:1.7}
 .portfolio-card-image{position:relative;height:245px;display:grid;place-items:center;background:linear-gradient(135deg,#eaf2ef,#f7f8f6);overflow:hidden}.portfolio-card-image img{width:100%;height:100%;object-fit:cover;transition:transform .35s}.portfolio-card:hover img{transform:scale(1.035)}.portfolio-card-image>span:first-child{color:#0c6661;font-size:45px;font-weight:600}.portfolio-card-open{position:absolute;right:14px;bottom:14px;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff;color:#0c6661}
 .portfolio-card-copy{padding:20px}.portfolio-card-copy h3{margin:6px 0 9px;font-size:20px;line-height:1.3}.portfolio-card-copy>p:not(.eyebrow){margin:0;color:#66716d;font-size:14px;line-height:1.65}.portfolio-card-link{display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid #edf0ee;color:#0c6661;font-size:14px;font-weight:600}
@@ -1994,3 +2022,16 @@ html,body{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){.storefront-site img.image-is-loading{animation:none;background-image:linear-gradient(100deg,#edf2ef,#f7f9f8,#edf2ef)}}
 
 .storefront-site .expert-cta-store{width:100%;max-width:none;margin-inline:calc(50% - 50vw);padding-inline:var(--storefront-content-edge)}
+.portfolio-installed-products{max-width:var(--storefront-content-width);margin:46px auto 38px;padding:30px;border:1px solid #e4ece8;border-radius:20px;background:linear-gradient(145deg,#f5faf8,#fff)}
+.portfolio-installed-products>.eyebrow{margin:0 0 10px}
+.portfolio-installed-products>h2{margin:0 0 10px;color:#24332b;font:700 clamp(24px,3vw,34px)/1.2 'Manrope','Outfit',sans-serif;letter-spacing:-.035em}
+.portfolio-installed-products>p:not(.eyebrow){max-width:760px;margin:0 0 24px;color:#65736b;line-height:1.7}
+.portfolio-installed-product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.portfolio-installed-product{display:grid;grid-template-columns:132px minmax(0,1fr);gap:17px;align-items:center;min-width:0;padding:13px;border:1px solid #e6ece9;border-radius:14px;background:#fff}
+.portfolio-installed-product-image{display:grid;place-items:center;aspect-ratio:1;background:#f7f9f8;border-radius:10px;overflow:hidden}
+.portfolio-installed-product-image img{width:100%;height:100%;object-fit:contain}
+.portfolio-installed-product small{color:#08746e;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.portfolio-installed-product h3{margin:6px 0 9px;color:#25342c;font-size:16px;line-height:1.35}
+.portfolio-installed-product h3 a{color:inherit;text-decoration:none}
+.portfolio-installed-product .text-link{color:#08746e;font-size:13px;font-weight:700;text-decoration:none}
+@media(max-width:700px){.portfolio-installed-products{padding:20px 16px;margin-block:32px}.portfolio-installed-product-grid{grid-template-columns:1fr;gap:10px}.portfolio-installed-product{grid-template-columns:96px minmax(0,1fr);gap:13px;padding:10px}.portfolio-installed-product h3{font-size:14px}}
