@@ -17,8 +17,8 @@
                         <p class="eyebrow">{{ trim(($project['vehicle_make'] ?? '').' '.($project['vehicle_model'] ?? '').' '.($project['vehicle_year'] ?? '')) ?: 'VEHICLE DETAILS NEEDED' }}</p>
                         <h2>{{ $project['title'] }}</h2>
                         <p>{{ $project['upgrade_type'] ?: 'Upgrade type not set' }}@if($project['work_order']) · Work order {{ $project['work_order'] }}@endif</p>
-                        <div class="admin-portfolio-card-meta"><span>{{ count($project['image_paths']) }} {{ \Illuminate\Support\Str::plural('photo', count($project['image_paths'])) }}</span><span>{{ $project['video_path'] ? 'Video added' : 'No video' }}</span></div>
-                        <a class="admin-secondary-action" href="{{ route('admin.portfolio.edit', $project['admin_key']) }}">Edit project <span aria-hidden="true">→</span></a>
+                        <div class="admin-portfolio-card-meta"><span>{{ count($project['image_paths']) }} {{ \Illuminate\Support\Str::plural('photo', count($project['image_paths'])) }}</span><span>{{ $project['video_path'] ? 'Video added' : 'No video' }}</span><span>{{ count($project['related_product_slugs'] ?? []) }} product links</span><span>{{ count($project['related_category_slugs'] ?? []) }} category links</span></div>
+                        <div class="admin-portfolio-card-actions"><a class="admin-secondary-action" href="{{ route('folio', $project['slug']) }}" target="_blank" rel="noopener">View page <span aria-hidden="true">↗</span></a><a class="admin-secondary-action" href="{{ route('admin.portfolio.edit', $project['admin_key']) }}">Edit project <span aria-hidden="true">→</span></a></div>
                     </div>
                 </article>
             @endforeach
@@ -27,4 +27,9 @@
         <section class="admin-panel"><h2>No portfolio projects yet</h2><p>Add the first installation project with its vehicle details, work order, upgrade type, photos and video.</p><a class="admin-primary-action" href="{{ route('admin.portfolio.create') }}">Add project</a></section>
     @endif
 </div>
+<style>
+    .admin-portfolio-card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .admin-portfolio-card-meta{display:flex;flex-wrap:wrap;gap:8px}
+    .admin-portfolio-card-meta span{padding:4px 7px;border-radius:20px;background:#f2f6f3;color:#647269;font-size:10px}
+</style>
 @endsection

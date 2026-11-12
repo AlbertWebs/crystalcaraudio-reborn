@@ -19,6 +19,8 @@ class PortfolioProject extends Model
         'service_area',
         'client_name',
         'description',
+        'related_product_slugs',
+        'related_category_slugs',
         'images',
         'video_path',
         'is_published',
@@ -30,6 +32,8 @@ class PortfolioProject extends Model
         return [
             'project_date' => 'date:Y-m-d',
             'images' => 'array',
+            'related_product_slugs' => 'array',
+            'related_category_slugs' => 'array',
             'is_published' => 'boolean',
         ];
     }

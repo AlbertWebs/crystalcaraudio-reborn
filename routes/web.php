@@ -208,6 +208,7 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::get('/seo', [AdminSeoController::class, 'edit'])->middleware('can:manage-store-products')->name('seo');
     Route::put('/seo', [AdminSeoController::class, 'update'])->middleware('can:manage-store-products')->name('seo.update');
     Route::get('/portfolio', [AdminPortfolioController::class, 'index'])->middleware('can:manage-store-products')->name('portfolio');
+    Route::get('/portfolio/product-search', [AdminPortfolioController::class, 'searchProducts'])->middleware('can:manage-store-products')->name('portfolio.product-search');
     Route::get('/portfolio/create', [AdminPortfolioController::class, 'create'])->middleware('can:manage-store-products')->name('portfolio.create');
     Route::post('/portfolio', [AdminPortfolioController::class, 'store'])->middleware('can:manage-store-products')->name('portfolio.store');
     Route::get('/portfolio/{project}/edit', [AdminPortfolioController::class, 'edit'])->middleware('can:manage-store-products')->name('portfolio.edit');

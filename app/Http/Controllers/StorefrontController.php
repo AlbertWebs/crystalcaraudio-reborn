@@ -319,20 +319,13 @@ class StorefrontController extends Controller
             'car radio and speaker installation Kenya',
         ]));
 
-        $projectLinkTargets = [
-            'nissan-march-2015-car-audio-upgrade' => ['skus' => ['XS-GTF6939'], 'categories' => ['car-radio']],
-            'mazda-demio-2012-car-radio-upgrade' => ['skus' => [], 'categories' => ['car-radio', 'led-lights']],
-            'subaru-forester-xt-car-audio-install' => ['skus' => ['XAV-AX3200', 'TS-WX400DA'], 'categories' => []],
-            'toyota-axio-full-system-upgrade' => ['skus' => ['KFC-W3010', 'GM-E7004', 'TS-S20', 'KFC-S1666'], 'categories' => []],
-        ];
-        $linkTargets = $projectLinkTargets[$slug] ?? ['skus' => [], 'categories' => []];
         $installedProducts = CatalogProduct::query()
-            ->whereIn('sku', $linkTargets['skus'])
+            ->whereIn('slug', $project['related_product_slugs'] ?? [])
             ->get()
-            ->sortBy(fn (CatalogProduct $product) => array_search($product->sku, $linkTargets['skus'], true))
+            ->sortBy(fn (CatalogProduct $product) => array_search($product->slug, $project['related_product_slugs'] ?? [], true))
             ->values();
         $relatedCategories = DB::table('catalog_categories')
-            ->whereIn('slug', $linkTargets['categories'])
+            ->whereIn('slug', $project['related_category_slugs'] ?? [])
             ->orderBy('name')
             ->get(['name', 'slug']);
 

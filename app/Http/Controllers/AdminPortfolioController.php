@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CatalogProduct;
 use App\Models\PortfolioProject;
+use App\Support\MediaUrl;
 use App\Support\PortfolioCatalog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -25,29 +28,58 @@ class AdminPortfolioController extends Controller
 
     public function create(): View
     {
-        return view('admin.portfolio.form', [
-            'project' => [
-                'admin_key' => null,
-                'legacy_source_id' => null,
-                'title' => '',
-                'slug' => '',
-                'vehicle_make' => '',
-                'vehicle_model' => '',
-                'vehicle_year' => '',
-                'work_order' => '',
-                'upgrade_type' => '',
-                'project_date' => '',
-                'service_area' => '',
-                'client_name' => '',
-                'description' => '',
-                'image_paths' => [],
-                'images' => [],
-                'video_url' => null,
-                'is_published' => true,
-                'is_legacy' => false,
-            ],
+        $project = [
+            'admin_key' => null,
+            'legacy_source_id' => null,
+            'title' => '',
+            'slug' => '',
+            'vehicle_make' => '',
+            'vehicle_model' => '',
+            'vehicle_year' => '',
+            'work_order' => '',
+            'upgrade_type' => '',
+            'project_date' => '',
+            'service_area' => '',
+            'client_name' => '',
+            'description' => '',
+            'related_product_slugs' => [],
+            'related_category_slugs' => [],
+            'image_paths' => [],
+            'images' => [],
+            'video_url' => null,
+            'is_published' => true,
+            'is_legacy' => false,
+        ];
+
+        return view('admin.portfolio.form', $this->editorData($project) + [
+            'project' => $project,
             'editing' => false,
         ]);
+    }
+
+    public function searchProducts(Request $request): JsonResponse
+    {
+        $data = $request->validate(['q' => ['required', 'string', 'min:2', 'max:100']]);
+        $search = '%'.trim($data['q']).'%';
+        $products = CatalogProduct::query()
+            ->where('name', 'like', $search)
+            ->orWhere('brand', 'like', $search)
+            ->orWhere('sku', 'like', $search)
+            ->orderBy('name')
+            ->limit(15)
+            ->get(['name', 'brand', 'category', 'sku', 'slug', 'image'])
+            ->map(fn (CatalogProduct $product): array => [
+                'name' => $product->name,
+                'brand' => $product->brand,
+                'category' => $product->category,
+                'sku' => $product->sku,
+                'slug' => $product->slug,
+                'image' => filled($product->image)
+                    ? (str_starts_with($product->image, 'http') ? $product->image : MediaUrl::url(str_starts_with($product->image, 'uploads/') ? $product->image : 'uploads/'.ltrim($product->image, '/')))
+                    : null,
+            ]);
+
+        return response()->json(['products' => $products]);
     }
 
     public function store(Request $request, PortfolioCatalog $catalog): RedirectResponse
@@ -73,7 +105,7 @@ class AdminPortfolioController extends Controller
         $record = $catalog->findForAdmin($project);
         abort_unless($record, 404);
 
-        return view('admin.portfolio.form', ['project' => $record, 'editing' => true]);
+        return view('admin.portfolio.form', $this->editorData($record) + ['project' => $record, 'editing' => true]);
     }
 
     public function update(Request $request, string $project, PortfolioCatalog $catalog): RedirectResponse
@@ -115,6 +147,10 @@ class AdminPortfolioController extends Controller
             'service_area' => ['nullable', 'string', 'max:190'],
             'client_name' => ['nullable', 'string', 'max:190'],
             'description' => ['required', 'string', 'max:50000'],
+            'related_product_slugs' => ['nullable', 'array', 'max:30'],
+            'related_product_slugs.*' => ['required', 'string', 'distinct', Rule::exists('catalog_products', 'slug')],
+            'related_category_slugs' => ['nullable', 'array', 'max:20'],
+            'related_category_slugs.*' => ['required', 'string', 'distinct', Rule::exists('catalog_categories', 'slug')],
             'cover_image' => ['nullable', 'string', 'max:500'],
             'keep_images' => ['nullable', 'array', 'max:16'],
             'keep_images.*' => ['string', 'max:500'],
@@ -140,6 +176,8 @@ class AdminPortfolioController extends Controller
             'service_area' => filled($data['service_area'] ?? null) ? trim($data['service_area']) : null,
             'client_name' => filled($data['client_name'] ?? null) ? trim($data['client_name']) : null,
             'description' => trim($data['description']),
+            'related_product_slugs' => array_values(array_unique($data['related_product_slugs'] ?? [])),
+            'related_category_slugs' => array_values(array_unique($data['related_category_slugs'] ?? [])),
             'is_published' => (bool) $data['is_published'],
         ];
     }
@@ -159,6 +197,8 @@ class AdminPortfolioController extends Controller
                 'service_area' => $record['service_area'],
                 'client_name' => $record['client_name'],
                 'description' => $record['description'],
+                'related_product_slugs' => $record['related_product_slugs'] ?? [],
+                'related_category_slugs' => $record['related_category_slugs'] ?? [],
                 'images' => $record['image_paths'],
                 'video_path' => $record['video_path'],
                 'is_published' => $record['is_published'],
@@ -166,6 +206,34 @@ class AdminPortfolioController extends Controller
         }
 
         return PortfolioProject::findOrFail($key);
+    }
+
+    private function editorData(array $project): array
+    {
+        $oldProductSlugs = old('related_product_slugs', $project['related_product_slugs'] ?? []);
+        $oldCategorySlugs = old('related_category_slugs', $project['related_category_slugs'] ?? []);
+        $selectedProductSlugs = is_array($oldProductSlugs) ? array_values(array_filter($oldProductSlugs)) : [];
+        $selectedCategorySlugs = is_array($oldCategorySlugs) ? array_values(array_filter($oldCategorySlugs)) : [];
+        $selectedProducts = CatalogProduct::query()
+            ->whereIn('slug', $selectedProductSlugs)
+            ->orderBy('name')
+            ->get(['name', 'brand', 'category', 'sku', 'slug', 'image'])
+            ->map(fn (CatalogProduct $product): array => [
+                'name' => $product->name,
+                'brand' => $product->brand,
+                'category' => $product->category,
+                'sku' => $product->sku,
+                'slug' => $product->slug,
+                'image' => filled($product->image)
+                    ? (str_starts_with($product->image, 'http') ? $product->image : MediaUrl::url(str_starts_with($product->image, 'uploads/') ? $product->image : 'uploads/'.ltrim($product->image, '/')))
+                    : null,
+            ]);
+
+        return [
+            'selectedProducts' => $selectedProducts,
+            'categories' => DB::table('catalog_categories')->orderBy('name')->get(['name', 'slug']),
+            'selectedCategorySlugs' => $selectedCategorySlugs,
+        ];
     }
 
     private function uploadedImages(Request $request, array $existingPaths, string $slug): array
