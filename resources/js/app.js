@@ -633,6 +633,10 @@ document.querySelectorAll('[data-installation-request-form]').forEach(form => {
     document.querySelectorAll('[data-open-installation-modal]').forEach(button => {
         button.addEventListener('click', () => {
             if (!dialog?.open) {
+                [['vehicleMake', 'vehicle_make'], ['vehicleModel', 'vehicle_model'], ['vehicleYear', 'vehicle_year']].forEach(([dataField, inputName]) => {
+                    const input = form.elements.namedItem(inputName);
+                    if (input && button.dataset[dataField]) input.value = button.dataset[dataField];
+                });
                 showStep(1);
                 dialog?.showModal();
             }

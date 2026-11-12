@@ -2067,3 +2067,7 @@ html,body{overflow-x:clip}
 .portfolio-related-category-grid>a>span{color:#27372f;font-size:15px;font-weight:700}
 .portfolio-related-category-grid>a>b{color:#08746e;font-size:18px}
 .portfolio-related-category-grid>a>small{grid-column:1/-1;color:#728078;font-size:12px}
+.portfolio-project-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:21px}
+.portfolio-project-actions .button{min-height:48px;padding:11px 18px;border-radius:9px}
+@media(min-width:761px){.site-header .nav-category .category-mega{grid-template-columns:minmax(230px,260px) 190px minmax(0,1fr) 220px;padding-inline:clamp(24px,3vw,48px)}.site-header .mega-category-list{min-width:0;padding-right:10px}.site-header .mega-category-list>a{display:flex;justify-content:flex-start;min-width:0;white-space:nowrap}.site-header .mega-category-list>a>.mega-category-name{font-size:14px;white-space:nowrap}}
+@media(min-width:761px) and (max-width:1000px){.site-header .nav-category .category-mega{grid-template-columns:200px 135px minmax(90px,1fr) 150px;gap:10px;padding-inline:16px}.site-header .mega-category-list>a{padding-inline:7px}}
