@@ -2071,3 +2071,10 @@ html,body{overflow-x:clip}
 .portfolio-project-actions .button{min-height:48px;padding:11px 18px;border-radius:9px}
 @media(min-width:761px){.site-header .nav-category .category-mega{grid-template-columns:minmax(230px,260px) 190px minmax(0,1fr) 220px;padding-inline:clamp(24px,3vw,48px)}.site-header .mega-category-list{min-width:0;padding-right:10px}.site-header .mega-category-list>a{display:flex;justify-content:flex-start;min-width:0;white-space:nowrap}.site-header .mega-category-list>a>.mega-category-name{font-size:14px;white-space:nowrap}}
 @media(min-width:761px) and (max-width:1000px){.site-header .nav-category .category-mega{grid-template-columns:200px 135px minmax(90px,1fr) 150px;gap:10px;padding-inline:16px}.site-header .mega-category-list>a{padding-inline:7px}}
+.portfolio-project-title-row{display:flex;align-items:center;justify-content:space-between;gap:28px;margin-top:24px}
+.portfolio-project-title-row h1{max-width:none;min-width:0;margin:0;font-size:clamp(34px,4.4vw,58px)}
+.portfolio-project-title-row .portfolio-project-actions{flex:0 0 auto;margin:0}
+.portfolio-project-title-row .portfolio-project-actions .button{white-space:nowrap}
+.portfolio-project-title-row+.portfolio-project-subtitle{margin-top:11px}
+@media(max-width:760px){.portfolio-project-title-row{align-items:flex-start;flex-direction:column;gap:14px;margin-top:21px}.portfolio-project-title-row h1{font-size:clamp(34px,8vw,48px)}}
+.portfolio-project-description h2:not(:first-child){margin-top:28px}

@@ -35,9 +35,10 @@
 <section class="portfolio-project-hero">
     <nav class="collection-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="{{ route('home') }}">Home</a></li><li><a href="{{ route('portfolio') }}">Our portfolio</a></li><li aria-current="page">{{ $project['title'] }}</li></ol></nav>
     <p class="eyebrow eyebrow-accent">{{ $project['upgrade_type'] ?: 'CAR AUDIO INSTALLATION' }} · {{ $project['service_area'] ?: 'NAIROBI, KENYA' }}</p>
-    <h1>{{ $project['title'] }}</h1>
+    <div class="portfolio-project-title-row"><h1>{{ $project['title'] }}</h1>
+        <div class="portfolio-project-actions"><button class="button button-dark" type="button" data-open-installation-modal data-vehicle-make="{{ $project['vehicle_make'] ?? '' }}" data-vehicle-model="{{ $project['vehicle_model'] ?? '' }}" data-vehicle-year="{{ $project['vehicle_year'] ?? '' }}">Book an installation <span aria-hidden="true">→</span></button></div>
+    </div>
     @if($vehicleDetails)<p class="portfolio-project-subtitle">Vehicle: {{ $vehicleDetails }}</p>@endif
-    <div class="portfolio-project-actions"><button class="button button-dark" type="button" data-open-installation-modal data-vehicle-make="{{ $project['vehicle_make'] ?? '' }}" data-vehicle-model="{{ $project['vehicle_model'] ?? '' }}" data-vehicle-year="{{ $project['vehicle_year'] ?? '' }}">Book an installation <span aria-hidden="true">→</span></button></div>
 </section>
 <script type="application/ld+json">@json($breadcrumbSchema)</script>
 <script type="application/ld+json">@json($projectSchema)</script>
