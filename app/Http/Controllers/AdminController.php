@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
@@ -190,6 +191,120 @@ class AdminController extends Controller
         $this->recordActivity($request, 'inventory.bulk_status_updated', null, 'Changed stock status for '.$updated.' zero-priced products to '.$data['stock'].'.');
 
         return redirect()->route('admin.home')->with('success', number_format($updated).' zero-priced product'.($updated === 1 ? '' : 's').' updated to '.$data['stock'].'.');
+    }
+
+    public function exportZeroPriceProducts()
+    {
+        $products = CatalogProduct::query()->where('price', 0)->orderBy('id')->get([
+            'id', 'slug', 'name', 'sku', 'brand', 'category', 'price',
+        ]);
+
+        return response()->streamDownload(function () use ($products): void {
+            $output = fopen('php://output', 'wb');
+            fwrite($output, "\xEF\xBB\xBF");
+            fputcsv($output, ['product_id', 'slug', 'product_name', 'sku', 'brand', 'category', 'current_price_kes', 'new_price_kes']);
+
+            foreach ($products as $product) {
+                fputcsv($output, [
+                    $product->id,
+                    $this->spreadsheetSafeText((string) $product->slug),
+                    $this->spreadsheetSafeText((string) $product->name),
+                    $this->spreadsheetSafeText((string) $product->sku),
+                    $this->spreadsheetSafeText((string) $product->brand),
+                    $this->spreadsheetSafeText((string) $product->category),
+                    number_format((float) $product->price, 2, '.', ''),
+                    '',
+                ]);
+            }
+
+            fclose($output);
+        }, 'zero-priced-products-'.now()->format('Y-m-d').'.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Cache-Control' => 'no-store, private',
+        ]);
+    }
+
+    public function importZeroPricePrices(Request $request)
+    {
+        $data = $request->validate([
+            'pricing_file' => ['required', 'file', 'mimes:csv,txt', 'max:10240'],
+        ]);
+        $handle = fopen($data['pricing_file']->getRealPath(), 'rb');
+        if ($handle === false) {
+            throw ValidationException::withMessages(['pricing_file' => 'The uploaded CSV could not be read.']);
+        }
+
+        $header = fgetcsv($handle);
+        if (! is_array($header)) {
+            fclose($handle);
+            throw ValidationException::withMessages(['pricing_file' => 'The CSV is empty. Download a fresh pricing template and fill in the new_price_kes column.']);
+        }
+        $header = array_map(fn ($value): string => strtolower(trim((string) $value, "\xEF\xBB\xBF \t\n\r\0\x0B")), $header);
+        $idColumn = array_search('product_id', $header, true);
+        $priceColumn = array_search('new_price_kes', $header, true);
+        if ($idColumn === false || $priceColumn === false) {
+            fclose($handle);
+            throw ValidationException::withMessages(['pricing_file' => 'This CSV must include the product_id and new_price_kes columns from the downloaded template.']);
+        }
+
+        $priceUpdates = [];
+        $rowNumber = 1;
+        $rowErrors = [];
+        while (($row = fgetcsv($handle)) !== false) {
+            $rowNumber++;
+            if (count(array_filter($row, fn ($cell): bool => trim((string) $cell) !== '')) === 0) {
+                continue;
+            }
+
+            $id = trim((string) ($row[$idColumn] ?? ''));
+            $priceValue = trim((string) ($row[$priceColumn] ?? ''));
+            if ($priceValue === '') {
+                continue;
+            }
+            if (! ctype_digit($id) || ! is_numeric($priceValue) || (float) $priceValue <= 0 || (float) $priceValue > 100000000) {
+                $rowErrors[] = 'Row '.$rowNumber.': enter a valid product_id and a price greater than KES 0.';
+
+                continue;
+            }
+            if (array_key_exists($id, $priceUpdates)) {
+                $rowErrors[] = 'Row '.$rowNumber.': product_id '.$id.' appears more than once.';
+
+                continue;
+            }
+            $priceUpdates[$id] = round((float) $priceValue, 2);
+        }
+        fclose($handle);
+
+        if ($rowErrors !== []) {
+            throw ValidationException::withMessages(['pricing_file' => $rowErrors]);
+        }
+        if ($priceUpdates === []) {
+            throw ValidationException::withMessages(['pricing_file' => 'No prices were filled in. Enter a value in new_price_kes for at least one product.']);
+        }
+
+        $products = CatalogProduct::query()->whereIn('id', array_keys($priceUpdates))->get(['id', 'name', 'price'])->keyBy('id');
+        $staleProducts = collect(array_keys($priceUpdates))->filter(fn ($id): bool => ! isset($products[$id]) || (float) $products[$id]->price !== 0.0);
+        if ($staleProducts->isNotEmpty()) {
+            throw ValidationException::withMessages(['pricing_file' => 'No changes were made. These products no longer have a KES 0 price or no longer exist: '.implode(', ', $staleProducts->all()).'. Export a fresh file and try again.']);
+        }
+
+        DB::transaction(function () use ($priceUpdates): void {
+            foreach ($priceUpdates as $id => $price) {
+                $updated = CatalogProduct::query()->whereKey($id)->where('price', 0)->update(['price' => $price, 'updated_at' => now()]);
+                if ($updated !== 1) {
+                    throw ValidationException::withMessages(['pricing_file' => 'A product price changed during the import. No changes were applied; export a fresh file and try again.']);
+                }
+            }
+        });
+
+        $this->recordActivity($request, 'products.zero_price_imported', null, 'Updated prices for '.count($priceUpdates).' products from the zero-price CSV upload.');
+
+        return redirect()->route('admin.home')->with('success', number_format(count($priceUpdates)).' product price'.(count($priceUpdates) === 1 ? '' : 's').' updated from the CSV.');
+    }
+
+    private function spreadsheetSafeText(string $value): string
+    {
+        return preg_match('/^[\s]*[=+@\-]/u', $value) === 1 ? "'".$value : $value;
     }
 
     public function updateCategoryOrder(Request $request)

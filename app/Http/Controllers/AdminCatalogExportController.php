@@ -18,6 +18,8 @@ class AdminCatalogExportController extends Controller
     private const CATALOGUE_COLUMNS = [
         'id' => 'Product ID',
         'sku' => 'SKU',
+        'mpn' => 'Manufacturer part number (MPN)',
+        'gtin' => 'GTIN / barcode',
         'title' => 'Product name',
         'brand' => 'Brand',
         'category' => 'Category',
@@ -81,7 +83,7 @@ class AdminCatalogExportController extends Controller
     private function downloadMerchantFeed()
     {
         $headers = [
-            'id', 'title', 'description', 'link', 'image_link', 'availability', 'condition', 'price', 'brand', 'mpn', 'product_type', 'sale_price',
+            'id', 'title', 'description', 'link', 'image_link', 'availability', 'condition', 'price', 'brand', 'mpn', 'gtin', 'product_type', 'sale_price',
         ];
         $products = $this->merchantProducts();
 
@@ -103,8 +105,9 @@ class AdminCatalogExportController extends Controller
                     $this->merchantAvailability($product),
                     'new',
                     number_format($hasSalePrice ? $regularPrice : $price, 2, '.', '').' KES',
-                    trim((string) $product->brand),
-                    trim((string) $product->sku),
+                    $this->manufacturerBrand($product) ? trim((string) $product->brand) : '',
+                    trim((string) ($product->mpn ?: ($this->manufacturerBrand($product) ? $product->sku : ''))),
+                    trim((string) $product->gtin),
                     trim((string) $product->category),
                     $hasSalePrice ? number_format($price, 2, '.', '').' KES' : '',
                 ];
@@ -181,7 +184,6 @@ class AdminCatalogExportController extends Controller
         $description = $this->plainText($product->description);
         $brand = trim((string) $product->brand);
         $normalizedBrand = Str::lower($brand);
-        $sku = trim((string) $product->sku);
         $category = trim((string) $product->category);
         $stock = Str::lower(trim((string) $product->stock));
 
@@ -209,14 +211,12 @@ class AdminCatalogExportController extends Controller
             $reasons[] = 'Product category is missing.';
         }
 
-        if ($brand === '') {
-            $reasons[] = 'Brand is missing.';
-        } elseif (in_array($normalizedBrand, ['other', 'others', 'unknown', 'n/a', 'na', 'none'], true)) {
-            $reasons[] = 'Brand is set to “'.$brand.'”; enter the actual manufacturer brand.';
+        if ($brand === '' || in_array($normalizedBrand, ['other', 'others', 'unknown', 'n/a', 'na', 'none'], true)) {
+            $reasons[] = $brand === '' ? 'Brand is missing.' : 'Brand is set to “'.$brand.'”; enter the actual manufacturer brand.';
         }
 
-        if ($sku === '') {
-            $reasons[] = 'Manufacturer part number is missing; add the product code (exported as MPN).';
+        if (trim((string) ($product->mpn ?: ($this->manufacturerBrand($product) ? $product->sku : ''))) === '' && trim((string) $product->gtin) === '') {
+            $reasons[] = 'No manufacturer identifier is recorded; add the exact GTIN or manufacturer part number (MPN).';
         }
 
         if (Str::contains($stock, ['pre-order', 'preorder'])) {
@@ -236,6 +236,8 @@ class AdminCatalogExportController extends Controller
             return [
                 'id' => (string) $product->id,
                 'sku' => (string) ($product->sku ?? ''),
+                'mpn' => (string) ($product->mpn ?? ''),
+                'gtin' => (string) ($product->gtin ?? ''),
                 'title' => $this->plainText($product->name),
                 'brand' => trim((string) $product->brand),
                 'category' => trim((string) $product->category),
@@ -289,6 +291,11 @@ class AdminCatalogExportController extends Controller
         }
 
         return Str::contains($stock, 'out') ? 'out_of_stock' : 'in_stock';
+    }
+
+    private function manufacturerBrand(CatalogProduct $product): bool
+    {
+        return trim((string) $product->brand) !== '' && ! in_array(Str::lower(trim((string) $product->brand)), ['other', 'others', 'unknown', 'n/a', 'na', 'none'], true);
     }
 
     private function plainText(?string $value): string

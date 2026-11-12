@@ -180,7 +180,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
-<body class="@yield('body_class')">
+<body class="storefront-site @yield('body_class')">
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WGDFGCZZ" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1672338073611112&amp;ev=PageView&amp;noscript=1" alt=""></noscript>
 @php

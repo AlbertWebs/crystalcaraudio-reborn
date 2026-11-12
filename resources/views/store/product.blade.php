@@ -37,7 +37,15 @@
     if (filled($product->sku)) {
         $productSchema['sku'] = $product->sku;
     }
-    if (filled($product->brand) && strtolower(trim($product->brand)) !== 'others') {
+    $manufacturerBrand = filled($product->brand) && ! in_array(strtolower(trim($product->brand)), ['other', 'others', 'unknown', 'n/a', 'na', 'none'], true);
+    if (filled($product->gtin)) {
+        $productSchema['gtin'] = preg_replace('/\D+/', '', (string) $product->gtin);
+    }
+    $manufacturerPartNumber = filled($product->mpn) ? trim($product->mpn) : ($manufacturerBrand ? trim((string) $product->sku) : '');
+    if ($manufacturerPartNumber !== '') {
+        $productSchema['mpn'] = $manufacturerPartNumber;
+    }
+    if ($manufacturerBrand) {
         $productSchema['brand'] = ['@type' => 'Brand', 'name' => $product->brand];
     }
     if ($reviews->isNotEmpty()) {
@@ -60,7 +68,7 @@
 @section('meta_product_price', number_format((float) $product->price, 2, '.', ''))
 @section('meta_product_currency', 'KES')
 @section('meta_product_availability', strtolower($productAvailability))
-@if(filled($product->brand) && strtolower(trim($product->brand)) !== 'others')
+@if($manufacturerBrand)
     @section('meta_product_brand', $product->brand)
 @endif
 @section('meta_product_sku', $product->sku)

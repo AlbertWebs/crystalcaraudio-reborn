@@ -48,6 +48,13 @@
         @endif
     </div>
 </section>
+<section class="section portfolio-section car-audio-seo-content" aria-labelledby="car-audio-planning-title">
+    <div class="car-audio-seo-intro"><p class="eyebrow eyebrow-accent">CAR AUDIO BUYING GUIDE · NAIROBI</p><h2 id="car-audio-planning-title">Plan a car audio system around your vehicle</h2><p>A well-matched car audio system brings the radio, speakers and amplification together as one setup. Start with the sound you want and the equipment already in your vehicle, then check dashboard fitment, speaker sizes and power requirements before choosing components.</p></div>
+    <div class="car-audio-seo-grid">
+        <article><h3>Choose the right components</h3><p>A new head unit can add updated playback and connectivity features. Upgraded door speakers can improve detail, while an amplifier and subwoofer can provide more power and bass when they are suited to the rest of the system.</p><p>Browse <a href="{{ route('product-category', 'car-radio') }}">car radios</a>, <a href="{{ route('car-speakers') }}">car speakers</a> and <a href="{{ route('product-category', 'car-amplifiers-booster') }}">car amplifiers and boosters</a> to compare the available options.</p></article>
+        <article><h3>Check compatibility before buying</h3><p>Vehicle make, model and year can affect radio fascia fitment, wiring, speaker dimensions and the installation parts required. If you are unsure, share your vehicle details with Crystal Car Audio before ordering so the team can help you check whether a product suits your setup.</p><p>For advice about a complete <strong>car audio system in Nairobi</strong>, <a href="{{ route('page.find-us') }}">contact Crystal Car Audio</a> with your vehicle details and the upgrade you have in mind.</p></article>
+    </div>
+</section>
 <section class="section portfolio-section portfolio-faq" aria-labelledby="car-audio-faq-title"><div class="section-heading"><div><p class="eyebrow eyebrow-accent">CAR AUDIO SYSTEM GUIDE</p><h2 id="car-audio-faq-title">Car audio system questions</h2></div></div><div class="portfolio-faq-list">
     <details><summary>What does a complete car audio system include?</summary><p>A system can include a car radio, speakers, an amplifier and a subwoofer. The right combination depends on your vehicle, listening preferences and the equipment already installed.</p></details>
     <details><summary>Can I upgrade my car speakers without replacing the radio?</summary><p>Often, yes. Speaker size, wiring and power compatibility vary by vehicle, so check fitment before choosing replacement speakers.</p></details>

@@ -227,6 +227,8 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::get('/products/{product}/edit', [AdminProductsController::class, 'edit'])->middleware('can:manage-store-products')->name('products.edit');
     Route::post('/products', [AdminProductsController::class, 'store'])->middleware('can:manage-store-products')->name('products.store');
     Route::patch('/products/zero-price-stock', [AdminController::class, 'bulkUpdateZeroPriceStock'])->middleware('can:manage-store-inventory')->name('products.zero-price-stock');
+    Route::get('/products/zero-price-prices.csv', [AdminController::class, 'exportZeroPriceProducts'])->middleware('can:manage-store-products')->name('products.zero-price-prices.export');
+    Route::post('/products/zero-price-prices.csv', [AdminController::class, 'importZeroPricePrices'])->middleware('can:manage-store-products')->name('products.zero-price-prices.import');
     Route::patch('/products/{product}', [AdminProductsController::class, 'update'])->middleware('can:manage-store-products')->name('products.update');
     Route::delete('/products/{product}', [AdminProductsController::class, 'destroy'])->middleware('can:manage-store-products')->name('products.destroy');
     Route::patch('/orders/{id}', [AdminController::class, 'updateOrder'])->middleware('can:manage-store-orders')->name('orders.update');

@@ -94,12 +94,18 @@
     </section>
     <section class="admin-panel zero-price-panel" id="inventory" aria-labelledby="zero-price-title">
         <div class="admin-panel-head zero-price-heading">
-            <div><p class="eyebrow">PRICING REVIEW</p><h2 id="zero-price-title">Products priced at KES 0</h2><p class="zero-price-help">Review products that need a price, and update stock status for several at once.</p></div>
-            <span class="zero-price-count">{{ number_format($zeroPriceProductsCount) }} products</span>
+            <div><p class="eyebrow">PRICING REVIEW</p><h2 id="zero-price-title">Products priced at KES 0</h2><p class="zero-price-help">Export the full list, enter prices in the new_price_kes column, then upload the CSV to update the catalogue.</p></div>
+            <div class="zero-price-header-actions"><span class="zero-price-count">{{ number_format($zeroPriceProductsCount) }} products</span><a class="button button-dark zero-price-export" href="{{ route('admin.products.zero-price-prices.export') }}">Export pricing CSV <span aria-hidden="true">↓</span></a></div>
         </div>
-        @if($errors->has('product_ids') || $errors->has('product_ids.*') || $errors->has('stock'))
-            <div class="admin-notice admin-notice-error" role="alert">{{ $errors->first('product_ids') ?: $errors->first('product_ids.*') ?: $errors->first('stock') }}</div>
+        @if($errors->has('product_ids') || $errors->has('product_ids.*') || $errors->has('stock') || $errors->has('pricing_file'))
+            <div class="admin-notice admin-notice-error" role="alert">@foreach($errors->get('pricing_file') as $error)<p>{{ $error }}</p>@endforeach{{ $errors->first('product_ids') ?: $errors->first('product_ids.*') ?: $errors->first('stock') }}</div>
         @endif
+        <form class="zero-price-import-form" method="post" action="{{ route('admin.products.zero-price-prices.import') }}" enctype="multipart/form-data">
+            @csrf
+            <label for="zero-price-import">Upload completed pricing CSV</label>
+            <input id="zero-price-import" type="file" name="pricing_file" accept=".csv,text/csv" required>
+            <button class="button button-dark" type="submit">Update product prices</button>
+        </form>
         @if($zeroPriceProducts->isNotEmpty())
             <form id="zero-price-stock-form" method="post" action="{{ route('admin.products.zero-price-stock') }}">
                 @csrf @method('PATCH')

@@ -144,6 +144,22 @@ class AdminProductsController extends Controller
             'name' => ['required', 'string', 'max:190'],
             'slug' => ['nullable', 'string', 'max:190', Rule::unique('catalog_products', 'slug')->ignore($product?->id)],
             'sku' => ['nullable', 'string', 'max:100', Rule::unique('catalog_products', 'sku')->ignore($product?->id)],
+            'mpn' => ['nullable', 'string', 'max:100'],
+            'gtin' => ['nullable', 'regex:/^(?:[0-9]{8}|[0-9]{12}|[0-9]{13}|[0-9]{14})$/', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (! is_string($value) || $value === '') {
+                    return;
+                }
+
+                $digits = str_split($value);
+                $checkDigit = (int) array_pop($digits);
+                $sum = 0;
+                foreach (array_reverse($digits) as $index => $digit) {
+                    $sum += (int) $digit * ($index % 2 === 0 ? 3 : 1);
+                }
+                if ((10 - ($sum % 10)) % 10 !== $checkDigit) {
+                    $fail('Enter a valid GTIN barcode with a correct check digit.');
+                }
+            }],
             'category' => ['nullable', 'string', 'max:190'],
             'brand' => ['nullable', 'string', 'max:190'],
             'price' => ['required', 'numeric', 'min:0', 'max:100000000'],
