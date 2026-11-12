@@ -586,11 +586,67 @@ document.querySelector('[data-store-chat-form]')?.addEventListener('submit', eve
 });
 
 document.querySelectorAll('[data-installation-request-form]').forEach(form => {
+    const dialog = form.closest('[data-installation-dialog]');
+    const steps = Array.from(form.querySelectorAll('[data-installation-step]'));
+    const progressSteps = Array.from(dialog?.querySelectorAll('[data-progress-step]') || []);
+    const progress = dialog?.querySelector('[data-installation-progress]');
+    const nextButton = form.querySelector('[data-installation-next]');
+    const backButton = form.querySelector('[data-installation-back]');
+    const wizardActions = form.querySelector('.portfolio-request-wizard-actions');
     const serviceSelect = form.querySelector('[name="service"]');
     const serviceDetail = form.querySelector('[name="service_detail"]');
     const serviceDetailWrapper = form.querySelector('[data-service-detail-wrapper]');
     const feedback = form.querySelector('[data-installation-feedback]');
     const submitButton = form.querySelector('button[type="submit"]');
+    let activeStep = 1;
+    let requestWasSubmitted = false;
+
+    const showStep = stepNumber => {
+        activeStep = stepNumber;
+        steps.forEach(step => {
+            step.hidden = Number(step.dataset.installationStep) !== stepNumber;
+        });
+        progressSteps.forEach(progressStep => {
+            const isCurrent = Number(progressStep.dataset.progressStep) === stepNumber;
+            const isComplete = Number(progressStep.dataset.progressStep) < stepNumber;
+            if (isCurrent) progressStep.setAttribute('aria-current', 'step');
+            else progressStep.removeAttribute('aria-current');
+            progressStep.classList.toggle('is-complete', isComplete);
+        });
+        if (backButton) backButton.hidden = stepNumber === 1;
+        if (nextButton) nextButton.hidden = stepNumber === steps.length;
+        if (submitButton) submitButton.hidden = stepNumber !== steps.length;
+        const firstField = steps[stepNumber - 1]?.querySelector('input:not([disabled]),select:not([disabled]),textarea:not([disabled])');
+        firstField?.focus({ preventScroll: true });
+    };
+
+    const validateCurrentStep = () => {
+        const fields = Array.from(steps[activeStep - 1]?.querySelectorAll('input,select,textarea') || []).filter(field => !field.disabled);
+        const invalidField = fields.find(field => !field.checkValidity());
+        if (invalidField) {
+            invalidField.reportValidity();
+            return false;
+        }
+        return true;
+    };
+
+    document.querySelectorAll('[data-open-installation-modal]').forEach(button => {
+        button.addEventListener('click', () => {
+            if (!dialog?.open) {
+                showStep(1);
+                dialog?.showModal();
+            }
+        });
+    });
+    dialog?.querySelector('[data-close-installation-modal]')?.addEventListener('click', () => dialog.close());
+    dialog?.addEventListener('click', event => {
+        if (event.target === dialog) dialog.close();
+    });
+    nextButton?.addEventListener('click', () => {
+        if (validateCurrentStep()) showStep(Math.min(activeStep + 1, steps.length));
+    });
+    backButton?.addEventListener('click', () => showStep(Math.max(activeStep - 1, 1)));
+    showStep(1);
 
     const syncServiceDetail = () => {
         const isOtherService = serviceSelect?.value === 'Other';
@@ -603,10 +659,25 @@ document.querySelectorAll('[data-installation-request-form]').forEach(form => {
 
     serviceSelect?.addEventListener('change', syncServiceDetail);
     syncServiceDetail();
+    dialog?.addEventListener('close', () => {
+        if (requestWasSubmitted) {
+            form.reset();
+            if (feedback) feedback.hidden = true;
+            if (progress) progress.hidden = false;
+            if (wizardActions) wizardActions.hidden = false;
+            requestWasSubmitted = false;
+            syncServiceDetail();
+        }
+        showStep(1);
+    });
 
     form.addEventListener('submit', async event => {
         event.preventDefault();
-        if (!feedback || !submitButton || submitButton.disabled) return;
+        if (activeStep < steps.length) {
+            if (validateCurrentStep()) showStep(activeStep + 1);
+            return;
+        }
+        if (!validateCurrentStep() || !feedback || !submitButton || submitButton.disabled) return;
 
         const originalButtonContent = submitButton.innerHTML;
         submitButton.disabled = true;
@@ -633,8 +704,10 @@ document.querySelectorAll('[data-installation-request-form]').forEach(form => {
 
             feedback.className = 'portfolio-request-feedback is-success';
             feedback.textContent = result.message || 'Your installation request has been sent.';
-            form.reset();
-            syncServiceDetail();
+            requestWasSubmitted = true;
+            steps.forEach(step => { step.hidden = true; });
+            if (progress) progress.hidden = true;
+            if (wizardActions) wizardActions.hidden = true;
         } catch (error) {
             feedback.className = 'portfolio-request-feedback is-error';
             feedback.setAttribute('role', 'alert');

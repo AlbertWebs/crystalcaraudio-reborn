@@ -307,6 +307,9 @@ class StorefrontController extends Controller
         $vehicleLabel = $vehicle !== '' ? $vehicle : trim(strip_tags((string) ($project['title'] ?? 'Car audio')));
         $seo['title'] = Str::limit($vehicleLabel.' Car Audio Upgrade | Crystal Car Audio', 70);
         $description = trim(strip_tags((string) ($project['description'] ?? '')));
+        $description = preg_replace('/\[([^\]]+)]\([^)]+\)/u', '$1', $description);
+        $description = preg_replace('/[*_`#>]/u', '', $description);
+        $description = trim(preg_replace('/\s+/u', ' ', $description));
         $description = $vehicleLabel.' '.strtolower((string) ($project['upgrade_type'] ?? 'car audio upgrade')).' in '.($project['service_area'] ?: 'Nairobi').', installed by Crystal Car Audio. '.$description;
         $seo['description'] = Str::limit($description, 158);
         $seo['keywords'] = implode(', ', array_filter([
@@ -316,16 +319,24 @@ class StorefrontController extends Controller
             'car radio and speaker installation Kenya',
         ]));
 
-        $installedProducts = collect();
-        if ($slug === 'toyota-axio-full-system-upgrade') {
-            $installedProducts = CatalogProduct::query()
-                ->whereIn('sku', ['KFC-W3010', 'GM-E7004', 'TS-S20', 'KFC-S1666'])
-                ->get()
-                ->sortBy(fn (CatalogProduct $product) => array_search($product->sku, ['KFC-W3010', 'GM-E7004', 'TS-S20', 'KFC-S1666'], true))
-                ->values();
-        }
+        $projectLinkTargets = [
+            'nissan-march-2015-car-audio-upgrade' => ['skus' => ['XS-GTF6939'], 'categories' => ['car-radio']],
+            'mazda-demio-2012-car-radio-upgrade' => ['skus' => [], 'categories' => ['car-radio', 'led-lights']],
+            'subaru-forester-xt-car-audio-install' => ['skus' => ['XAV-AX3200', 'TS-WX400DA'], 'categories' => []],
+            'toyota-axio-full-system-upgrade' => ['skus' => ['KFC-W3010', 'GM-E7004', 'TS-S20', 'KFC-S1666'], 'categories' => []],
+        ];
+        $linkTargets = $projectLinkTargets[$slug] ?? ['skus' => [], 'categories' => []];
+        $installedProducts = CatalogProduct::query()
+            ->whereIn('sku', $linkTargets['skus'])
+            ->get()
+            ->sortBy(fn (CatalogProduct $product) => array_search($product->sku, $linkTargets['skus'], true))
+            ->values();
+        $relatedCategories = DB::table('catalog_categories')
+            ->whereIn('slug', $linkTargets['categories'])
+            ->orderBy('name')
+            ->get(['name', 'slug']);
 
-        return view('store.portfolio-project', compact('project', 'seo', 'installedProducts'));
+        return view('store.portfolio-project', compact('project', 'seo', 'installedProducts', 'relatedCategories'));
     }
 
     public function product(string $slug)
