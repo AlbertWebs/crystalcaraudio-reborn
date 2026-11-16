@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CatalogProduct;
+use App\Services\MerchantFeedAudit;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -32,20 +33,37 @@ class AdminCatalogExportController extends Controller
         'image_url' => 'Main image URL',
     ];
 
-    public function index()
+    public function index(MerchantFeedAudit $audit)
     {
         $catalogue = CatalogProduct::query()->orderBy('name')->get();
-        $excluded = $catalogue
-            ->map(fn (CatalogProduct $product): array => [
-                'product' => $product,
-                'reasons' => $this->merchantExclusionReasons($product),
-            ])
-            ->filter(fn (array $item): bool => $item['reasons'] !== [])
-            ->values();
+        $excluded = $audit->productsNeedingUpdates();
+        $excludedProducts = $this->paginateIssues($excluded);
+
+        return view('admin.exports', [
+            'totalProducts' => $catalogue->count(),
+            'merchantEligible' => $catalogue->count() - $excluded->count(),
+            'merchantSkipped' => $excluded->count(),
+            'excludedProducts' => $excludedProducts,
+        ]);
+    }
+
+    public function needsUpdates(MerchantFeedAudit $audit)
+    {
+        $excluded = $audit->productsNeedingUpdates();
+
+        return view('admin.needs-updates', [
+            'excludedProducts' => $this->paginateIssues($excluded),
+            'merchantSkipped' => $excluded->count(),
+        ]);
+    }
+
+    private function paginateIssues(Collection $excluded): LengthAwarePaginator
+    {
         $perPage = 25;
         $lastPage = max(1, (int) ceil($excluded->count() / $perPage));
         $page = min(max(LengthAwarePaginator::resolveCurrentPage('needs_updates_page'), 1), $lastPage);
-        $excludedProducts = new LengthAwarePaginator(
+
+        return new LengthAwarePaginator(
             $excluded->forPage($page, $perPage)->values(),
             $excluded->count(),
             $perPage,
@@ -56,13 +74,6 @@ class AdminCatalogExportController extends Controller
                 'pageName' => 'needs_updates_page',
             ],
         );
-
-        return view('admin.exports', [
-            'totalProducts' => $catalogue->count(),
-            'merchantEligible' => $catalogue->count() - $excluded->count(),
-            'merchantSkipped' => $excluded->count(),
-            'excludedProducts' => $excludedProducts,
-        ]);
     }
 
     public function download(string $format)
@@ -80,12 +91,12 @@ class AdminCatalogExportController extends Controller
             : $this->downloadCatalogueCsv($rows);
     }
 
-    private function downloadMerchantFeed()
+    private function downloadMerchantFeed(MerchantFeedAudit $audit)
     {
         $headers = [
             'id', 'title', 'description', 'link', 'image_link', 'availability', 'condition', 'price', 'brand', 'mpn', 'gtin', 'product_type', 'sale_price',
         ];
-        $products = $this->merchantProducts();
+        $products = $this->merchantProducts($audit);
 
         return response()->streamDownload(function () use ($headers, $products): void {
             $output = fopen('php://output', 'wb');
@@ -168,66 +179,9 @@ class AdminCatalogExportController extends Controller
         ])->deleteFileAfterSend(true);
     }
 
-    private function merchantProducts(): Collection
+    private function merchantProducts(MerchantFeedAudit $audit): Collection
     {
-        return CatalogProduct::query()
-            ->orderBy('id')
-            ->get()
-            ->filter(fn (CatalogProduct $product): bool => $this->merchantExclusionReasons($product) === [])
-            ->values();
-    }
-
-    private function merchantExclusionReasons(CatalogProduct $product): array
-    {
-        $reasons = [];
-        $title = $this->plainText($product->name);
-        $description = $this->plainText($product->description);
-        $brand = trim((string) $product->brand);
-        $normalizedBrand = Str::lower($brand);
-        $category = trim((string) $product->category);
-        $stock = Str::lower(trim((string) $product->stock));
-
-        if ($title === '') {
-            $reasons[] = 'Product title is missing.';
-        } elseif (Str::length($title) > 150) {
-            $reasons[] = 'Product title exceeds Google’s 150-character limit.';
-        }
-
-        if ($description === '') {
-            $reasons[] = 'Product description is missing.';
-        } elseif (Str::length($description) > 5000) {
-            $reasons[] = 'Product description exceeds Google’s 5,000-character limit.';
-        }
-
-        if ((float) $product->price <= 0) {
-            $reasons[] = 'Price must be greater than zero.';
-        }
-
-        if (trim((string) $product->image) === '') {
-            $reasons[] = 'Main product image is missing.';
-        }
-
-        if ($category === '') {
-            $reasons[] = 'Product category is missing.';
-        }
-
-        if ($brand === '' || in_array($normalizedBrand, ['other', 'others', 'unknown', 'n/a', 'na', 'none'], true)) {
-            $reasons[] = $brand === '' ? 'Brand is missing.' : 'Brand is set to “'.$brand.'”; enter the actual manufacturer brand.';
-        }
-
-        if (trim((string) ($product->mpn ?: ($this->manufacturerBrand($product) ? $product->sku : ''))) === '' && trim((string) $product->gtin) === '') {
-            $reasons[] = 'No manufacturer identifier is recorded; add the exact GTIN or manufacturer part number (MPN).';
-        }
-
-        if (Str::contains($stock, ['pre-order', 'preorder'])) {
-            $reasons[] = 'Stock is preorder, but no availability date is recorded.';
-        } elseif ($product->stock_quantity === null && ! in_array($stock, ['in stock', 'out of stock'], true)) {
-            $reasons[] = 'Stock status “'.trim((string) $product->stock).'” is not recognized.';
-        } elseif ($product->stock_quantity !== null && (int) $product->stock_quantity < 0) {
-            $reasons[] = 'Stock quantity cannot be negative.';
-        }
-
-        return $reasons;
+        return $audit->eligibleProducts()->sortBy('id')->values();
     }
 
     private function catalogueRows(): array

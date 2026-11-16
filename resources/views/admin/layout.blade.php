@@ -18,6 +18,7 @@
         <div class="admin-sidebar-caption">OVERVIEW</div>
         <nav class="admin-nav">
             <a class="{{ request()->routeIs('admin.home') ? 'is-active' : '' }}" href="{{ route('admin.home') }}"><span class="admin-nav-icon">⌂</span>Dashboard</a>
+            <a class="{{ request()->routeIs('admin.site-health') ? 'is-active' : '' }}" href="{{ route('admin.site-health') }}"><span class="admin-nav-icon">♥</span>Site Health</a>
             @can('view-admin-bi')
                 <a class="{{ request()->routeIs('admin.bi') ? 'is-active' : '' }}" href="{{ route('admin.bi') }}"><span class="admin-nav-icon">◫</span>Business intelligence</a>
                 <a href="{{ route('admin.bi', ['period' => '30d']) }}"><span class="admin-nav-icon">▤</span>Analytics &amp; reports</a>
@@ -31,6 +32,7 @@
                 <a class="{{ request()->routeIs('admin.categories*') ? 'is-active' : '' }}" href="{{ route('admin.categories') }}"><span class="admin-nav-icon">▦</span>Categories</a>
                 <a class="{{ request()->routeIs('admin.media*') ? 'is-active' : '' }}" href="{{ route('admin.media') }}"><span class="admin-nav-icon">▧</span>Banners &amp; backgrounds</a>
                 <a class="{{ request()->routeIs('admin.exports*') ? 'is-active' : '' }}" href="{{ route('admin.exports') }}"><span class="admin-nav-icon">⇩</span>Product exports</a>
+                <a class="{{ request()->routeIs('admin.products-needing-updates') ? 'is-active' : '' }}" href="{{ route('admin.products-needing-updates') }}"><span class="admin-nav-icon">!</span>Products needing updates</a>
             @endcan
             @can('manage-store-products')<a class="{{ request()->routeIs('admin.brands*') ? 'is-active' : '' }}" href="{{ route('admin.brands') }}"><span class="admin-nav-icon">◇</span>Brands</a>@endcan
             @can('manage-store-products')<a class="{{ request()->routeIs('admin.seo*') ? 'is-active' : '' }}" href="{{ route('admin.seo') }}"><span class="admin-nav-icon">⌕</span>SEO management</a>@endcan

@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminPortfolioController;
 use App\Http\Controllers\AdminProductsController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminSeoController;
+use App\Http\Controllers\AdminSiteHealthController;
 use App\Http\Controllers\AdminStoreManagementController;
 use App\Http\Controllers\AdminTwoFactorController;
 use App\Http\Controllers\AdminUsersController;
@@ -193,6 +194,7 @@ Route::post('/admin/verify-email-code', [AdminTwoFactorController::class, 'verif
 Route::post('/admin/verify-email-code/resend', [AdminTwoFactorController::class, 'resend'])->middleware('throttle:3,1')->name('admin.two-factor.resend');
 Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('home');
+    Route::get('/site-health', [AdminSiteHealthController::class, 'index'])->name('site-health');
     Route::get('/bi', [AdminBusinessIntelligenceController::class, 'index'])->middleware('can:view-admin-bi')->name('bi');
     Route::get('/inventory', [AdminInventoryController::class, 'index'])->middleware('can:manage-store-inventory')->name('inventory');
     Route::patch('/inventory/{product}', [AdminInventoryController::class, 'update'])->middleware('can:manage-store-inventory')->name('inventory.update');
@@ -202,6 +204,7 @@ Route::middleware(['auth', 'can:manage-store'])->prefix('admin')->name('admin.')
     Route::patch('/categories/{category}/image', [AdminStoreManagementController::class, 'updateCategoryImage'])->middleware('can:manage-store-products')->name('categories.image');
     Route::get('/brands', [AdminStoreManagementController::class, 'brands'])->middleware('can:manage-store-products')->name('brands');
     Route::get('/exports', [AdminCatalogExportController::class, 'index'])->middleware('can:manage-store-products')->name('exports');
+    Route::get('/products-needing-updates', [AdminCatalogExportController::class, 'needsUpdates'])->middleware('can:manage-store-products')->name('products-needing-updates');
     Route::get('/exports/{format}', [AdminCatalogExportController::class, 'download'])->whereIn('format', ['merchant', 'csv', 'excel'])->middleware('can:manage-store-products')->name('exports.download');
     Route::get('/media', [AdminMediaController::class, 'index'])->middleware('can:manage-store-products')->name('media');
     Route::put('/media/{assetKey}', [AdminMediaController::class, 'update'])->where('assetKey', '[a-z0-9_]+')->middleware('can:manage-store-products')->name('media.update');
