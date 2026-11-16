@@ -139,7 +139,7 @@ class PortfolioCatalog
             return $path;
         }
 
-        return is_file(public_path($path)) ? asset($path) : MediaUrl::url($path);
+        return MediaUrl::url($path);
     }
 
     private function cleanDescription(string $content): string

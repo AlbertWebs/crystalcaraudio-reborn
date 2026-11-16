@@ -15,7 +15,7 @@ class AdminMediaController extends Controller
     {
         $assets = DB::table('site_media_assets')->orderBy('id')->get();
         $assets->each(function (object $asset): void {
-            $asset->url = str_starts_with($asset->path, 'images/') ? asset($asset->path) : MediaUrl::url($asset->path);
+            $asset->url = MediaUrl::url($asset->path);
         });
 
         return view('admin.media', compact('assets'));
@@ -43,7 +43,7 @@ class AdminMediaController extends Controller
         $name = $assetKey.'.'.$extension;
         $path = 'uploads/site-media/'.$name;
 
-        if (config('filesystems.disks.s3.bucket')) {
+        if (config('filesystems.disks.s3.bucket') && config('filesystems.disks.s3.key') && config('filesystems.disks.s3.secret')) {
             $root = trim((string) config('filesystems.disks.s3.root', ''), '/');
             \Illuminate\Support\Facades\Storage::disk('s3')->getClient()->putObject([
                 'Bucket' => config('filesystems.disks.s3.bucket'),
@@ -52,11 +52,7 @@ class AdminMediaController extends Controller
                 'ContentType' => $file->getMimeType(),
             ]);
         } else {
-            $directory = public_path('uploads/site-media');
-            if (! is_dir($directory)) {
-                mkdir($directory, 0755, true);
-            }
-            $file->move($directory, $name);
+            throw new \RuntimeException('S3 media storage is not configured.');
         }
 
         return $path;

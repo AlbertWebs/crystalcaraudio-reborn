@@ -348,7 +348,7 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $name = Str::uuid().'.'.$file->extension();
-            if (config('filesystems.disks.s3.bucket')) {
+            if (config('filesystems.disks.s3.bucket') && config('filesystems.disks.s3.key') && config('filesystems.disks.s3.secret')) {
                 $root = trim(config('filesystems.disks.s3.root', ''), '/');
                 Storage::disk('s3')->getClient()->putObject([
                     'Bucket' => config('filesystems.disks.s3.bucket'),
@@ -357,7 +357,7 @@ class AdminController extends Controller
                     'ContentType' => $file->getMimeType(),
                 ]);
             } else {
-                $file->move(public_path('uploads/product'), $name);
+                throw new \RuntimeException('S3 media storage is not configured.');
             }
             $data['image'] = 'product/'.$name;
         }

@@ -1,7 +1,7 @@
 @extends('store.layout')
 @section('title', 'Car Audio Systems & Radios in Kenya | Crystal Car Audio')
 @section('meta_description', 'Shop car radios, speakers, subwoofers and amplifiers in Nairobi, Kenya. Get fitment advice, installation and nationwide delivery from Crystal Car Audio.')
-@section('meta_image', asset('images/homepage-social-preview.png'))
+@section('meta_image', \App\Support\MediaUrl::url('images/homepage-social-preview.png'))
 @section('body_class', 'store-homepage')
 @section('content')
 <section class="hero hero-storefront">
@@ -83,7 +83,7 @@
     <div class="category-feature-grid">
         @foreach($featuredCategories as $category)
               @php($artwork = $categoryArtwork[$category->slug] ?? null)
-              @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
+              @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? \App\Support\MediaUrl::url('images/categories/'.$artwork['image']) : null))
             <a href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}" class="category-feature-card">
                   @if($categoryImage)<img src="{{ $categoryImage }}" alt="{{ $category->name }}" loading="lazy" decoding="async">@endif
                 <span class="category-feature-copy"><span class="category-feature-kicker">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }} <i>·</i> PREMIUM AUDIO</span><h3>{{ $category->name }}</h3><span class="category-feature-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-feature-cta"><span>{{ $category->product_count }} products</span><b aria-hidden="true">→</b></span></span>
@@ -95,7 +95,7 @@
         @foreach($otherCategories as $category)
               @php($categoryNumber = $loop->iteration + $featuredCategories->count())
               @php($artwork = $categoryArtwork[$category->slug] ?? null)
-              @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? asset('images/categories/'.$artwork['image']) : null))
+              @php($categoryImage = $category->image ? \App\Support\MediaUrl::category($category->image) : ($artwork ? \App\Support\MediaUrl::url('images/categories/'.$artwork['image']) : null))
             <a href="{{ $category->slug === 'car-speakers' ? route('car-speakers') : route('product-category', $category->slug) }}" class="category-tile-card{{ $categoryNumber >= 3 && $categoryNumber <= 8 ? ' category-tile-card-mobile-editorial' : '' }}">
                   @if($categoryImage)<img src="{{ $categoryImage }}" alt="" loading="lazy" decoding="async">@endif
                 <span class="category-tile-copy"><span class="category-tile-kicker">{{ str_pad((string) $categoryNumber, 2, '0', STR_PAD_LEFT) }} <i>·</i> CATEGORY</span><h3>{{ $category->name }}</h3><span class="category-tile-description">{{ $artwork['description'] ?? 'Explore our collection' }}</span><span class="category-tile-cta">{{ $category->product_count }} products <b aria-hidden="true">→</b></span></span>
@@ -139,25 +139,25 @@
         </header>
         <div class="setup-support-cards">
             <article class="setup-support-card">
-                <div class="setup-support-cover"><img src="{{ asset('images/whole-setup/advice.webp') }}" alt="Car audio screen and speaker setup" loading="lazy" decoding="async"><span>01</span></div>
-                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ asset('images/whole-setup/advice-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Expert Advice for Your Car</h3><p>Tell us your make and model and we’ll help you choose compatible audio equipment.</p><a href="/find-us">Ask our team <span aria-hidden="true">→</span></a></div></div>
+                <div class="setup-support-cover"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/advice.webp') }}" alt="Car audio screen and speaker setup" loading="lazy" decoding="async"><span>01</span></div>
+                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/advice-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Expert Advice for Your Car</h3><p>Tell us your make and model and we’ll help you choose compatible audio equipment.</p><a href="/find-us">Ask our team <span aria-hidden="true">→</span></a></div></div>
             </article>
             <article class="setup-support-card">
-                <div class="setup-support-cover"><img src="{{ asset('images/whole-setup/installation.webp') }}" alt="Technician installing a touchscreen car stereo" loading="lazy" decoding="async"><span>02</span></div>
-                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ asset('images/whole-setup/installation-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Professional Installation</h3><p>Get expert installation and setup from the Crystal Car Audio team.</p><a href="/find-us">Plan an installation <span aria-hidden="true">→</span></a></div></div>
+                <div class="setup-support-cover"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/installation.webp') }}" alt="Technician installing a touchscreen car stereo" loading="lazy" decoding="async"><span>02</span></div>
+                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/installation-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Professional Installation</h3><p>Get expert installation and setup from the Crystal Car Audio team.</p><a href="/find-us">Plan an installation <span aria-hidden="true">→</span></a></div></div>
             </article>
             <article class="setup-support-card">
-                <div class="setup-support-cover"><img src="{{ asset('images/whole-setup/checkout.webp') }}" alt="Secure online checkout for car audio products" loading="lazy" decoding="async"><span>03</span></div>
-                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ asset('images/whole-setup/checkout-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Simple &amp; Secure Checkout</h3><p>Choose Cash on Delivery or pay through eConfirm escrow at checkout.</p><a href="{{ route('categories') }}">Start shopping <span aria-hidden="true">→</span></a></div></div>
+                <div class="setup-support-cover"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/checkout.webp') }}" alt="Secure online checkout for car audio products" loading="lazy" decoding="async"><span>03</span></div>
+                <div class="setup-support-card-content"><span class="setup-support-icon"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/checkout-icon.png') }}" alt="" loading="lazy" decoding="async"></span><div><h3>Simple &amp; Secure Checkout</h3><p>Choose Cash on Delivery or pay through eConfirm escrow at checkout.</p><a href="{{ route('categories') }}">Start shopping <span aria-hidden="true">→</span></a></div></div>
             </article>
         </div>
         <div class="setup-support-benefits" aria-label="Crystal Car Audio service benefits">
-            <div><span class="setup-benefit-icon"><img src="{{ asset('images/whole-setup/delivery-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Fast Delivery</strong><span>Across Kenya</span></p></div>
-            <div><span class="setup-benefit-icon"><img src="{{ asset('images/whole-setup/genuine-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Genuine Products</strong><span>From trusted brands</span></p></div>
-            <div><span class="setup-benefit-icon"><img src="{{ asset('images/whole-setup/fitment-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Professional Fitment</strong><span>By experienced technicians</span></p></div>
+            <div><span class="setup-benefit-icon"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/delivery-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Fast Delivery</strong><span>Across Kenya</span></p></div>
+            <div><span class="setup-benefit-icon"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/genuine-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Genuine Products</strong><span>From trusted brands</span></p></div>
+            <div><span class="setup-benefit-icon"><img src="{{ \App\Support\MediaUrl::url('images/whole-setup/fitment-icon.png') }}" alt="" loading="lazy" decoding="async"></span><p><strong>Professional Fitment</strong><span>By experienced technicians</span></p></div>
         </div>
     </div>
 </section>
 
-<section class="expert-cta expert-cta-store"><div><p class="eyebrow eyebrow-accent">MADE TO FIT YOUR DRIVE</p><h2>Need a hand<br>choosing?</h2><p>Tell us about your car and we’ll help you find the right fit.</p><a class="button button-dark" href="/find-us">Talk to our team <span>↗</span></a></div><div class="expert-visual"><img loading="lazy" decoding="async" src="{{ asset('images/expert-car-audio-visual.webp') }}" alt="Premium car speaker and touchscreen audio system"></div></section>
+<section class="expert-cta expert-cta-store"><div><p class="eyebrow eyebrow-accent">MADE TO FIT YOUR DRIVE</p><h2>Need a hand<br>choosing?</h2><p>Tell us about your car and we’ll help you find the right fit.</p><a class="button button-dark" href="/find-us">Talk to our team <span>↗</span></a></div><div class="expert-visual"><img loading="lazy" decoding="async" src="{{ \App\Support\MediaUrl::url('images/expert-car-audio-visual.webp') }}" alt="Premium car speaker and touchscreen audio system"></div></section>
 @endsection

@@ -13,14 +13,14 @@ class MediaUrl
         try {
             $path = DB::table('site_media_assets')->where('asset_key', $key)->value('path');
             if (is_string($path) && $path !== '') {
-                return str_starts_with($path, 'images/') ? asset($path) : self::url($path);
+                return self::url($path);
             }
         } catch (Throwable $exception) {
             // Keep storefronts rendering during deployment before migrations run.
             report($exception);
         }
 
-        return str_starts_with($fallback, 'images/') ? asset($fallback) : self::url($fallback);
+        return self::url($fallback);
     }
 
     public static function category(?string $path): string
@@ -35,11 +35,7 @@ class MediaUrl
 
         $normalizedPath = ltrim($path, '/');
 
-        if (str_starts_with($normalizedPath, 'images/')) {
-            return asset($normalizedPath);
-        }
-
-        return self::url('uploads/'.$normalizedPath);
+        return self::url(str_starts_with($normalizedPath, 'images/') ? $normalizedPath : 'uploads/'.$normalizedPath);
     }
 
     public static function url(?string $path): string
@@ -52,17 +48,12 @@ class MediaUrl
             return $path;
         }
 
-        $localPath = ltrim($path, '/');
         $s3Path = ltrim(rawurldecode($path), '/');
 
-        if (config('filesystems.disks.s3.bucket') && config('filesystems.disks.s3.key') && config('filesystems.disks.s3.secret')) {
-            try {
-                return Storage::disk('s3')->temporaryUrl($s3Path, now()->addDays(7));
-            } catch (Throwable $exception) {
-                report($exception);
-            }
+        if (! config('filesystems.disks.s3.bucket') || ! config('filesystems.disks.s3.key') || ! config('filesystems.disks.s3.secret')) {
+            throw new \RuntimeException('S3 media storage is not configured.');
         }
 
-        return asset($localPath);
+        return Storage::disk('s3')->temporaryUrl($s3Path, now()->addDays(7));
     }
 }

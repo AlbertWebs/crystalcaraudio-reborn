@@ -259,7 +259,7 @@ class AdminPortfolioController extends Controller
         $path = 'uploads/portfolio/'.$directory.'/'.$name;
         $bucket = config('filesystems.disks.s3.bucket');
 
-        if ($bucket) {
+        if ($bucket && config('filesystems.disks.s3.key') && config('filesystems.disks.s3.secret')) {
             $root = trim((string) config('filesystems.disks.s3.root', ''), '/');
             $stream = fopen($file->getRealPath(), 'rb');
             try {
@@ -275,11 +275,7 @@ class AdminPortfolioController extends Controller
                 }
             }
         } else {
-            $targetDirectory = public_path(dirname($path));
-            if (! is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0755, true);
-            }
-            $file->move($targetDirectory, $name);
+            throw new \RuntimeException('S3 media storage is not configured.');
         }
 
         return $path;

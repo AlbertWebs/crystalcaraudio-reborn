@@ -12,7 +12,9 @@ return new class extends Migration {
             $table->string('legacy_id')->nullable()->index();
             $table->string('title')->nullable();
             $table->string('code')->unique();
-            $table->decimal('percent_off', 5, 2)->default(0);
+            // Legacy coupon imports can contain values above 999.99; checkout
+            // caps the applied percentage at 100, so retain the source value.
+            $table->decimal('percent_off', 8, 2)->default(0);
             $table->boolean('is_active')->default(false);
             $table->dateTime('expires_at')->nullable();
             $table->timestamps();

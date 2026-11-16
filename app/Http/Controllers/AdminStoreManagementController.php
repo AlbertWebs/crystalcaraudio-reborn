@@ -148,7 +148,7 @@ class AdminStoreManagementController extends Controller
         $name = Str::uuid().'.'.$file->extension();
         $path = 'category/'.$name;
 
-        if (config('filesystems.disks.s3.bucket')) {
+        if (config('filesystems.disks.s3.bucket') && config('filesystems.disks.s3.key') && config('filesystems.disks.s3.secret')) {
             $root = trim((string) config('filesystems.disks.s3.root', ''), '/');
             Storage::disk('s3')->getClient()->putObject([
                 'Bucket' => config('filesystems.disks.s3.bucket'),
@@ -157,11 +157,7 @@ class AdminStoreManagementController extends Controller
                 'ContentType' => $file->getMimeType(),
             ]);
         } else {
-            $directory = public_path('uploads/category');
-            if (! is_dir($directory)) {
-                mkdir($directory, 0755, true);
-            }
-            $file->move($directory, $name);
+            throw new \RuntimeException('S3 media storage is not configured.');
         }
 
         return $path;
